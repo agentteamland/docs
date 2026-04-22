@@ -2,7 +2,7 @@
 
 > 13 specialized agents for production-grade full-stack software projects.
 
-**Latest version:** `1.1.0`
+**Latest version:** `1.1.1`
 **Status:** Verified
 **Repository:** [github.com/agentteamland/software-project-team](https://github.com/agentteamland/software-project-team)
 

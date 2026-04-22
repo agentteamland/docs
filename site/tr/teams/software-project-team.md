@@ -2,7 +2,7 @@
 
 > Production-grade full-stack yazılım projeleri için 13 uzmanlaşmış agent.
 
-**Son sürüm:** `1.1.0`
+**Son sürüm:** `1.1.1`
 **Status:** Onaylı
 **Repository:** [github.com/agentteamland/software-project-team](https://github.com/agentteamland/software-project-team)
 
