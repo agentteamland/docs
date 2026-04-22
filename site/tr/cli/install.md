@@ -11,28 +11,51 @@ atl install <takım>
 `<takım>` şu biçimlerden biri olabilir:
 
 - **Registry kısa adı** — `software-project-team`
-- **Git URL** — `https://github.com/kullanici/takim.git`
-- **Adı + versiyon** — `software-project-team@^1.2.0` (caret, tilde veya tam pin)
+- **Registry adı + versiyon** — `software-project-team@^1.2.0` (caret, tilde veya tam pin)
+- **GitHub `owner/repo` kısayolu** — `agentteamland/starter-extended`
+- **Git URL** — `https://github.com/sen/takım.git`, `git@github.com:sen/takım.git`, `ssh://...`, `file:///abs/path.git`
+- **Yerel dosya sistemi yolu** — `./my-team`, `~/projects/my-team`, `/abs/path/to/team` (atl ≥ 0.1.4; path kökünde `team.json` ve `.git/` olan bir dizin olmalı)
 
 ## Örnekler
 
-Referans takımı registry'den kur:
+### Registry (public, onaylı)
 
 ```bash
 atl install software-project-team
-```
-
-Belirli bir versiyon:
-
-```bash
 atl install software-project-team@^1.2.0
 ```
 
-Doğrudan Git URL'den (registry bakmadan):
+### GitHub kısayolu
+
+```bash
+atl install agentteamland/starter-extended
+```
+
+### Tam Git URL'si (public veya private)
 
 ```bash
 atl install https://github.com/acme/acme-starter.git
+atl install git@github.com:sen/private-team.git          # SSH, git credentials'ın kullanılır
+atl install https://gitea.example.com/sen/takım.git      # self-hosted
 ```
+
+### Yerel dosya sistemi — remote şart değil (atl ≥ 0.1.4)
+
+Private-local iş akışı: laptop'unda takım geliştir, hiçbir git server'a push'lamadan kendi projene kur.
+
+```bash
+# Tek seferlik: takımı git repo olarak kur
+cd ~/projects/my-team
+git init -b main && git add . && git commit -m "init"
+
+# Herhangi bir projeye kur:
+cd ~/projects/some-app
+atl install ~/projects/my-team                   # mutlak path
+atl install ./my-team                            # göreli path
+atl install file:///Users/sen/projects/my-team   # explicit file:// URL
+```
+
+Üç form da aynı şekilde çalışır. Kaynak, `team.json` içeren bir dizin ve git repo olmalı (en az bir commit). Tam walkthrough: [Takım oluşturma](/tr/authoring/creating-a-team).
 
 ## Birden fazla takım kurulumu
 

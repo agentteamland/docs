@@ -11,28 +11,51 @@ atl install <team>
 `<team>` can be:
 
 - A **registry short name** — `software-project-team`
-- A **Git URL** — `https://github.com/youruser/your-team.git`
 - A **registry name with version** — `software-project-team@^1.2.0` (caret, tilde, or exact pin)
+- A **GitHub `owner/repo` shorthand** — `agentteamland/starter-extended`
+- A **Git URL** — `https://github.com/you/your-team.git`, `git@github.com:you/team.git`, `ssh://...`, `file:///abs/path.git`
+- A **local filesystem path** — `./my-team`, `~/projects/my-team`, `/abs/path/to/team` (atl ≥ 0.1.4; the path must be a directory with `team.json` at its root AND a `.git/`)
 
 ## Examples
 
-Install the reference team from the registry:
+### Registry (public, verified)
 
 ```bash
 atl install software-project-team
-```
-
-Install a specific version:
-
-```bash
 atl install software-project-team@^1.2.0
 ```
 
-Install directly from a Git URL (no registry lookup):
+### GitHub shorthand
+
+```bash
+atl install agentteamland/starter-extended
+```
+
+### Full Git URL (public or private)
 
 ```bash
 atl install https://github.com/acme/acme-starter.git
+atl install git@github.com:you/private-team.git          # SSH, uses your git credentials
+atl install https://gitea.example.com/you/team.git       # self-hosted
 ```
+
+### Local filesystem — no remote required (atl ≥ 0.1.4)
+
+The private-local workflow: build a team on your laptop, install it into your own project without pushing to any git server.
+
+```bash
+# One-time: set up the team as a git repo
+cd ~/projects/my-team
+git init -b main && git add . && git commit -m "init"
+
+# Install into any project:
+cd ~/projects/some-app
+atl install ~/projects/my-team                   # absolute path
+atl install ./my-team                            # relative path
+atl install file:///Users/you/projects/my-team   # explicit file:// URL
+```
+
+All three forms work identically. The source must be a directory containing `team.json` and must be a git repo (at least one commit). See [Creating a team](/authoring/creating-a-team) for the full walk-through.
 
 ## Multi-team installation
 
