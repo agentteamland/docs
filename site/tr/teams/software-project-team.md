@@ -62,4 +62,4 @@ Tam detaylar için [takımın README'sine](https://github.com/agentteamland/soft
 
 ## Kullanıldığı yer
 
-- [walkingforme](https://github.com/mkurak/walkingforme) — referans test projesi (Mesut'un kişisel adımölçer/yürüyüş uygulaması)
+- Bir referans test projesi — her sürümden önce uçtan uca doğrulama (`/create-new-project` + `/verify-system` all-pass) için kullanılır.

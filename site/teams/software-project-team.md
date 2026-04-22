@@ -62,4 +62,4 @@ Full details in the [team's README](https://github.com/agentteamland/software-pr
 
 ## Used in
 
-- [walkingforme](https://github.com/mkurak/walkingforme) — reference test project (Mesut's personal pedometer/walking app)
+- A reference test project — validated end-to-end (`/create-new-project` + `/verify-system` all-pass) before each release.
