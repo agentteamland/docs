@@ -34,6 +34,27 @@ Install directly from a Git URL (no registry lookup):
 atl install https://github.com/acme/acme-starter.git
 ```
 
+## Multi-team installation
+
+Multiple teams can coexist in the same project — `atl` v0.1.2+ supports this natively. Both teams' agents, skills, and rules symlink into the same `.claude/` directory.
+
+```bash
+atl install software-project-team
+atl install design-system-team
+
+atl list
+# ✓ software-project-team@1.1.0
+# ✓ design-system-team@0.3.1
+```
+
+When two teams declare an item with the same name (e.g., both have a `code-reviewer` agent), the most recently installed one wins. atl prints a one-line warning:
+
+```
+⚠ overriding agent "code-reviewer" (was from team-a, now from team-b)
+```
+
+This mirrors npm / pip / GNU Stow conventions. Removing a team is safe — `atl remove` wipes its symlinks and replays the remaining teams' symlinks in their original install order, so any item the removed team was "winning" by collision falls back to its original owner correctly.
+
 ## What happens
 
 1. **Resolve.** Registry names are looked up in [`teams.json`](https://github.com/agentteamland/registry/blob/main/teams.json); URLs are used directly.

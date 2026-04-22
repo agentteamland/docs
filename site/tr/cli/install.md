@@ -34,6 +34,27 @@ Doğrudan Git URL'den (registry bakmadan):
 atl install https://github.com/acme/acme-starter.git
 ```
 
+## Birden fazla takım kurulumu
+
+Aynı projede birden fazla takım yan yana yaşayabilir — `atl` v0.1.2+ bunu doğal olarak destekler. Her iki takımın agent, skill ve rule'ları aynı `.claude/` dizinine sembolik link ile bağlanır.
+
+```bash
+atl install software-project-team
+atl install design-system-team
+
+atl list
+# ✓ software-project-team@1.1.0
+# ✓ design-system-team@0.3.1
+```
+
+İki takım aynı isimli bir öğe declare ederse (örn. ikisinde de `code-reviewer` agent varsa), en son yüklenen kazanır. atl tek satır uyarı yazdırır:
+
+```
+⚠ overriding agent "code-reviewer" (was from team-a, now from team-b)
+```
+
+Bu npm / pip / GNU Stow konvansiyonlarıyla aynı. Bir takımı kaldırmak güvenli — `atl remove` o takımın sembolik linklerini siler ve kalan takımların linklerini orijinal kurulum sırasına göre yeniden çalar; böylece kaldırılan takımın çakışma ile "kazandığı" öğeler doğru sahibine geri döner.
+
 ## Ne olur?
 
 1. **Çözümleme.** Registry adları [`teams.json`](https://github.com/agentteamland/registry/blob/main/teams.json)'da aranır; URL'ler doğrudan kullanılır.

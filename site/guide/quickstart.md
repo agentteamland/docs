@@ -76,8 +76,28 @@ All installed teams pull, dependencies resolve, symlinks refresh. Nothing in you
 
 You installed a curated, version-pinned, dependency-aware set of agents into a project with a single command. Every other project that installs the same team gets the same configuration — and the same updates when the author ships them.
 
+## Add design tooling (optional)
+
+If you want design-system + screen-prototype tooling alongside, install `design-system-team`:
+
+```bash
+atl install design-system-team
+```
+
+Then in your Claude Code chat:
+
+```
+/dst-init
+/dst-new-ds primary
+/dst-new-prototype --ds primary login-screen
+/dst-open
+```
+
+You'll get token-aligned design systems and multi-state HTML prototypes under `.dst/`, viewable in any browser. See [design-system-team](/teams/design-system-team) for the full skill set.
+
 ## Next
 
+- **[Browse teams](/teams/)** — verified teams in the registry.
 - **[Concepts](/guide/concepts)** — the mental model behind teams, agents, skills, and rules.
 - **[CLI reference](/cli/overview)** — every command in detail.
 - **[Write your own team](/authoring/creating-a-team)** — publish a team to the registry.

@@ -33,6 +33,7 @@ export default defineConfig({
         nav: [
           { text: 'Guide', link: '/guide/what-is-atl', activeMatch: '/guide/' },
           { text: 'CLI', link: '/cli/overview', activeMatch: '/cli/' },
+          { text: 'Teams', link: '/teams/', activeMatch: '/teams/' },
           { text: 'Team Authoring', link: '/authoring/team-json', activeMatch: '/authoring/' },
           { text: 'Reference', link: '/reference/faq', activeMatch: '/reference/' },
           {
@@ -70,6 +71,16 @@ export default defineConfig({
               ]
             }
           ],
+          '/teams/': [
+            {
+              text: 'Verified Teams',
+              items: [
+                { text: 'Browse', link: '/teams/' },
+                { text: 'software-project-team', link: '/teams/software-project-team' },
+                { text: 'design-system-team', link: '/teams/design-system-team' }
+              ]
+            }
+          ],
           '/authoring/': [
             {
               text: 'Team Authoring',
@@ -103,6 +114,7 @@ export default defineConfig({
         nav: [
           { text: 'Rehber', link: '/tr/guide/what-is-atl', activeMatch: '/tr/guide/' },
           { text: 'CLI', link: '/tr/cli/overview', activeMatch: '/tr/cli/' },
+          { text: 'Takımlar', link: '/tr/teams/', activeMatch: '/tr/teams/' },
           { text: 'Takım Yazımı', link: '/tr/authoring/team-json', activeMatch: '/tr/authoring/' },
           { text: 'Başvuru', link: '/tr/reference/faq', activeMatch: '/tr/reference/' },
           {
@@ -137,6 +149,16 @@ export default defineConfig({
                 { text: 'atl remove', link: '/tr/cli/remove' },
                 { text: 'atl update', link: '/tr/cli/update' },
                 { text: 'atl search', link: '/tr/cli/search' }
+              ]
+            }
+          ],
+          '/tr/teams/': [
+            {
+              text: 'Onaylı Takımlar',
+              items: [
+                { text: 'Göz at', link: '/tr/teams/' },
+                { text: 'software-project-team', link: '/tr/teams/software-project-team' },
+                { text: 'design-system-team', link: '/tr/teams/design-system-team' }
               ]
             }
           ],

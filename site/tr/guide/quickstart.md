@@ -76,8 +76,28 @@ Kurulu tüm takımlar pull edilir, bağımlılıklar çözülür, sembolik linkl
 
 Tek komutla; önceden seçilmiş, versiyonlanmış ve bağımlılıkları çözümlenmiş bir agent kümesini bir projeye kurdun. Aynı takımı kuran her proje; aynı konfigürasyonu ve yazar yeni sürüm yayınladığında aynı güncellemeleri alır.
 
+## Yanına design araçları ekle (opsiyonel)
+
+Design system + ekran prototype araçları da istiyorsan `design-system-team`'i de yükle:
+
+```bash
+atl install design-system-team
+```
+
+Sonra Claude Code chat'inde:
+
+```
+/dst-init
+/dst-new-ds primary
+/dst-new-prototype --ds primary login-screen
+/dst-open
+```
+
+Token-uyumlu design system'ler ve multi-state HTML prototype'ları `.dst/` altında oluşur, her tarayıcıda açılır. Tam skill listesi için [design-system-team](/tr/teams/design-system-team) sayfasına bak.
+
 ## Sıradaki
 
+- **[Takımlara göz at](/tr/teams/)** — registry'deki onaylı takımlar.
 - **[Kavramlar](/tr/guide/concepts)** — takım, agent, skill, rule arkasındaki zihinsel model.
 - **[CLI başvuru](/tr/cli/overview)** — her komut detaylı.
 - **[Kendi takımını yaz](/tr/authoring/creating-a-team)** — takımını registry'ye gönder.

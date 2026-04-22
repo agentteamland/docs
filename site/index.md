@@ -30,8 +30,8 @@ features:
     title: One static binary
     details: atl is a ~7 MB Go binary. Install via Homebrew, Scoop, winget, or curl — zero runtime dependencies.
   - icon: 🧪
-    title: Battle-tested
-    details: The reference team software-project-team ships 13 agents covering .NET, Flutter, React, and a production-grade Docker stack. End-to-end verified.
+    title: Two verified teams, more on the way
+    details: software-project-team (13 agents — .NET, Flutter, React, Docker) and design-system-team (DS + prototype tooling, /dst-* skills). Browse the registry.
   - icon: 🔍
     title: Public registry
     details: Discover teams by name. The registry is a single JSON file, PR-driven, schema-validated in CI.
@@ -60,12 +60,14 @@ scoop install atl
 
 # Then, in any project:
 atl install software-project-team
+atl install design-system-team    # optional: design-system + prototype tooling
 ```
 
-That's a full 13-agent stack — API, web, mobile, database, infra, review — wired into your project's `.claude/` directory, ready for Claude Code.
+A full 13-agent stack (API, web, mobile, database, infra, review) wired into your project's `.claude/` directory, ready for Claude Code. Add design-system-team alongside for `/dst-*` design tooling.
 
 ## What's next?
 
 - **[What is `atl`?](/guide/what-is-atl)** — the big idea in five minutes.
 - **[Quickstart](/guide/quickstart)** — first team installed in under a minute.
+- **[Browse teams](/teams/)** — verified teams in the registry.
 - **[Team authoring](/authoring/team-json)** — publish your own team.

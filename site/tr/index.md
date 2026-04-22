@@ -30,8 +30,8 @@ features:
     title: Tek static binary
     details: atl ~7 MB'lık bir Go binary'si. Homebrew, Scoop, winget veya curl ile kur — runtime bağımlılığı sıfır.
   - icon: 🧪
-    title: Sahada test edilmiş
-    details: Referans takım software-project-team; .NET, Flutter, React ve üretim düzeyinde bir Docker stack'ini kapsayan 13 agent sunar. Uçtan uca doğrulanmış.
+    title: İki onaylı takım, daha fazlası yolda
+    details: software-project-team (13 agent — .NET, Flutter, React, Docker) ve design-system-team (DS + prototype araçları, /dst-* skill'leri). Registry'ye göz at.
   - icon: 🔍
     title: Herkese açık registry
     details: Takımları kısa adıyla keşfet. Registry; CI'da schema ile doğrulanan, PR ile yönetilen tek bir JSON dosyası.
@@ -60,12 +60,14 @@ scoop install atl
 
 # Sonra, herhangi bir projede:
 atl install software-project-team
+atl install design-system-team    # opsiyonel: design-system + prototype araçları
 ```
 
-Tek komutla 13 agent'lık tam bir stack — API, web, mobil, veritabanı, altyapı, kod incelemesi — projenin `.claude/` dizinine bağlanmış, Claude Code'un hemen kullanımına hazır halde.
+13 agent'lık tam bir stack (API, web, mobil, veritabanı, altyapı, kod incelemesi) projenin `.claude/` dizinine bağlanmış, Claude Code'un hemen kullanımına hazır. Yanına design-system-team eklersen `/dst-*` design araçlarını da kazanırsın.
 
 ## Sıradaki
 
 - **[`atl` nedir?](/tr/guide/what-is-atl)** — beş dakikada büyük resim.
 - **[Hızlı başlangıç](/tr/guide/quickstart)** — ilk takım 60 saniyeden kısa sürede kurulu.
+- **[Takımlara göz at](/tr/teams/)** — registry'deki onaylı takımlar.
 - **[Takım yazımı](/tr/authoring/team-json)** — kendi takımını yayınla.
