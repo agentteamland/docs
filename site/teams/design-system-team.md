@@ -2,7 +2,7 @@
 
 > Design systems and UI prototypes inside any project — local, file-based, browser-viewable.
 
-**Latest version:** `0.3.1`
+**Latest version:** `0.4.1`
 **Status:** Verified
 **Repository:** [github.com/agentteamland/design-system-team](https://github.com/agentteamland/design-system-team)
 

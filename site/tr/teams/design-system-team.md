@@ -2,7 +2,7 @@
 
 > Herhangi bir projenin içinde design system'ler ve UI prototype'ları — local, dosya tabanlı, tarayıcıda görüntülenebilir.
 
-**Son sürüm:** `0.3.1`
+**Son sürüm:** `0.4.1`
 **Status:** Onaylı
 **Repository:** [github.com/agentteamland/design-system-team](https://github.com/agentteamland/design-system-team)
 
