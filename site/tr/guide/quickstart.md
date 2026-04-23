@@ -7,13 +7,14 @@ Sıfırdan üretime hazır bir agent takımına bir dakikadan az sürede.
 ```bash
 # macOS / Linux
 brew install agentteamland/tap/atl
-
-# Windows
-scoop bucket add agentteamland https://github.com/agentteamland/scoop-bucket
-scoop install atl
 ```
 
-Tüm platformlar: [Kurulum rehberi](/tr/guide/install).
+```powershell
+# Windows (PowerShell; paket yöneticisi şart değil)
+irm https://raw.githubusercontent.com/agentteamland/cli/main/scripts/install.ps1 | iex
+```
+
+Tüm alternatifler (scoop, winget, manuel ZIP, one-liner fallback): [Kurulum rehberi](/tr/guide/install).
 
 ## 2. Proje dizini oluştur
 

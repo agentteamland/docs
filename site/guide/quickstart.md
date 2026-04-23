@@ -7,13 +7,14 @@ From zero to a production-ready agent team in under a minute.
 ```bash
 # macOS / Linux
 brew install agentteamland/tap/atl
-
-# Windows
-scoop bucket add agentteamland https://github.com/agentteamland/scoop-bucket
-scoop install atl
 ```
 
-Full matrix: [Install guide](/guide/install).
+```powershell
+# Windows (PowerShell; no package manager required)
+irm https://raw.githubusercontent.com/agentteamland/cli/main/scripts/install.ps1 | iex
+```
+
+Full matrix (scoop, winget, manual ZIP, one-liner fallback): [Install guide](/guide/install).
 
 ## 2. Create a project directory
 

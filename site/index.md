@@ -53,14 +53,18 @@ features:
 ```bash
 # macOS / Linux
 brew install agentteamland/tap/atl
+```
 
-# Windows
-scoop bucket add agentteamland https://github.com/agentteamland/scoop-bucket
-scoop install atl
+```powershell
+# Windows (PowerShell, no package manager required)
+irm https://raw.githubusercontent.com/agentteamland/cli/main/scripts/install.ps1 | iex
+```
 
+```bash
 # Then, in any project:
 atl install software-project-team
 atl install design-system-team    # optional: design-system + prototype tooling
+atl setup-hooks                   # optional: auto-update on every Claude Code session
 ```
 
 A full 13-agent stack (API, web, mobile, database, infra, review) wired into your project's `.claude/` directory, ready for Claude Code. Add design-system-team alongside for `/dst-*` design tooling.
