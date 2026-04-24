@@ -86,8 +86,8 @@ Don't have scoop yet? Use the PowerShell one-liner above — simpler and faster 
 winget install agentteamland.atl
 ```
 
-::: warning Currently outdated
-winget is tracking atl 0.1.1 — the first Microsoft review on the winget-pkgs PR is still pending (typical review window is 1–2 weeks). Use the PowerShell one-liner or scoop to get the latest release until the winget catalog catches up.
+::: tip May lag the latest release
+`atl` has been in the winget catalog since 2026-04-24. Each new release goes through a manual review step on `microsoft/winget-pkgs`, so winget may lag one or two `v*` tags behind. If you need the absolute latest, use the PowerShell one-liner or scoop above.
 :::
 
 ### Windows — Manual ZIP
