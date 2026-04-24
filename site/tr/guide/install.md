@@ -86,8 +86,8 @@ Scoop'un yoksa yukarıdaki PowerShell one-liner'ı kullan — scoop'u önce kurm
 winget install agentteamland.atl
 ```
 
-::: warning Şu an geride
-winget `atl 0.1.1`'i barındırıyor — ilk winget-pkgs PR'ının Microsoft review'u hâlâ bekliyor (normal inceleme süresi 1–2 hafta). winget kataloğu yakalayana kadar PowerShell one-liner veya scoop kullan.
+::: tip En son sürümün biraz gerisinde olabilir
+`atl` 2026-04-24 itibarıyla winget kataloğunda. Her yeni release `microsoft/winget-pkgs` üzerinde manuel bir review sürecinden geçiyor, bu yüzden winget en son `v*` tag'in bir-iki sürüm gerisinde olabilir. Mutlak en son sürüme ihtiyacın varsa yukarıdaki PowerShell one-liner veya scoop'u kullan.
 :::
 
 ### Windows — Manuel ZIP
