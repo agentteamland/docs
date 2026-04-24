@@ -68,7 +68,8 @@ export default defineConfig({
                 { text: 'atl remove', link: '/cli/remove' },
                 { text: 'atl update', link: '/cli/update' },
                 { text: 'atl search', link: '/cli/search' },
-                { text: 'atl setup-hooks', link: '/cli/setup-hooks' }
+                { text: 'atl setup-hooks', link: '/cli/setup-hooks' },
+                { text: 'atl learning-capture', link: '/cli/learning-capture' }
               ]
             }
           ],
@@ -150,7 +151,8 @@ export default defineConfig({
                 { text: 'atl remove', link: '/tr/cli/remove' },
                 { text: 'atl update', link: '/tr/cli/update' },
                 { text: 'atl search', link: '/tr/cli/search' },
-                { text: 'atl setup-hooks', link: '/tr/cli/setup-hooks' }
+                { text: 'atl setup-hooks', link: '/tr/cli/setup-hooks' },
+                { text: 'atl learning-capture', link: '/tr/cli/learning-capture' }
               ]
             }
           ],
