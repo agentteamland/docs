@@ -2,7 +2,7 @@
 
 > Herhangi bir projenin içinde design system'ler ve UI prototype'ları — local, dosya tabanlı, tarayıcıda görüntülenebilir.
 
-**Son sürüm:** `0.4.1`
+**Son sürüm:** `0.7.0`
 **Status:** Onaylı
 **Repository:** [github.com/agentteamland/design-system-team](https://github.com/agentteamland/design-system-team)
 
@@ -65,11 +65,11 @@ atl install design-system-team
 - **ds-architect-agent** — Kapsamlı design system'ler tasarlar (palette theory, typography ramp, spacing, component'ler, brand identity, voice). 7 children dosyası schema, palette theory, typography, spacing, component'ler, brand, proje context okuma ve template render'ı kapsar.
 - **prototype-agent** — Seçilen DS'in token'larına kesin uyan ekran prototype'ları tasarlar (token fidelity, state coverage, accessibility — taviz yok). 7 children dosyası.
 
-## Skill'ler (8)
+## Skill'ler (10)
 
 | Skill | Amacı |
 |-------|-------|
-| `/dst-init` | Mevcut projede `.dst/` kur |
+| `/dst-init` | Mevcut projede `.dst/` kur veya tazele (self-healing) |
 | `/dst-new-ds <name>` | İnteraktif Q&A ile yeni design system oluştur |
 | `/dst-edit-ds <name> "<change>"` | Metinsel değişiklik uygula; yapısal değişiklikse bağlı prototype'lara cascade |
 | `/dst-delete-ds <name>` | DS'i kaldır (bağımlı prototype varsa reddeder; `--force` ile orphan eder) |
@@ -77,6 +77,8 @@ atl install design-system-team
 | `/dst-edit-prototype <name> "<change>"` | Metinsel değişiklik uygula, token fidelity'yi koru |
 | `/dst-delete-prototype <name>` | Bir prototype'ı kaldır |
 | `/dst-open` | `.dst/index.html`'i varsayılan tarayıcıda aç |
+| `/dst-handoff <prototype> [--target …]` | Prototype + DS + asset'leri paketle, flutter-agent / react-agent'ı kaynak koda entegre etmesi için brief'le |
+| `/dst-questions [init\|sync\|add\|resolve\|list]` | `.claude/wiki/open-questions.md`'i yönet (ekran çalışmasını blokluyan sorular); aktif listeyi `CLAUDE.md`'ye otomatik pin'le |
 
 ## Neden var
 
@@ -92,8 +94,14 @@ Pivot: **ayrı bir uygulama yapma**. Bir takım yap. Skill'ler tüm LLM işini i
 
 - [`software-project-team`](/tr/teams/software-project-team) — `/dst-*` skill'leriyle tasarla, flutter-agent / react-agent / api-agent ile implement et.
 
-## Yol haritası
+## Yayınlananlar
 
-- **v0.4.x** (planlanan): live-reload (file-watcher → SSE ile tarayıcıda auto-refresh)
-- **v0.5.x**: cross-project DS paylaşımı için `/dst-export` / `/dst-import`
-- **v0.6.x** (spekülatif): sayfa içi chat paneli (BYOK Anthropic API key, opt-in)
+- **v0.4.0** — `dst-init` self-healing oldu (mevcut `.dst/`'ler güvenle yükseltilebilir, JSON state korunarak HTML/CSS yeniden render edilir); `dst-handoff` skill (tek komutla design→code, flutter-agent / react-agent üzerinden); prototype `target` alanı
+- **v0.5.0** — dark-mode token coverage + first-prototype pipeline iyileştirmeleri
+- **v0.6.0** — partial bazlı template mimarisi (bir component = bir dosya, 600 satırlık monolith bitti); katalog **7 grupta 57 component**'e büyüdü (Charts 7. grup olarak eklendi + 12 Tier 1 primitive)
+- **v0.7.0** — `/dst-questions` skill + `open-questions-pinning` rule: ekran çalışmasını blokluyan ürün sorularına standart bir yer + `CLAUDE.md`'ye auto-pin (`brainstorm@1.1.0` pin pattern'i mirror'lar)
+
+## Sıradaki (spekülatif)
+
+- live-reload (file-watcher → SSE ile tarayıcıda auto-refresh)
+- cross-project DS paylaşımı için `/dst-export` / `/dst-import`
