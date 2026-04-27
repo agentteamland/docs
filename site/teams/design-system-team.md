@@ -2,7 +2,7 @@
 
 > Design systems and UI prototypes inside any project — local, file-based, browser-viewable.
 
-**Latest version:** `0.4.1`
+**Latest version:** `0.7.0`
 **Status:** Verified
 **Repository:** [github.com/agentteamland/design-system-team](https://github.com/agentteamland/design-system-team)
 
@@ -65,11 +65,11 @@ After `/dst-init`, your project gets:
 - **ds-architect-agent** — Designs comprehensive design systems (palette theory, typography ramps, spacing, components, brand identity, voice). 7 children files cover schema, palette theory, typography, spacing, components, brand, project-context reading, and template rendering.
 - **prototype-agent** — Designs screen prototypes that strictly honor a chosen DS (token fidelity, state coverage, accessibility — non-negotiable). 7 children files.
 
-## Skills (8)
+## Skills (10)
 
 | Skill | Purpose |
 |-------|---------|
-| `/dst-init` | Bootstrap `.dst/` in current project |
+| `/dst-init` | Bootstrap or refresh `.dst/` in current project (self-healing) |
 | `/dst-new-ds <name>` | Create new design system via interactive Q&A |
 | `/dst-edit-ds <name> "<change>"` | Apply textual change; cascades to linked prototypes if structural |
 | `/dst-delete-ds <name>` | Remove a DS (refuses if prototypes depend on it; `--force` to orphan) |
@@ -77,6 +77,8 @@ After `/dst-init`, your project gets:
 | `/dst-edit-prototype <name> "<change>"` | Apply textual change, preserving token fidelity |
 | `/dst-delete-prototype <name>` | Remove a prototype |
 | `/dst-open` | Open `.dst/index.html` in default browser |
+| `/dst-handoff <prototype> [--target …]` | Bundle prototype + DS + assets, brief flutter-agent / react-agent to integrate into source code |
+| `/dst-questions [init\|sync\|add\|resolve\|list]` | Maintain `.claude/wiki/open-questions.md` (questions blocking screen work); auto-pin active list into `CLAUDE.md` |
 
 ## Why it exists
 
@@ -92,8 +94,14 @@ The pivot: **don't build a separate app**. Build a team. Skills do all LLM work 
 
 - [`software-project-team`](/teams/software-project-team) — design with `/dst-*` skills, implement with flutter-agent / react-agent / api-agent.
 
-## Roadmap
+## What shipped
 
-- **v0.4.x** (planned): live-reload (file-watcher → SSE for auto-refresh in browser)
-- **v0.5.x**: `/dst-export` / `/dst-import` for cross-project DS sharing
-- **v0.6.x** (speculative): in-page chat panel (BYOK Anthropic API key, opt-in)
+- **v0.4.0** — `dst-init` becomes self-healing (safe upgrades re-render HTML/CSS from preserved JSON state); `dst-handoff` skill (one-command design→code via flutter-agent / react-agent); prototype `target` field
+- **v0.5.0** — dark-mode token coverage + first-prototype pipeline upgrades
+- **v0.6.0** — partial-based template architecture (one component = one file, no more 600-line monolith); catalog grows to **57 components across 7 groups** (Charts added as 7th group + 12 Tier 1 primitives)
+- **v0.7.0** — `/dst-questions` skill + `open-questions-pinning` rule: standardized place for product questions blocking screen work, with auto-pin into `CLAUDE.md` (mirrors `brainstorm@1.1.0` pin pattern)
+
+## Next up (speculative)
+
+- live-reload (file-watcher → SSE for auto-refresh in browser)
+- `/dst-export` / `/dst-import` for cross-project DS sharing
