@@ -2,7 +2,7 @@
 
 > Production-grade full-stack yazılım projeleri için 13 uzmanlaşmış agent.
 
-**Son sürüm:** `1.1.2`
+**Son sürüm:** `1.1.4`
 **Status:** Onaylı
 **Repository:** [github.com/agentteamland/software-project-team](https://github.com/agentteamland/software-project-team)
 
@@ -57,6 +57,8 @@ Takım, ürettiği tüm kodda şu sistemik kabiliyetleri uygular:
 
 - **UI-only i18n** (1.0.3+) — Backend sadece İngilizce. UI uygulamaları `messageKey + placeholders + fallback` zarfı üzerinden yerelleştirir. Email + push notification, MailSender'daki per-locale template'lerle yerelleştirilir.
 - **Claude Design entegrasyonu** (1.1.0+) — `/design-screen` üzerinden opsiyonel görsel-prototype fazı. Per-agent handoff playbook'ları flutter / react / design-system / ux için.
+- **DST handoff bilgisi** (1.1.3+) — `flutter-agent` ve `react-agent`, design-system-team bundle yapısını ve prototype'ları kaynak koda entegre etmeden önceki zorunlu theme-sync adımını biliyor.
+- **Cold-build scaffold disiplini** (1.1.4+) — `/create-new-project` Phase 2.2, fresh build'lerin manuel csproj düzeltmesi olmadan ilk denemede `/verify-system`'i yeşil geçmesini sağlamak için dört zorunlu csproj/migration gereksinimi (Infrastructure `<FrameworkReference Include="Microsoft.AspNetCore.App"/>`, Api `Microsoft.EntityFrameworkCore.Design`, Worker / LogIngest / MailSender `Microsoft.Extensions.Hosting`, initial EF migration) uygular. Tam discovery context: `agents/api-agent/children/known-issues.md`.
 
 Tam detaylar için [takımın README'sine](https://github.com/agentteamland/software-project-team) ve `agent.md` dosyalarına bak.
 

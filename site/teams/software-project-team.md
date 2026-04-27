@@ -2,7 +2,7 @@
 
 > 13 specialized agents for production-grade full-stack software projects.
 
-**Latest version:** `1.1.2`
+**Latest version:** `1.1.4`
 **Status:** Verified
 **Repository:** [github.com/agentteamland/software-project-team](https://github.com/agentteamland/software-project-team)
 
@@ -57,6 +57,8 @@ The team enforces these systemic capabilities across all generated code:
 
 - **UI-only i18n** (1.0.3+) — Backend is English-only. UI apps localize via `messageKey + placeholders + fallback` envelope. Emails + push notifications localized via per-locale templates in MailSender.
 - **Claude Design integration** (1.1.0+) — Optional visual-prototype phase via `/design-screen`. Per-agent handoff playbooks for flutter / react / design-system / ux.
+- **DST handoff knowledge** (1.1.3+) — `flutter-agent` and `react-agent` know the design-system-team bundle shape and the mandatory theme-sync step before integrating prototypes into source code.
+- **Cold-build scaffold discipline** (1.1.4+) — `/create-new-project` Phase 2.2 enforces four mandatory csproj/migration requirements (Infrastructure `<FrameworkReference Include="Microsoft.AspNetCore.App"/>`, Api `Microsoft.EntityFrameworkCore.Design`, Worker / LogIngest / MailSender `Microsoft.Extensions.Hosting`, initial EF migration) so cold builds reach `/verify-system` green on the first try without manual csproj fixes. Full discovery context in `agents/api-agent/children/known-issues.md`.
 
 Full details in the [team's README](https://github.com/agentteamland/software-project-team) and `agent.md` files.
 
