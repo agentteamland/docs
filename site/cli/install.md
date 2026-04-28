@@ -59,7 +59,7 @@ All three forms work identically. The source must be a directory containing `tea
 
 ## Multi-team installation
 
-Multiple teams can coexist in the same project — `atl` v0.1.2+ supports this natively. Both teams' agents, skills, and rules symlink into the same `.claude/` directory.
+Multiple teams can coexist in the same project — `atl` v0.1.2+ supports this natively. Both teams' agents and rules are symlinked into the same `.claude/` directory; skills are copied (per-skill directories with real files — `v0.3.0+` workaround for Claude Code's skill-loader symlink limitation).
 
 ```bash
 atl install software-project-team
@@ -76,7 +76,7 @@ When two teams declare an item with the same name (e.g., both have a `code-revie
 ⚠ overriding agent "code-reviewer" (was from team-a, now from team-b)
 ```
 
-This mirrors npm / pip / GNU Stow conventions. Removing a team is safe — `atl remove` wipes its symlinks and replays the remaining teams' symlinks in their original install order, so any item the removed team was "winning" by collision falls back to its original owner correctly.
+This mirrors npm / pip / GNU Stow conventions. Removing a team is safe — `atl remove` wipes its symlinks (agents + rules) AND its copied skill directories, then replays the remaining teams. Any item the removed team was "winning" by collision falls back to its original owner correctly.
 
 ## What happens
 
@@ -84,12 +84,22 @@ This mirrors npm / pip / GNU Stow conventions. Removing a team is safe — `atl 
 2. **Clone or pull.** If the team isn't in the shared cache, it's cloned. If it is, the cache is fast-forwarded.
 3. **Resolve inheritance.** If `team.json` has an `extends` field, the parent is installed (recursively) before the child.
 4. **Validate.** `team.json` is checked against the [schema](/reference/schema). Invalid teams fail here.
-5. **Symlink.** Agents, skills, and rules are symlinked into `.claude/` with the right precedence (child wins, excludes drop).
+5. **Materialize.** Agents and rules are **symlinked** into `.claude/agents/` and `.claude/rules/`. Skills are **copied** (recursively) into `.claude/skills/` as real directories. Precedence applies (child wins, excludes drop). The asymmetry is a Claude Code workaround — see § "Why skills are copied, not symlinked" below.
 6. **Record.** `.claude/.team-installs.json` is updated with the installed team, version, and chain.
+
+## Why skills are copied, not symlinked
+
+`v0.3.0+`: Claude Code's project-level skill loader does **not** follow symlinks under `.claude/skills/`. A symlinked skill directory is invisible to the Skill tool's discovery list (returns `Unknown skill: <name>`), even though runtime reads of the skill body do follow the symlink. The validation/discovery pass that builds the available-skills list does not resolve symlinks. This is inconsistent with `.claude/rules/`, which DOES support symlinks.
+
+Tracking upstream: [anthropics/claude-code#14836](https://github.com/anthropics/claude-code/issues/14836), [#25367](https://github.com/anthropics/claude-code/issues/25367), [#37590](https://github.com/anthropics/claude-code/issues/37590).
+
+When the upstream behavior is fixed, atl can revert skills to symlinks for parity with agents and rules.
+
+**Trade-off:** `atl update` only refreshes the cached source under `~/.claude/repos/agentteamland/<team>/`. Projects with copied skills become **stale** relative to the cache after the pull. To pick up updates, re-run `atl install <team>` in the project (re-copies the latest cached content).
 
 ## Re-running
 
-Running `atl install <team>` a second time is safe: the CLI checks the cache, pulls any updates, and rebuilds the symlinks. Use this as a poor man's "reload" when you've edited a team locally.
+Running `atl install <team>` a second time is safe: the CLI checks the cache, pulls any updates, and rebuilds agents+rules symlinks + re-copies skills. Use this as a "reload" when you've edited a team locally OR when you want a project to pick up changes after `atl update`.
 
 ## Offline behavior
 
