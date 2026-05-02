@@ -8,8 +8,8 @@ AgentTeamLand resmi registry'si şu an **2 onaylı takım** içeriyor. Her takı
 
 | Takım | Versiyon | Açıklama |
 |-------|----------|----------|
-| [`software-project-team`](/tr/teams/software-project-team) | 1.1.0 | Full-stack yazılım projeleri için 13 uzmanlaşmış agent (.NET 9 + Flutter + React + Postgres + RabbitMQ + Redis + Elasticsearch + MinIO). |
-| [`design-system-team`](/tr/teams/design-system-team) | 0.3.1 | Herhangi bir projenin içinde design system'ler ve UI prototype'ları — local, dosya tabanlı, tarayıcıda görüntülenebilir. `/dst-*` skill'leri JSON state + Tailwind-render HTML üretir, `.dst/` altına yazar. |
+| [`software-project-team`](/tr/teams/software-project-team) | 1.2.1 | Full-stack yazılım projeleri için 13 uzmanlaşmış agent (.NET 9 + Flutter + React + Postgres + RabbitMQ + Redis + Elasticsearch + MinIO). Phase 2.C: agent KB section'ları frontmatter'dan auto-rebuild. |
+| [`design-system-team`](/tr/teams/design-system-team) | 0.8.1 | Herhangi bir projenin içinde design system'ler ve UI prototype'ları — local, dosya tabanlı, tarayıcıda görüntülenebilir. `/dst-*` skill'leri JSON state + Tailwind-render HTML üretir, `.dst/` altına yazar. |
 
 ## Herhangi bir takımı yükle
 
@@ -29,8 +29,8 @@ atl install software-project-team       # full-stack agent'lar + scaffolder
 atl install design-system-team          # design-system + prototype araçları ekle
 
 atl list
-# ✓ software-project-team@1.1.0    13 agents, 3 skills
-# ✓ design-system-team@0.3.1        2 agents, 8 skills (dst-*)
+# ✓ software-project-team@1.2.1    13 agents, 3 skills
+# ✓ design-system-team@0.8.1        2 agents, 10 skills (dst-*)
 ```
 
 İkisi birbirini tamamlar: `/dst-*` skill'leri ile tasarla, software-project-team agent'ları (flutter-agent, react-agent, vs.) ile implement et.

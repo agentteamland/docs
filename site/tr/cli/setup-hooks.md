@@ -1,10 +1,10 @@
 # `atl setup-hooks`
 
-Takımların, global repo'ların (core, brainstorm, rule, team-manager) ve `atl` binary'sinin hepsinin otomatik güncelleme kontrolünde tutulması için Claude Code hook'larını yapılandırır — AYRICA sohbet sırasında bırakılan inline learning marker'ların session sonunda veya context compact edilmeden önce yakalanmasını sağlar.
+Takımların, global repo'ların (core, brainstorm, rule, team-manager) ve `atl` binary'sinin hepsinin otomatik güncelleme kontrolünde tutulması için Claude Code hook'larını yapılandırır — AYRICA sohbet sırasında bırakılan inline learning marker'ların *bir sonraki* session başında yakalanmasını sağlar.
 
 Hepsi senden manuel hiçbir şey beklenmeden.
 
-`atl` ≥ 0.2.0 gerekir.
+`atl` ≥ 1.1.0 gerekir.
 
 ## Kullanım
 
@@ -19,113 +19,130 @@ atl setup-hooks --remove           # atl hook'larını kaldır
 
 ## Ne yapar
 
-`~/.claude/settings.json`'a dört giriş ekler:
+`~/.claude/settings.json`'a iki giriş ekler:
 
 ```json
 {
   "hooks": {
     "SessionStart": [
       { "hooks": [
-          { "type": "command", "command": "atl update --silent-if-clean" }
+          { "type": "command", "command": "atl session-start --silent-if-clean" }
       ]}
     ],
     "UserPromptSubmit": [
       { "hooks": [
           { "type": "command", "command": "atl update --silent-if-clean --throttle=30m" }
       ]}
-    ],
-    "SessionEnd": [
-      { "hooks": [
-          { "type": "command", "command": "atl learning-capture --silent-if-empty" }
-      ]}
-    ],
-    "PreCompact": [
-      { "hooks": [
-          { "type": "command", "command": "atl learning-capture --silent-if-empty" }
-      ]}
     ]
   }
 }
 ```
 
+Dört giriş kaydeden v1.1.0-öncesi kurulumlardaki eski `SessionEnd` ve `PreCompact` atl girdileri, sonraki `atl setup-hooks` çalıştırmasında sessizce silinir. Komutları eski yapıda çalışmaya devam ediyordu ama çıktıları Claude'a hiç ulaşmıyordu (bkz. [aşağıdaki tarihçe notu](#tarih-c3-87e-d-c3-b6rt-hook-tan-iki-hooka)) — silmek güvenli ve kayıpsız.
+
 Claude Code bunları otomatik çalıştırır:
 
-### Auto-update hook'ları
+### `SessionStart` — composite boot-time wrapper (v1.1.0'da gelen yeni şekil)
 
-- **`SessionStart`** — yeni Claude Code session açtığında bir kez. Başlangıçta taze kaynak.
-- **`UserPromptSubmit`** — Claude'a mesaj göndermeden önce her defa. `<duration>`'da bir kez throttle'lı (default 30m). Yani per-message maliyet bir tek file-stat çağrısı (~1ms). Slow-path (gerçek git fetch + pull) saatte en fazla iki kez.
+Yeni bir Claude Code session açtığında bir kez çalışır. Tek komut `atl session-start` üç boot-time görevini sırayla yapar:
 
-Bir şey değiştiğinde Claude context'inde `🔄 software-project-team 1.1.1 → 1.1.2 (auto-updated)` gibi bir satır görür ve istersen kullanıcıya kısaca bahseder. Hiçbir şey değişmediğinde hiçbir şey görmezsin.
+1. **Auto-update**: `atl update --silent-if-clean` — `~/.claude/repos/agentteamland/` altındaki her cached repo'yu pull eder. Güncellemeler, Claude'un `additionalContext`'ine `🔄 <team> <oldVer> → <newVer>` satırı olarak yansır.
+2. **Önceki transcript marker taraması**: `atl learning-capture --previous-transcripts` — bu projenin son başarılı `/save-learnings` çalıştırmasından sonra modify olan tüm transcript dosyalarını tarar (state `~/.claude/state/learning-capture-state.json`'da tutulur, ilk kullanımda 7 günle sınırlı). Marker bulunduğunda tek bir `🧠 learning-capture: N unprocessed markers across M transcripts → /save-learnings --from-markers --transcripts ...` bloğu basar.
+3. **atl version check**: GitHub Releases API'sine 24 saatte en fazla bir kez sorgu atar. Yeni bir atl varsa `⬆ atl X.Y.Z → X.Y.Z+1 available` satırı çıkar.
 
-### Learning-capture hook'ları (0.2.0 ile yeni)
+Hiçbir şey değişmemiş ve marker yoksa çıktı boş olur (sıfır token maliyeti).
 
-- **`SessionEnd`** — session'ı kapatırken çalışır. Transcript'te sohbet sırasında Claude'un bıraktığı inline `<!-- learning ... -->` marker'larını tarar. Marker bulunursa context'e kısa bir rapor enjekte edilir; bir sonraki Claude Code session'u bunu yakalayıp `/save-learnings --from-markers` çalıştırarak marker'ları wiki + memory + doc draft'larına işler. Marker yoksa hook sessizce çıkar — sıfır token, sıfır maliyet.
-- **`PreCompact`** — Claude Code uzun bir konuşmayı compact etmeden hemen önce çalışır. Aynı scanner — marker'lar summarization'a kaybolmasın diye.
+### `UserPromptSubmit` — throttle'lı per-message refresh
 
-Marker bulunduğunda context'e böyle bir rapor gelir:
+Claude'a gönderdiğin her mesajdan önce çalışır. `<duration>` başına bir kere (default 30m) throttle'lı, böylece per-mesaj maliyet tek bir file-stat çağrısı (~1ms). Yavaş yol (gerçek git fetch + pull) saatte en fazla iki kere çalışır.
+
+Bir şey değiştiğinde Claude aynı `🔄 <team> ...` satırını context'inde görür ve kısaca anabilir. Hiçbir şey değişmediyse hiçbir şey görmezsin.
+
+## Marker-driven learning processing Claude'a nasıl ulaşır
+
+Akış uçtan uca otomatiktir, yalnızca tek bir Claude turn'ü manueldir:
 
 ```
-📝 learning-capture: 3 markers detected
-  1. [decision] auth-refresh (doc-impact: readme)
-  2. [bug-fix] redis-connection (doc-impact: none)
-  3. [discovery] setup-hooks-sessionend (doc-impact: docs)
-
-→ Run /save-learnings --from-markers to process these into wiki + memory.
-  2 markers require doc drafts (README / doc site) — see docs-sync rule.
+[session N'i kapatırsın]   marker'lar transcript dosyasında durur
+        ↓
+[session N+1 açılır]
+        ↓
+SessionStart hook tetiklenir → atl session-start --silent-if-clean
+        ↓
+   adım 2: atl learning-capture --previous-transcripts
+        → ~/.claude/state/learning-capture-state.json okur
+        → cutoff'tan sonra modify olan proje transcript'lerini listeler
+        → <!-- learning --> blokları için grep tarar (yalnızca assistant-role)
+        → `🧠 learning-capture: N markers ... → Run: /save-learnings ...` basar
+        ↓
+Claude Code stdout'u Claude'un ilk additionalContext'ine enjekte eder
+        ↓
+[session N+1'in ilk turn'ü]
+        ↓
+Claude raporu görür, /save-learnings --from-markers --transcripts <paths> çağırır
+        ↓
+/save-learnings marker'ları journal + wiki + agent children + skill learnings'e
+        kaydeder + state dosyasının lastProcessedAt'ini ilerletir → bir sonraki
+        session 0 marker görür
 ```
 
-Tam marker formatı ve akışı için [`learning-capture`](/tr/cli/learning-capture) sayfasına bak; davranış spesifikasyonu core'da [learning-capture rule](https://github.com/agentteamland/core/blob/main/rules/learning-capture.md) ve [docs-sync rule](https://github.com/agentteamland/core/blob/main/rules/docs-sync.md) olarak yaşıyor.
+Marker formatı ve noise-filter detayları için [`atl learning-capture`](/tr/cli/learning-capture) sayfasına bak. Davranış spesifikasyonu için core'daki [learning-capture rule](https://github.com/agentteamland/core/blob/main/rules/learning-capture.md) ve [docs-sync rule](https://github.com/agentteamland/core/blob/main/rules/docs-sync.md) dosyalarına bak.
 
-## Neden dört hook
+## Neden iki hook (dört değil)
 
-| Hook | Ne sorusunu cevaplar |
+| Hook | Yanıtladığı soru |
 |---|---|
-| `SessionStart` | "Sabah Claude Code'u sıfırdan açıyorum, upstream ne değişmiş?" |
-| `UserPromptSubmit` | "4 saattir bu session'dayım, yeni release var mı?" |
-| `SessionEnd` | "Bu session'da bir şeyler öğrendim — bir kısmı context'in dışında yaşayacak mı?" |
-| `PreCompact` | "Claude Code konuşmayı compact etmek üzere. Summarize edilecek olanı şimdi sakla." |
+| `SessionStart` (`atl session-start` üzerinden) | "Claude Code'u taze açıyorum, upstream'de ne değişti + önceki session ne öğrenme bıraktı + yeni atl var mı?" |
+| `UserPromptSubmit` (`atl update` üzerinden) | "Saatlerdir bu session'dayım, yeni release var mı?" |
 
-Bu dördünün birini çıkardığında garanti zincirinden bir halka düşer. Birlikte end-to-end auto-freshness + auto-preservation sistemini oluştururlar.
+İki hook tüm garantiyi karşılıyor. v1.1.0-öncesi 4-hook tasarımı update ile learning-capture'ı `SessionStart` / `SessionEnd` / `PreCompact` arasında ayırıyordu, ama `SessionEnd` ve `PreCompact` hook stdout'unu Claude'un `additionalContext`'ine ulaştırmıyordu — bkz. [aşağıdaki tarihçe notu](#tarih-c3-87e-d-c3-b6rt-hook-tan-iki-hooka). Her şeyi composite wrapper ile `SessionStart`'a toplamak tüm davranışı koruyup çıktının gerçekten Claude'a ulaşmasını sağlıyor.
 
-## Idempotent — yeniden çalıştırmak güvenli
+## Idempotency — yeniden çalıştırması güvenli
 
-Merge, diğer hook'larını korur. `atl setup-hooks`'u yeniden çalıştırmak sadece atl'ye ait girişleri (command prefix'i `atl ` olan) değiştirir. `settings.json`'daki diğer hook'lar, permissions, model settings, `extraKnownMarketplaces` — hepsine dokunulmaz.
+Merge, sahip olduğun diğer hook'ları korur. `atl setup-hooks` yeniden çalıştırıldığında sadece atl-owned girişlere (komutu `atl ` ile başlayan herhangi bir şey) dokunur. `settings.json`'daki diğer tüm hook'lar, permission'lar, model ayarları, `extraKnownMarketplaces` el değmemiş kalır.
 
-`--remove` de aynı şekilde sadece atl-owned hook entry'lerini çıkarır, diğer her şeyi yerinde bırakır.
+`--remove` benzer şekilde sadece atl-owned hook girdilerini söker, geri kalanı yerinde bırakır. İki komut da önceki kurulumlardan kalma legacy `SessionEnd` / `PreCompact` atl girdilerini düşürür.
 
 ## Ne zaman çalıştırmalı
 
-- **İnteraktif Claude Code kullanıcıları için her zaman tavsiye edilir.**
-- **CI / scriptli `atl install` için önerilmez** (hook'lar CI'da gereksiz tetiklenir). İlk-install opt-in prompt'u non-interactive context'te zaten atlıyor.
+- **Her zaman önerilir** interaktif Claude Code kullanıcıları için.
+- **Önerilmez** CI / scripted `atl install` için (hook'lar CI'da gereksiz tetiklenir). İlk-install opt-in prompt'u zaten non-interactive bağlamlarda atlanır.
 
-## Tam olarak ne kontrol edilir
+## Tam olarak ne kontrol ediliyor
 
-### Her `atl update --silent-if-clean` çalıştırması
+### Her `atl session-start` çalıştırması
 
-1. `~/.claude/repos/agentteamland/*/` — her cache'lenmiş git repo'yu dolaşır.
-2. Her biri için `git fetch origin main` paralel çalışır (toplam zaman ≈ tek roundtrip, N × roundtrip değil).
-3. Local remote'un gerisindeyse fast-forward `git pull`.
-4. Öncesi + sonrası `team.json` parse edilip `<oldVer> → <newVer>` satırı yazılır.
-5. GitHub Releases API (`github.com/agentteamland/cli/releases/latest`) atl self-check — ama 24h'de bir kez (ayrı throttle).
+1. **Auto-update** (adım 1): `~/.claude/repos/agentteamland/*/`'i dolaşır, paralel `git fetch origin main`, geride kaldıysa fast-forward pull, `team.json`'u önce+sonra parse edip `<oldVer> → <newVer>` çıkarır.
+2. **Marker scan** (adım 2): `~/.claude/state/learning-capture-state.json`'dan per-project `lastProcessedAt` cutoff'unu okur (veya ilk run'da son 7 gün), o cutoff'tan sonra modify olan transcript'leri listeler, sadece assistant turn'lerinden çıkan `<!-- learning -->` blokları için tarar (v1.1.1 noise filter prose mentions, tool input/output, summary event, kebab-case regex'i geçemeyen topic'leri reddeder). Network çağrısı yok.
+3. **atl self-check** (adım 3): `api.github.com/repos/agentteamland/cli/releases/latest`'a tek HTTPS GET, 24 saatte bir throttle. Yeni release varsa `⬆` satırı çıkar.
 
-Slow-path toplam iş: tipik kurulumlar için (5-10 cache'lenmiş repo) ~2-3s. Fast-path: ~1ms (sadece file-stat).
+Yavaş yol: tipik kurulumlar (5-10 cached repo) için ~2-3s. Hızlı yol (throttle penceresi geçmemiş + transcript değişmemiş): ~1ms.
 
-### Her `atl learning-capture --silent-if-empty` çalıştırması
+### Her `atl update --silent-if-clean --throttle=30m` çalıştırması
 
-1. Hook'un stdin JSON payload'ından transcript yolunu okur.
-2. JSONL transcript'i `<!-- learning ... -->` blokları için grep-scan eder.
-3. Her marker'ın alanlarını (topic, kind, doc-impact, body) parse eder.
-4. Sıfır marker'sa sessiz çıkış. Aksi halde kısa formatlı rapor yazdırır.
+`atl session-start`'ın 1. adımıyla aynı, ama son başarılı çalıştırma 30 dakikadan az önceyse atlanır (`--throttle` ile yapılandırılabilir).
 
-Sıfır-marker maliyeti: ~5ms (file read + regex scan). Marker maliyeti: transcript boyutuyla orantılı, çok düşük.
+## Offline davranışı
 
-## Offline davranış
+Offline'sansa, her repo'nun `git fetch`'i sessizce başarısız olur, o repo `⚠` uyarı satırı alır (silenced değilse), gerisi devam eder. Marker tarama hiç network gerektirmez — sadece local dosya okur. Claude Code'un prompt'u normal şekilde işlemeye devam eder; hook fail olmak işini bloklamaz.
 
-Offline'san, her repo'nun `git fetch`'i sessizce fail eder, o repo için bir `⚠` warning satırı (silent olmadığında) çıkar ve diğerleri devam eder. Learning-capture zaten network istemez — sadece local dosya okur. Claude Code'un prompt'u yine normal işler; hook fail ederse işin bloklanmaz.
+## Tarihçe — dört hook'tan iki hook'a
+
+`atl v0.2.0` (2026-04-24) dört hook gönderdi: `SessionStart` + `UserPromptSubmit` auto-update için, `SessionEnd` + `PreCompact` learning-capture için. Capture yarısı **çalışıyor gibi görünüyordu** (binary çalıştı, marker'ları taradı, raporları bastı) ama Claude Code v2.1.x'e göre `SessionEnd` ve `PreCompact` hook stdout'u Claude'un `additionalContext`'ine ulaşmıyor. v0.2.0'dan sonraki ay maintainer-workspace'inde 9 session boyunca 324 marker **sıfır** otomatik işleme üretti — gerçek `/save-learnings` çalıştırmaları manuel kullanıcı çağrısından geldi.
+
+`atl v1.1.0` (2026-05-02) akışı yeniden yapılandırdı:
+
+- Yeni `atl session-start` composite wrapper update + previous-transcript marker scan + atl self-check'i birleştiriyor.
+- Yeni `atl learning-capture --previous-transcripts` modu state-file cutoff'undan sonra modify olan transcript'leri okuyor (mevcut session'ın `SessionEnd`'inin tetiklenmesine ihtiyaç duymadan).
+- `atl setup-hooks` v1.1.0 önceki kurulumlardan kalma legacy `SessionEnd` / `PreCompact` atl girdilerini sessizce düşürüyor. Başkalarının o event'lerdeki hook'larına dokunulmaz.
+
+Marker protokolünün kendisi değişmedi — v0.2.0 marker formatı hâlâ çalışır. Sadece trigger yolu taşındı.
+
+`atl v1.1.1` (2026-05-02) marker scanner'ına noise filter ekledi: yalnızca assistant-role + kebab-case topic regex. SessionStart over-report bug'ını kapatıyor — marker formatını *tartışan* bir session bir sonraki session'ın sayısını 10-25× şişiriyordu (validation sweep'inde 5 workspace transcript'i için 149 raw substring hit → 16 gerçek marker).
 
 ## İlgili
 
-- [`atl update`](/tr/cli/update) — manuel update (auto-update hook'ları bunu sessizce çağırır)
-- [`atl learning-capture`](/tr/cli/learning-capture) — manuel scanner (learning-capture hook'ları bunu sessizce çağırır)
-- [`atl install`](/tr/cli/install) — ilk kurulum (opt-in prompt'u dahil)
-- [CLI kurulumu](/tr/guide/install) — makinene atl al
+- [`atl update`](/tr/cli/update) — manuel update (auto-update hook'unun sessizce çağırdığı şey)
+- [`atl learning-capture`](/tr/cli/learning-capture) — manuel scanner (`atl session-start`'ın sessizce çağırdığı şey)
+- [`atl install`](/tr/cli/install) — ilk install (opt-in prompt'unu içerir)
+- [CLI'yi yükle](/tr/guide/install) — atl'yi makinene almak

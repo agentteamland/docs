@@ -4,7 +4,7 @@ Bir takım, `atl install` ile projene kurduğun **agent**, **skill** ve **rule**
 
 ## Takım nedir (ne değildir)
 
-Takım, aslında bir `team.json` dosyası ve biraz Markdown içeren bir git deposudur. `atl install` çalıştırdığında CLI, o repo'yu yerel cache'ine klonlar ve içeriklerini projenin `.claude/` dizinine symlink'ler. Hepsi bu — plugin sistemi yok, JavaScript runtime yok, custom binary yok. Her şey metin dosyaları ve symlink.
+Takım, aslında bir `team.json` dosyası ve biraz Markdown içeren bir git deposudur. `atl install` çalıştırdığında CLI, o repo'yu yerel cache'ine klonlar ve içeriklerini projenin `.claude/` dizinine copy'ler. Hepsi bu — plugin sistemi yok, JavaScript runtime yok, custom binary yok. Her şey metin dosyaları ve copy.
 
 Bir takım şunlardan oluşabilir:
 
@@ -164,7 +164,7 @@ git commit -am "web-agent rehberini iyileştir"
 
 cd /tmp/demo-app
 atl update my-team
-# → atl tekrar pull'lar, symlink'leri yeniler
+# → atl tekrar pull'lar, copy'leri yeniler
 ```
 
 Gidiş-dönüş ~1 saniye. Test projeye karşı hızla iterate edebilirsin.
@@ -317,7 +317,7 @@ my-team/
     └── validate.yml               ← her push'ta team.json'ı schema-validate et
 ```
 
-`team.json`'ın listelediği `agents/`, `skills/`, ve `rules/` altındaki her dosya, kurulum sırasında tüketicinin `.claude/`'una symlink olarak gelir. Listelenmeyen dosyalar yok sayılır.
+`team.json`'ın listelediği `agents/`, `skills/`, ve `rules/` altındaki her dosya, kurulum sırasında tüketicinin `.claude/`'una copy olarak gelir. Listelenmeyen dosyalar yok sayılır.
 
 ---
 
@@ -431,7 +431,7 @@ Herkes `atl install takımın` desin diye [AgentTeamLand registry](https://githu
 → Commit'ledin mi? `atl update` git'ten pull'lar, uncommitted düzenlemeler akmaz. Takımı commit'le, sonra `atl update`.
 
 **Takımı temizce silmek istiyorum**
-→ Projede `atl remove my-team` symlink'leri `.claude/`'dan kaldırır ama cache'lenmiş repo'yu bırakır. Cache'i de silmek için: `rm -rf ~/.claude/repos/agentteamland/my-team`.
+→ Projede `atl remove my-team` copy'leri `.claude/`'dan kaldırır ama cache'lenmiş repo'yu bırakır. Cache'i de silmek için: `rm -rf ~/.claude/repos/agentteamland/my-team`.
 
 **Takım `extends` kullanıyor, lokalde parent'ı değiştirdim ama `atl install` yanlış parent'ı çekiyor**
 → `extends`, child'ın `team.json`'ındaki registry / URL spec'ine göre çözülür. Child'ın `extends`'i lokal path'i göstermedikçe senin lokal parent'ını okumaz. Tam lokal zincirler için `"extends": "/abs/path/to/parent-team"` gibi lokal path'le pin'le.
@@ -447,7 +447,7 @@ Hayır. `atl install`'u lokal path'ine yönlendir (atl ≥ 0.1.4). Lokal git rep
 Hayır. Registry sadece short-name ile keşfedilebilirlik için. Çoğu private / internal takım hiç submit etmez.
 
 **Tek projede birden fazla takım kullanabilir miyim?**
-Evet — `atl install a && atl install b && atl install c`. Her takımın öğeleri ortak `.claude/`'a symlink olur. İsimler çakışırsa atl uyarır (child takım parent'ı ezer; sonraki install öncekini ezer).
+Evet — `atl install a && atl install b && atl install c`. Her takımın öğeleri ortak `.claude/`'a copy olur. İsimler çakışırsa atl uyarır (child takım parent'ı ezer; sonraki install öncekini ezer).
 
 **atl hangi Markdown formatını kullanır?**
 Düz Markdown, opsiyonel YAML frontmatter. Claude'un agent ve skill formatı doğrudan desteklenir.

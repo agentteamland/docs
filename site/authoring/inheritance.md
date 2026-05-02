@@ -33,7 +33,7 @@ If the child ships an agent with the same name as a parent's agent, the child wi
 }
 ```
 
-At install time, `agents/api-agent.md` in the child overwrites the symlink pointing to the parent's copy.
+At install time, `agents/api-agent.md` in the child overwrites the copy pointing to the parent's copy.
 
 The same rule applies to skills and rules: name collision ⇒ child wins.
 
@@ -46,7 +46,7 @@ The same rule applies to skills and rules: name collision ⇒ child wins.
 }
 ```
 
-`ux-agent` from the parent is never symlinked in. The parent file still exists in the cache (the parent team is installed normally) — the child just elects not to surface it.
+`ux-agent` from the parent is never copied in. The parent file still exists in the cache (the parent team is installed normally) — the child just elects not to surface it.
 
 You can exclude agents, skills, or rules by name.
 
@@ -85,7 +85,7 @@ Caret is the default recommendation — you inherit patch fixes and new minors, 
 
 ## Precedence, in order
 
-When `atl install` resolves symlinks, later entries override earlier ones:
+When `atl install` resolves copies, later entries override earlier ones:
 
 1. Ancestors (deepest first, nearest last)
 2. Current team

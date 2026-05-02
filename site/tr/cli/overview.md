@@ -34,13 +34,13 @@ Her komutun kendi `--help` sayfası var: `atl install --help`, `atl search --hel
 <proje>/
 └── .claude/
     ├── .team-installs.json       ← hangi takımlar kurulu, hangi versiyonda
-    ├── agents/                   ← takım agent'larına sembolik link
-    ├── skills/                   ← takım skill'lerine sembolik link
-    ├── rules/                    ← takım rule'larına sembolik link
+    ├── agents/                   ← takım agent'larına kopya
+    ├── skills/                   ← takım skill'lerine kopya
+    ├── rules/                    ← takım rule'larına kopya
     └── ...
 ```
 
-Sembolik linkler, paylaşımlı önbelleği işaret eder. `atl update`'in aynı anda tüm projelerde etkili olmasının nedeni budur: projeyi değil önbelleği güncellersin.
+Kopyalar, paylaşımlı önbelleği işaret eder. `atl update`'in aynı anda tüm projelerde etkili olmasının nedeni budur: projeyi değil önbelleği güncellersin.
 
 ## Çıkış kodları
 
@@ -53,7 +53,7 @@ Sembolik linkler, paylaşımlı önbelleği işaret eder. `atl update`'in aynı 
 
 ## Felsefe
 
-- **Deterministik.** Aynı girdi, aynı sembolik linkler. Gizli state yok.
+- **Deterministik.** Aynı girdi, aynı kopyalar. Gizli state yok.
 - **Idempotent.** Zaten kurulu bir takım için `atl install`'u yeniden çalıştırmak no-op'tur (ya da pull).
 - **Görünür.** Her eylem ne yaptığını yazar. Spinner yerine çıktıyı kullan.
 

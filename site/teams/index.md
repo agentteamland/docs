@@ -8,8 +8,8 @@ The official AgentTeamLand registry currently contains **2 verified teams**. Eac
 
 | Team | Version | Description |
 |------|---------|-------------|
-| [`software-project-team`](/teams/software-project-team) | 1.1.0 | 13 specialized agents for full-stack software projects (.NET 9 + Flutter + React + Postgres + RabbitMQ + Redis + Elasticsearch + MinIO). |
-| [`design-system-team`](/teams/design-system-team) | 0.3.1 | Design systems and UI prototypes inside any project — local, file-based, browser-viewable. `/dst-*` skills produce JSON state and Tailwind-rendered HTML pages under `.dst/`. |
+| [`software-project-team`](/teams/software-project-team) | 1.2.1 | 13 specialized agents for full-stack software projects (.NET 9 + Flutter + React + Postgres + RabbitMQ + Redis + Elasticsearch + MinIO). Phase 2.C: agent KB sections auto-rebuilt from children frontmatter. |
+| [`design-system-team`](/teams/design-system-team) | 0.8.1 | Design systems and UI prototypes inside any project — local, file-based, browser-viewable. `/dst-*` skills produce JSON state and Tailwind-rendered HTML pages under `.dst/`. |
 
 ## Install any team
 
@@ -29,8 +29,8 @@ atl install software-project-team       # full-stack agents + scaffolder
 atl install design-system-team          # add design-system + prototype tooling
 
 atl list
-# ✓ software-project-team@1.1.0    13 agents, 3 skills
-# ✓ design-system-team@0.3.1        2 agents, 8 skills (dst-*)
+# ✓ software-project-team@1.2.1    13 agents, 3 skills
+# ✓ design-system-team@0.8.1        2 agents, 10 skills (dst-*)
 ```
 
 The two are designed to complement each other: design with `/dst-*` skills, implement with software-project-team agents (flutter-agent, react-agent, etc.).

@@ -41,7 +41,7 @@ atl install software-project-team
 In a few seconds:
 
 - The team is cloned into the shared cache (first time only)
-- 13 agents, 2 skills (`create-new-project`, `verify-system`), and 1 rule are symlinked into `.claude/`
+- 13 agents, 2 skills (`create-new-project`, `verify-system`), and 1 rule are copied into `.claude/`
 - `team.json` is recorded in `.claude/.team-installs.json`
 
 You now have a full .NET + Flutter + React + Docker agent team wired into your project.
@@ -71,7 +71,7 @@ When the team author ships improvements:
 atl update
 ```
 
-All installed teams pull, dependencies resolve, symlinks refresh. Nothing in your project code changes.
+All installed teams pull, dependencies resolve, copies refresh. Nothing in your project code changes.
 
 ## What just happened?
 

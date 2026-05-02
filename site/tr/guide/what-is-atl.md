@@ -10,7 +10,7 @@ Claude Code'u iyi kullanmak için konfigürasyon gerekir: modelin senin kod taba
 
 Bir **takım**; belirli bir tür iş etrafında organize edilmiş agent, skill ve rule paketidir. Bir takım; Docker Compose üretim düzeniyle bir .NET + Flutter + React stack'ine yönelik olabilir. Başka biri; Next.js + Sanity + Vercel blog stack'ine yönelik. Üçüncüsü; Airflow ve dbt ile veri pipeline'larına.
 
-`atl install some-team` takımı indirir, önbelleğe alır ve içindeki agent/skill/rule'ları bulunduğun projenin `.claude/` dizinine sembolik link ile bağlar. Editor'ü açtığın an Claude Code takımı görür.
+`atl install some-team` takımı indirir, önbelleğe alır ve içindeki agent/skill/rule'ları bulunduğun projenin `.claude/` dizinine kopya ile bağlar. Editor'ü açtığın an Claude Code takımı görür.
 
 Takımın yazarı bir düzeltme yayımladığında `atl update` çalıştırırsın ve o takımı kullanan her proje değişikliği alır. Projelerin birbirinden ayrışmayı bırakır.
 

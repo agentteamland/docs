@@ -41,7 +41,7 @@ atl install software-project-team
 Birkaç saniye içinde:
 
 - Takım, paylaşımlı önbelleğe klonlanır (ilk seferinde).
-- 13 agent, 2 skill (`create-new-project`, `verify-system`) ve 1 rule `.claude/` altına sembolik link ile yerleşir.
+- 13 agent, 2 skill (`create-new-project`, `verify-system`) ve 1 rule `.claude/` altına kopya ile yerleşir.
 - `.claude/.team-installs.json` içinde hangi takımların kurulu olduğu kayda geçer.
 
 Artık projenle tam bir .NET + Flutter + React + Docker agent takımı bağlanmış durumda.
@@ -71,7 +71,7 @@ Takımın yazarı iyileştirmeler yayınladığında:
 atl update
 ```
 
-Kurulu tüm takımlar pull edilir, bağımlılıklar çözülür, sembolik linkler yenilenir. Projenin kodunda hiçbir şey değişmez.
+Kurulu tüm takımlar pull edilir, bağımlılıklar çözülür, kopyalar yenilenir. Projenin kodunda hiçbir şey değişmez.
 
 ## Ne oldu?
 

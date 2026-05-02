@@ -131,7 +131,7 @@ A single binary. `atl` keeps its team cache under:
 - macOS / Linux: `~/.claude/repos/agentteamland/`
 - Windows: `%USERPROFILE%\.claude\repos\agentteamland\`
 
-Installed teams live as cloned Git repos under that cache and are symlinked into each project's `.claude/` directory.
+Installed teams live as cloned Git repos under that cache and are copied into each project's `.claude/` directory.
 
 ## Recommended next step — auto-update hooks
 

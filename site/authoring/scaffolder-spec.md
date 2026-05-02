@@ -28,7 +28,7 @@ And in `team.json`:
 }
 ```
 
-When a user runs `atl install <team>`, the skill is symlinked into `.claude/skills/` automatically.
+When a user runs `atl install <team>`, the skill is copied into `.claude/skills/` automatically.
 
 ## The five phases
 
@@ -58,7 +58,7 @@ Write every file the new project needs. For large scaffolds, delegate to special
 
 - Root files (`README.md`, `.gitignore`, language-specific lockfiles)
 - Project configuration (`CLAUDE.md`, `.mcp.json`, `.env.example`)
-- `.claude/` project directory (`agents/`, `skills/`, `rules/`, `docs/`, `brain-storms/`, `wiki/`, `agent-memory/`, `journal/`, `backlog.md`)
+- `.claude/` project directory (`agents/`, `skills/`, `rules/`, `docs/`, `brain-storms/`, `wiki/`, `journal/`, `backlog.md`)
 - Source tree (everything that makes the app actually run)
 - Container / deploy configuration if applicable
 
