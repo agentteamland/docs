@@ -4,7 +4,7 @@ A team is a reusable bundle of AI **agents**, **skills**, and **rules** that you
 
 ## What a team is (and isn't)
 
-A team is just a git repository with a `team.json` file and some Markdown. When you run `atl install`, the CLI clones that repo into your local cache and symlinks its contents into `.claude/` inside your project. That's it — no plugin system, no JavaScript runtime, no custom binaries. The whole thing is text files and symlinks.
+A team is just a git repository with a `team.json` file and some Markdown. When you run `atl install`, the CLI clones that repo into your local cache and copies its contents into `.claude/` inside your project. That's it — no plugin system, no JavaScript runtime, no custom binaries. The whole thing is text files and copies.
 
 A team can be:
 
@@ -164,7 +164,7 @@ git commit -am "tweak web-agent guidance"
 
 cd /tmp/demo-app
 atl update my-team
-# → atl re-pulls, refreshes symlinks
+# → atl re-pulls, refreshes copies
 ```
 
 A round-trip takes ~1 second. You can iterate rapidly against the test project.
@@ -317,7 +317,7 @@ my-team/
     └── validate.yml               ← schema-validate team.json on every push
 ```
 
-Every file under `agents/`, `skills/`, and `rules/` that `team.json` lists becomes a symlink in the consumer's `.claude/` when they install. Files not listed are ignored.
+Every file under `agents/`, `skills/`, and `rules/` that `team.json` lists becomes a copy in the consumer's `.claude/` when they install. Files not listed are ignored.
 
 ---
 
@@ -431,7 +431,7 @@ Submit to the [AgentTeamLand registry](https://github.com/agentteamland/registry
 → Did you commit? `atl update` pulls via git, so uncommitted edits don't flow. Commit the team, then `atl update`.
 
 **Want to delete a team cleanly**
-→ `atl remove my-team` in the project removes symlinks from `.claude/` but keeps the cached repo. To nuke the cache too: `rm -rf ~/.claude/repos/agentteamland/my-team`.
+→ `atl remove my-team` in the project removes copies from `.claude/` but keeps the cached repo. To nuke the cache too: `rm -rf ~/.claude/repos/agentteamland/my-team`.
 
 **Team uses `extends` but I changed the parent locally; `atl install` pulls the wrong parent**
 → `extends` is resolved via the registry / URL spec written in the child's `team.json`. It won't read your local parent unless the child's `extends` points at a local path. Pin extending with a local path like `"extends": "/abs/path/to/parent-team"` for fully-local chains.
@@ -447,7 +447,7 @@ No. Point `atl install` at your local path (atl ≥ 0.1.4). Commits in your loca
 No. The registry is only for discoverability via short names. Most private / internal teams never submit.
 
 **Can multiple teams coexist in one project?**
-Yes — `atl install a && atl install b && atl install c`. Each team's items are symlinked into the shared `.claude/` directory. If names collide, atl warns you (child team wins over parent; later installs override earlier).
+Yes — `atl install a && atl install b && atl install c`. Each team's items are copied into the shared `.claude/` directory. If names collide, atl warns you (child team wins over parent; later installs override earlier).
 
 **What Markdown format does atl use?**
 Plain Markdown with optional YAML frontmatter. Claude's agent and skill format is supported natively.

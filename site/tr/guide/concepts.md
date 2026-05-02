@@ -12,7 +12,7 @@ AgentTeamLand'i oluşturan parçalar ve nasıl bir araya geldikleri.
 
 Bir takım; kök dizininde `team.json` bulunan bir Git reposunda yaşar. Bu dosya takımı tanımlar: adı, versiyonu, içerdikleri, bağımlılıkları, extend ettiği parent.
 
-Takımı bir projeye kurduğunda içeriği `.claude/` altında sembolik linkler olarak görünür. Claude Code bunu hemen görür.
+Takımı bir projeye kurduğunda içeriği `.claude/` altında kopyalar olarak görünür. Claude Code bunu hemen görür.
 
 ## Agent
 
@@ -30,7 +30,7 @@ Skill'ler **global** (bootstrap ile gelir) veya **takıma özel** (belirli bir t
 
 Rule, her Claude Code oturumuna otomatik yüklenen Markdown dosyasıdır. Skill'ten (çağrılmayı bekler) farklı olarak rule daima aktiftir — daha sen soru sormadan Claude'un projeyi nasıl düşüneceğini şekillendirir.
 
-Global rule'lar `~/.claude/rules/` altında yaşar. Takımın sağladığı rule'lar, takım kurulduğunda projenin `.claude/rules/` dizinine sembolik link ile yerleşir.
+Global rule'lar `~/.claude/rules/` altında yaşar. Takımın sağladığı rule'lar, takım kurulduğunda projenin `.claude/rules/` dizinine kopya ile yerleşir.
 
 ## Registry
 
@@ -76,7 +76,7 @@ Bakınız: [CLI genel bakış](/tr/cli/overview).
 
 ## Dizinler
 
-**Proje**; `atl`'yi çalıştırdığın bir dizindir. İçine kurulan takımlara ait sembolik linklerle dolu bir `.claude/` alt dizini edinir.
+**Proje**; `atl`'yi çalıştırdığın bir dizindir. İçine kurulan takımlara ait kopyalarle dolu bir `.claude/` alt dizini edinir.
 
 **Önbellek** (`~/.claude/repos/agentteamland/`); gerçek takım repo'larını tutar — bir kez klonlanır, aynı takımı kuran her projede yeniden kullanılır. Önbelleği silmek güvenlidir; `atl update` onu yeniden doldurur.
 

@@ -12,7 +12,7 @@ A **team** is a package. It bundles everything needed to do a specific kind of w
 
 A team lives in a Git repository with a `team.json` at the root. That file describes the team: its name, version, what it bundles, what it depends on, what it extends.
 
-Install a team into a project and its contents appear as symlinks inside `.claude/`. Claude Code sees them immediately.
+Install a team into a project and its contents appear as copies inside `.claude/`. Claude Code sees them immediately.
 
 ## Agent
 
@@ -30,7 +30,7 @@ Skills can be **global** (shipped via bootstrap) or **team-scoped** (shipped by 
 
 A rule is a Markdown file that gets loaded into every Claude Code session. Unlike a skill (which waits to be invoked), a rule is always active — it shapes how Claude thinks about the project before you ask it anything.
 
-Global rules live in `~/.claude/rules/`. Team-provided rules are symlinked into a project's `.claude/rules/` when the team is installed.
+Global rules live in `~/.claude/rules/`. Team-provided rules are copied into a project's `.claude/rules/` when the team is installed.
 
 ## Registry
 
@@ -76,7 +76,7 @@ See [CLI overview](/cli/overview).
 
 ## Workspaces
 
-A **project** is a directory where you run `atl`. It gets a `.claude/` subdirectory with team content symlinked in.
+A **project** is a directory where you run `atl`. It gets a `.claude/` subdirectory with team content copied in.
 
 The **cache** (`~/.claude/repos/agentteamland/`) holds the actual team repos — cloned once, reused across every project that installs the same team. Deleting the cache is safe; `atl update` re-populates it.
 

@@ -131,7 +131,7 @@ Tek bir binary. `atl`, takım önbelleğini şurada tutar:
 - macOS / Linux: `~/.claude/repos/agentteamland/`
 - Windows: `%USERPROFILE%\.claude\repos\agentteamland\`
 
-Kurulu takımlar bu önbellekte klonlanmış Git repoları olarak yaşar ve her projenin `.claude/` dizinine sembolik link ile bağlanır.
+Kurulu takımlar bu önbellekte klonlanmış Git repoları olarak yaşar ve her projenin `.claude/` dizinine kopya ile bağlanır.
 
 ## Önerilen sıradaki adım — auto-update hook'ları
 

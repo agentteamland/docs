@@ -22,7 +22,7 @@ hero:
 features:
   - icon: 📦
     title: Teams as packages
-    details: A team bundles specialized agents, skills, and rules for a kind of work — full-stack apps, data pipelines, mobile products. Install once, symlinked into your project.
+    details: A team bundles specialized agents, skills, and rules for a kind of work — full-stack apps, data pipelines, mobile products. Install once, copied into your project.
   - icon: 🧬
     title: Inheritance done right
     details: Single-parent extends with override and excludes. Unlimited depth, circular detection, caret version constraints — npm-grade semantics, no diamond problem.

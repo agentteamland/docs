@@ -22,7 +22,7 @@ hero:
 features:
   - icon: 📦
     title: Takımlar = paketler
-    details: Bir takım; belirli bir tür iş için uzmanlaşmış agent'ları, skill'leri ve rule'ları bir arada paketler. Tek komutla kur, projenin .claude/ dizinine sembolik link ile yerleşsin.
+    details: Bir takım; belirli bir tür iş için uzmanlaşmış agent'ları, skill'leri ve rule'ları bir arada paketler. Tek komutla kur, projenin .claude/ dizinine kopya ile yerleşsin.
   - icon: 🧬
     title: Doğru kurgulanmış miras
     details: Tek parent'lı extends; override ve excludes desteği. Sınırsız derinlik, circular detection, caret version constraint'leri — npm seviyesinde semantik, diamond problem yok.

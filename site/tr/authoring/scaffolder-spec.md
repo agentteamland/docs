@@ -58,7 +58,7 @@ Yeni projenin ihtiyacı olan her dosyayı yaz. Büyük scaffold'lar için parale
 
 - Kök dosyalar (`README.md`, `.gitignore`, dil-özgü lockfile'lar)
 - Proje konfigürasyonu (`CLAUDE.md`, `.mcp.json`, `.env.example`)
-- `.claude/` proje dizini (`agents/`, `skills/`, `rules/`, `docs/`, `brain-storms/`, `wiki/`, `agent-memory/`, `journal/`, `backlog.md`)
+- `.claude/` proje dizini (`agents/`, `skills/`, `rules/`, `docs/`, `brain-storms/`, `wiki/`, `journal/`, `backlog.md`)
 - Source tree (uygulamayı gerçekten çalıştıran her şey)
 - Container / deploy konfigürasyonu (varsa)
 

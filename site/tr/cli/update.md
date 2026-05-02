@@ -1,103 +1,111 @@
 # `atl update`
 
-Bir veya tüm kurulu / cache'lenmiş agentteamland repo'larının son sürümünü çeker.
+Bir veya tüm yüklü / cache'lenmiş agentteamland repo'larının son sürümünü pull et, **ve** lokal modifiye edilmemiş project copy'leri otomatik refresh et.
 
 ## Kullanım
 
 ```bash
-atl update                          # her cache'lenmiş repo'yu güncelle (takımlar + global)
-atl update <takım>                  # sadece o takımın zincirini güncelle (legacy)
-atl update --silent-if-clean        # hiçbir şey değişmediyse çıktı yok (hook'lar kullanır)
-atl update --check-only             # dry-run: ne değişirdi raporla, pull'lama
-atl update --throttle=30m           # son başarılı çalışma <30m önce ise atla
-atl update --skip-self-check        # atl release kontrolü yapma
-atl update -v                       # verbose (her git komutunu yaz)
+atl update                          # her cache'lenmiş repo'yu güncelle + modifiye olmayan kopyaları auto-refresh et
+atl update <takım>                  # sadece bir takımın chain'ini güncelle (legacy)
+atl update --silent-if-clean        # bir şey değişmediyse output yok (hook'ların kullandığı)
+atl update --check-only             # dry-run: ne güncellenecek göster, hiçbir şey çekme
+atl update --throttle=30m           # son başarılı çalıştırma <30m önceyse atla
+atl update --skip-self-check        # yeni atl release kontrolü yapma
+atl update -v                       # verbose (her git komutunu yazdır)
 ```
 
-## Neleri günceller
+## Neyi günceller
 
-Takım adı verilmeyince `atl update` `~/.claude/repos/agentteamland/` altındaki her git repo'yu döner:
+Takım adı vermeden `atl update` üç adım yapar:
 
-- **Global repo'lar:** `core`, `brainstorm`, `rule`, `team-manager`
-- **Her kurulu takım:** `software-project-team`, `design-system-team`, senin private takımların
+1. **Cache pull.** `~/.claude/repos/agentteamland/` altındaki her git repo'yu (`core`, `brainstorm`, `rule`, `team-manager`, her yüklü takım) dolaşır — `git fetch origin main` → geride kalmışsa fast-forward `git pull` → güncelse no-op.
+2. **Sessiz sembolik link → kopya migration (atl ≥ 1.0.0).** Per-project, `.claude/agents/` ve `.claude/rules/` altındaki global cache'i işaret eden v1.0.0-öncesi sembolik linkler project-local kopyalarla değiştirilir. Per-project tek info satırı olarak yansır; non-destructive (önce sembolik link'in target'ı okunur, sonra link aynı içeriği taşıyan gerçek dosyayla değiştirilir).
+3. **Modifiye olmayan kopyaların auto-refresh'i (atl ≥ 1.0.0).** Her yüklü takım için her project-local agent/rule/skill resource kopyası, three-way SHA-256 karşılaştırmasıyla check edilir:
+   - **install-time baseline** (install'da `.team-installs.json`'a kaydedilen)
+   - **mevcut project copy** (şu an `.claude/...`'da olan)
+   - **mevcut cache içeriği** (az önce pull edilen)
 
-Tümü aynı pull mekanizmasını paylaşır: `git fetch origin main` → geriyse fast-forward `git pull` → taze ise no-op.
+   `current project = baseline ≠ cache` olduğunda resource lokal olarak modifiye edilmemiş → sessizce yeni cache içeriği ile overwrite edilir. `current project ≠ baseline` olduğunda kullanıcı edit etmiş → atlanır, per-team hint `atl install <takım> --refresh`'e işaret eder explicit force-overwrite için.
 
-Ayrıca yeni bir `atl` binary release'i var mı diye bakar (GitHub Releases API, 24h throttle):
+Ayrıca yeni `atl` binary release kontrolü yapar (GitHub Releases API, 24h'a throttle):
 
 ```
-⬆  atl 0.1.4 → 0.1.5 available — run: brew upgrade atl
+⬆  atl 1.1.1 → 1.1.2 available — run: brew upgrade atl
 ```
 
-Binary otomatik YÜKSELTİLMEZ — mesaj, atl'yi nasıl kurduğuna göre doğru paket yöneticisi komutunu gösterir.
+Binary otomatik upgrade EDİLMEZ — mesaj atl'yi nasıl yüklediğine göre doğru package-manager komutuna işaret eder.
 
-## Örnek — silent-if-clean (hook'ların kullandığı)
+## Örnek — silent-if-clean (hook'larda kullanılan)
 
-Hiçbir şey değişmediyse:
+Hiçbir şey değişmedi:
 
 ```bash
 $ atl update --silent-if-clean
-$                               # sıfır çıktı, exit 0
+$                               # sıfır output, exit 0
 ```
 
-Değişiklik varsa:
+Bir şey değişti:
 
 ```bash
 $ atl update --silent-if-clean
-🔄 software-project-team 1.1.1 → 1.1.2 (auto-updated)
-🔄 core 1.1.0 → 1.2.0 (auto-updated)
+🔄 software-project-team 1.2.0 → 1.2.1 (auto-updated)
+🔄 core 1.8.0 → 1.9.0 (auto-updated)
+   ↪ refreshed 14 unmodified copies in current project
 ```
 
 ## Örnek — dry-run
 
 ```bash
 $ atl update --check-only
-🔄 software-project-team 1.1.1 → 1.1.2 (auto-updated)
+🔄 software-project-team 1.2.0 → 1.2.1 (auto-updated)
+   ↪ would refresh 14 unmodified copies in current project
+   ↪ would skip 2 modified copies (run: atl install software-project-team --refresh)
 ```
 
-Ne güncelleneceğini yazar; git pull çalıştırmaz.
+Ne güncellenecek basar; git pull yapmaz, kopyalara dokunmaz.
 
-## Hook'larla otomatik güncellemeler (önerilen)
+## Hook'larla otomatik update (önerilen)
 
-Bir kez kur, hep unut:
+Bir kez kur, sonsuza kadar unut:
 
 ```bash
-atl setup-hooks                 # default: UserPromptSubmit 30m throttle
+atl setup-hooks                 # default: UserPromptSubmit 30m'a throttle
 atl setup-hooks --throttle=5m   # daha agresif
-atl setup-hooks --remove        # devre dışı
+atl setup-hooks --remove        # kapat
 ```
 
-Bu, `~/.claude/settings.json`'a iki Claude Code hook'u yükler:
+Bu, `~/.claude/settings.json`'a iki Claude Code hook'u ekler:
 
-- `SessionStart` → `atl update --silent-if-clean` (session açıldığında her zaman çalışır)
-- `UserPromptSubmit` → `atl update --silent-if-clean --throttle=30m` (her mesajda, throttle'lı)
+- `SessionStart` → `atl session-start --silent-if-clean` (composite: update + previous-transcript marker scan + atl self-check)
+- `UserPromptSubmit` → `atl update --silent-if-clean --throttle=30m` (per-message refresh, throttle'lı)
 
-Claude Code yeni session başlatıldığında veya prompt gönderdiğinde hook sessizce tüm cache'lenmiş repo'ları tazeler. Bir şey değiştiyse Claude tek `🔄` satırı görür ve güncellemeye göre davranır. Değişmediyse hook anında döner (~1ms, sadece file-stat).
+Claude Code session açtığında veya bir prompt gönderdiğinde, hook her cache'lenmiş repo'yu sessizce refresh eder + modifiye olmayan project kopyalarını auto-refresh eder. Bir şey değiştiyse Claude tek `🔄` satırı görür ve update üzerine aksiyon alır. Hiçbir şey değişmemişse hook anında döner (~1ms, sadece file-stat check).
 
-İlk `atl install`'da bunu açmak ister misin diye sorulur. Evet de; `atl setup-hooks --remove` ile istediğin zaman geri alabilirsin.
+İlk `atl install`'da bunu açmak isteyip istemediğin sorulur. Evet de; istediğin zaman `atl setup-hooks --remove` ile geri al.
 
-Detay: [`atl setup-hooks`](/tr/cli/setup-hooks).
+Detaylar için bkz. [`atl setup-hooks`](/tr/cli/setup-hooks).
 
-## Version constraint'ler (her takım için) hâlâ saygı görür
+## Versiyon constraint'leri (per-team) hâlâ honorlanır
 
-`software-project-team@^1.0.0` olarak kurduysan, `atl update` en çok `1.x.x`'e çeker — `2.0.0`'a **değil**. Major bump'lar için açıkça `atl install software-project-team@^2.0.0` gerekir.
+`software-project-team@^1.0.0` yüklediysen, `atl update` en son `1.x.x`'e kadar pull eder — `2.0.0` DEĞİL. Major bump'lar için explicit `atl install software-project-team@^2.0.0` gerekir.
 
-## Throttle iç işleyişi
+## Throttle internals
 
-İki timestamp dosyası:
+İki timestamp dosyası şurada yaşar:
 
-- `~/.claude/cache/atl-last-repo-check` — repo fetch throttle
-- `~/.claude/cache/atl-last-self-check` — atl release API throttle (24h, sabit)
+- `~/.claude/cache/atl-last-repo-check` — repo-fetch throttle
+- `~/.claude/cache/atl-last-self-check` — atl-release-API throttle (24h, sabit)
 
-`--throttle=<dur>` repo-fetch timestamp'ini kontrol eder. Dosyanın mtime'ı `<dur>` içindeyse repo taraması tamamen atlanır (fast-path ~1ms). Değilse tarama çalışır, başarılıysa dosyayı stamp'ler. Fail ederse (örn. offline) stamp güncellenmez, bir sonraki çağrı tekrar dener.
+`--throttle=<dur>` repo-fetch timestamp'ini check eder. Dosyanın modify time'ı `<dur>` içindeyse, repo scan tamamen atlanır (fast path ~1ms). Aksi takdirde scan çalışır, başarıda dosyayı stamp'ler. Fail olursa (örn. offline) stamp güncellenmez, sonraki çağrı tekrar dener.
 
-## Çevrimdışı davranış
+## Offline davranışı
 
-Ağ yoksa her repo'nun `git fetch`'i sessizce fail eder ve o repo `⚠ <name>: fetch: <error>` olarak raporlanır (`--silent-if-clean` onu sustur**maz** — bilmen gerekiyor). Diğerleri devam eder. Sembolik linkler hiç dokunulmaz.
+Network erişilemezse, individual `git fetch` çağrıları sessizce fail eder ve o repo `⚠ <name>: fetch: <error>` olarak raporlanır (`--silent-if-clean` ile sessizleştirilmez — bilmek istersin). Geri kalan check devam eder. Project kopyaları offline run'larda asla touch edilmez.
 
 ## İlgili
 
-- [`atl install`](/tr/cli/install) — ilk kurulum (opt-in auto-update prompt'u ile)
+- [`atl install`](/tr/cli/install) — ilk install (opt-in auto-update prompt'u ile)
+- [`atl install <takım> --refresh`](/tr/cli/install#idempotency-atl-v100) — bir proje için explicit force-overwrite (lokal mod yüzünden auto-refresh seni atladığında)
 - [`atl setup-hooks`](/tr/cli/setup-hooks) — hook'ları manuel yapılandır
-- [`atl list`](/tr/cli/list) — ne kurulu gör
-- [Version constraint'ler](/tr/authoring/team-json#version-constraint-ler) — `^`, `~`, exact pin nasıl çözülür
+- [`atl list`](/tr/cli/list) — yüklü ne var bak
+- [Versiyon constraint'leri](/tr/authoring/team-json#version-constraints) — `^`, `~`, exact pin'ler nasıl resolve olur

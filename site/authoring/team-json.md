@@ -16,7 +16,7 @@ Every team is a Git repository with a `team.json` at its root. That file is the 
 }
 ```
 
-That's enough to install. The CLI will clone the repo, symlink `agents/web-agent.md` (or `agents/web-agent/agent.md`) into `.claude/agents/`, and record the install.
+That's enough to install. The CLI will clone the repo, copy `agents/web-agent.md` (or `agents/web-agent/agent.md`) into `.claude/agents/`, and record the install.
 
 ## Full field reference
 

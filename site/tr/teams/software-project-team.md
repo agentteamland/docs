@@ -2,7 +2,7 @@
 
 > Production-grade full-stack yazılım projeleri için 13 uzmanlaşmış agent.
 
-**Son sürüm:** `1.1.4`
+**Son sürüm:** `1.2.1`
 **Status:** Onaylı
 **Repository:** [github.com/agentteamland/software-project-team](https://github.com/agentteamland/software-project-team)
 
@@ -59,6 +59,7 @@ Takım, ürettiği tüm kodda şu sistemik kabiliyetleri uygular:
 - **Claude Design entegrasyonu** (1.1.0+) — `/design-screen` üzerinden opsiyonel görsel-prototype fazı. Per-agent handoff playbook'ları flutter / react / design-system / ux için.
 - **DST handoff bilgisi** (1.1.3+) — `flutter-agent` ve `react-agent`, design-system-team bundle yapısını ve prototype'ları kaynak koda entegre etmeden önceki zorunlu theme-sync adımını biliyor.
 - **Cold-build scaffold disiplini** (1.1.4+) — `/create-new-project` Phase 2.2, fresh build'lerin manuel csproj düzeltmesi olmadan ilk denemede `/verify-system`'i yeşil geçmesini sağlamak için dört zorunlu csproj/migration gereksinimi (Infrastructure `<FrameworkReference Include="Microsoft.AspNetCore.App"/>`, Api `Microsoft.EntityFrameworkCore.Design`, Worker / LogIngest / MailSender `Microsoft.Extensions.Hosting`, initial EF migration) uygular. Tam discovery context: `agents/api-agent/children/known-issues.md`.
+- **Self-updating learning loop hizalaması** (1.2.0+) — Her agent'ın `agent.md` Knowledge Base section'ı `/save-learnings` tarafından her `children/{topic}.md` dosyasının `knowledge-base-summary` frontmatter'ından otomatik rebuild edilir. 169 children dosyası platform-wide Phase 2.C migration script'i üzerinden yeni contract'a migrate edildi (lossless, summary'ler mevcut hand-curated KB section'larından verbatim lift'lendi). Her skill `learnings/` subdir + `## Accumulated Learnings` section ile gelir, `/save-learnings`'in populate etmesine hazır.
 
 Tam detaylar için [takımın README'sine](https://github.com/agentteamland/software-project-team) ve `agent.md` dosyalarına bak.
 

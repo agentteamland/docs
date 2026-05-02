@@ -34,13 +34,13 @@ Each command has its own `--help` page: `atl install --help`, `atl search --help
 <project>/
 └── .claude/
     ├── .team-installs.json       ← which teams are installed, at what versions
-    ├── agents/                   ← symlinks to team-provided agents
-    ├── skills/                   ← symlinks to team-provided skills
-    ├── rules/                    ← symlinks to team-provided rules
+    ├── agents/                   ← copies to team-provided agents
+    ├── skills/                   ← copies to team-provided skills
+    ├── rules/                    ← copies to team-provided rules
     └── ...
 ```
 
-The symlinks point into the shared cache. That's why `atl update` takes effect in every project at once: you update the cache, not the project.
+The copies point into the shared cache. That's why `atl update` takes effect in every project at once: you update the cache, not the project.
 
 ## Exit codes
 
@@ -53,7 +53,7 @@ The symlinks point into the shared cache. That's why `atl update` takes effect i
 
 ## Philosophy
 
-- **Deterministic.** Same inputs, same symlinks. No hidden state.
+- **Deterministic.** Same inputs, same copies. No hidden state.
 - **Idempotent.** Re-running `atl install` on an already-installed team is a no-op (or a pull).
 - **Observable.** Every action prints what it did. Use the output, not a spinner.
 

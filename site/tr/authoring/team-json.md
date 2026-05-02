@@ -16,7 +16,7 @@ Her takım; kök dizininde `team.json` bulunan bir Git reposudur. Bu dosya tam s
 }
 ```
 
-Kurulum için bu kadarı yeter. CLI; repo'yu klonlar, `agents/web-agent.md`'yi (veya `agents/web-agent/agent.md`'yi) `.claude/agents/` altına sembolik link ile bağlar ve kurulumu kaydeder.
+Kurulum için bu kadarı yeter. CLI; repo'yu klonlar, `agents/web-agent.md`'yi (veya `agents/web-agent/agent.md`'yi) `.claude/agents/` altına kopya ile bağlar ve kurulumu kaydeder.
 
 ## Tam alan referansı
 

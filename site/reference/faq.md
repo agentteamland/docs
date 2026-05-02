@@ -22,7 +22,7 @@ No. Claude Code works fine without `atl`. Use `atl` when you want a reproducible
 
 ### Can I install more than one team in the same project?
 
-Yes. Each install adds its own symlinks into `.claude/`. If two teams ship an agent with the same name, the **second-installed** team's version wins (it overwrites the first symlink). Use `atl list` to see which team owns each symlink.
+Yes. Each install adds its own copies into `.claude/`. If two teams ship an agent with the same name, the **second-installed** team's version wins (it overwrites the first copy). Use `atl list` to see which team owns each copy.
 
 ### Can I install teams from private Git repos?
 
@@ -46,7 +46,7 @@ Nothing — the cache (`~/.claude/repos/agentteamland/`) is shared across projec
 
 ### Can I install a team without running `atl` (by hand)?
 
-Yes. Clone the team repo into `~/.claude/repos/agentteamland/<team-name>/` and create the symlinks in `.claude/` yourself. The CLI exists to automate that plus inheritance/excludes resolution; there's nothing magic about its output.
+Yes. Clone the team repo into `~/.claude/repos/agentteamland/<team-name>/` and create the copies in `.claude/` yourself. The CLI exists to automate that plus inheritance/excludes resolution; there's nothing magic about its output.
 
 ### Where does `atl` keep the list of installed teams?
 
@@ -54,7 +54,7 @@ In each project: `.claude/.team-installs.json`. Human-readable JSON. You can edi
 
 ### Does `atl` send any telemetry?
 
-No. `atl` is a local tool: it clones from GitHub, fetches the registry, writes symlinks. There's no phone-home.
+No. `atl` is a local tool: it clones from GitHub, fetches the registry, writes copies. There's no phone-home.
 
 ### Is this an Anthropic product?
 

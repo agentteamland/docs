@@ -33,7 +33,7 @@ Child; parent'taki bir agent ile aynı ada sahip bir agent getirirse child kazan
 }
 ```
 
-Kurulumda, child'daki `agents/api-agent.md`; parent kopyasına işaret eden sembolik linkin üzerine yazılır.
+Kurulumda, child'daki `agents/api-agent.md`; parent kopyasına işaret eden kopyain üzerine yazılır.
 
 Aynı kural skill ve rule için de geçerli: ad çakışması ⇒ child kazanır.
 
@@ -46,7 +46,7 @@ Aynı kural skill ve rule için de geçerli: ad çakışması ⇒ child kazanır
 }
 ```
 
-Parent'taki `ux-agent` hiç sembolik link'e dönüşmez. Parent dosyası önbellekte durmaya devam eder (parent takım normal şekilde kurulu) — child sadece onu yüzeye çıkarmamayı seçer.
+Parent'taki `ux-agent` hiç kopya'e dönüşmez. Parent dosyası önbellekte durmaya devam eder (parent takım normal şekilde kurulu) — child sadece onu yüzeye çıkarmamayı seçer.
 
 Agent'ları, skill'leri veya rule'ları ad bazında exclude edebilirsin.
 
@@ -85,7 +85,7 @@ Caret önerilen varsayılandır — patch düzeltmelerini ve yeni minor'ları al
 
 ## Önceliklendirme sırası
 
-`atl install` sembolik linkleri çözerken, sonraki girişler öncekileri override eder:
+`atl install` kopyalari çözerken, sonraki girişler öncekileri override eder:
 
 1. Ancestor'lar (en derin önce, en yakın sonra).
 2. Mevcut takım.

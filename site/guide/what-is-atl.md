@@ -10,7 +10,7 @@ Using Claude Code well requires configuration: agents, skills, and rules that sh
 
 A **team** is a package of agents, skills, and rules, built around a particular kind of work. One team might be geared for a .NET + Flutter + React stack with a Docker-compose production layout. Another might be for a Next.js + Sanity + Vercel blog stack. A third for data pipelines with Airflow and dbt.
 
-`atl install some-team` fetches the team, caches it, and symlinks its agents, skills, and rules into your current project's `.claude/` directory. Claude Code sees the team the moment you open the editor.
+`atl install some-team` fetches the team, caches it, and copies its agents, skills, and rules into your current project's `.claude/` directory. Claude Code sees the team the moment you open the editor.
 
 When the team author ships a fix, you run `atl update` and every project that uses that team picks up the change. Your projects stop drifting.
 
