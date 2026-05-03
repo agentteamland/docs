@@ -38,7 +38,7 @@ atl setup-hooks --remove           # atl hook'larını kaldır
 }
 ```
 
-Dört giriş kaydeden v1.1.0-öncesi kurulumlardaki eski `SessionEnd` ve `PreCompact` atl girdileri, sonraki `atl setup-hooks` çalıştırmasında sessizce silinir. Komutları eski yapıda çalışmaya devam ediyordu ama çıktıları Claude'a hiç ulaşmıyordu (bkz. [aşağıdaki tarihçe notu](#tarih-c3-87e-d-c3-b6rt-hook-tan-iki-hooka)) — silmek güvenli ve kayıpsız.
+Dört giriş kaydeden v1.1.0-öncesi kurulumlardaki eski `SessionEnd` ve `PreCompact` atl girdileri, sonraki `atl setup-hooks` çalıştırmasında sessizce silinir. Komutları eski yapıda çalışmaya devam ediyordu ama çıktıları Claude'a hiç ulaşmıyordu (bkz. [aşağıdaki tarihçe notu](#history-from-four-hooks-to-two)) — silmek güvenli ve kayıpsız.
 
 Claude Code bunları otomatik çalıştırır:
 
@@ -95,7 +95,7 @@ Marker formatı ve noise-filter detayları için [`atl learning-capture`](/tr/cl
 | `SessionStart` (`atl session-start` üzerinden) | "Claude Code'u taze açıyorum, upstream'de ne değişti + önceki session ne öğrenme bıraktı + yeni atl var mı?" |
 | `UserPromptSubmit` (`atl update` üzerinden) | "Saatlerdir bu session'dayım, yeni release var mı?" |
 
-İki hook tüm garantiyi karşılıyor. v1.1.0-öncesi 4-hook tasarımı update ile learning-capture'ı `SessionStart` / `SessionEnd` / `PreCompact` arasında ayırıyordu, ama `SessionEnd` ve `PreCompact` hook stdout'unu Claude'un `additionalContext`'ine ulaştırmıyordu — bkz. [aşağıdaki tarihçe notu](#tarih-c3-87e-d-c3-b6rt-hook-tan-iki-hooka). Her şeyi composite wrapper ile `SessionStart`'a toplamak tüm davranışı koruyup çıktının gerçekten Claude'a ulaşmasını sağlıyor.
+İki hook tüm garantiyi karşılıyor. v1.1.0-öncesi 4-hook tasarımı update ile learning-capture'ı `SessionStart` / `SessionEnd` / `PreCompact` arasında ayırıyordu, ama `SessionEnd` ve `PreCompact` hook stdout'unu Claude'un `additionalContext`'ine ulaştırmıyordu — bkz. [aşağıdaki tarihçe notu](#history-from-four-hooks-to-two). Her şeyi composite wrapper ile `SessionStart`'a toplamak tüm davranışı koruyup çıktının gerçekten Claude'a ulaşmasını sağlıyor.
 
 ## Idempotency — yeniden çalıştırması güvenli
 
@@ -126,7 +126,7 @@ Yavaş yol: tipik kurulumlar (5-10 cached repo) için ~2-3s. Hızlı yol (thrott
 
 Offline'sansa, her repo'nun `git fetch`'i sessizce başarısız olur, o repo `⚠` uyarı satırı alır (silenced değilse), gerisi devam eder. Marker tarama hiç network gerektirmez — sadece local dosya okur. Claude Code'un prompt'u normal şekilde işlemeye devam eder; hook fail olmak işini bloklamaz.
 
-## Tarihçe — dört hook'tan iki hook'a
+## Tarihçe — dört hook'tan iki hook'a {#history-from-four-hooks-to-two}
 
 `atl v0.2.0` (2026-04-24) dört hook gönderdi: `SessionStart` + `UserPromptSubmit` auto-update için, `SessionEnd` + `PreCompact` learning-capture için. Capture yarısı **çalışıyor gibi görünüyordu** (binary çalıştı, marker'ları taradı, raporları bastı) ama Claude Code v2.1.x'e göre `SessionEnd` ve `PreCompact` hook stdout'u Claude'un `additionalContext`'ine ulaşmıyor. v0.2.0'dan sonraki ay maintainer-workspace'inde 9 session boyunca 324 marker **sıfır** otomatik işleme üretti — gerçek `/save-learnings` çalıştırmaları manuel kullanıcı çağrısından geldi.
 

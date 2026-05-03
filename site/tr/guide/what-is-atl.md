@@ -30,7 +30,9 @@ Her takım; kök dizininde `team.json` dosyası bulunan bir Git reposundan ibare
 
 ## Mevcut durum
 
-`atl` **v0.1.x**'te — erken ama gerçek. Bir takım (`software-project-team`) üretim düzeyinde 13 agent'lık bir paket sunuyor ve en az bir gerçek ürünün yapımında kullanılıyor. Ekosistem MIT lisanslı ve PR'lara açık.
+`atl` **v1.1.x**'te — production. Install topology'si project-local kopyalar (global cache source-of-truth olarak), auto-update yolu Claude Code `SessionStart` + `UserPromptSubmit` hook'larından geçer, self-updating learning loop session bilgisini journal/wiki/agent-children/skill-learnings katmanlarına persist eder.
+
+Registry'de bugün iki verified takım yayında: `software-project-team` (13 agent — .NET API + Flutter + React + Docker stack) ve `design-system-team` (2 agent + design-system + prototype tooling için 10 `/dst-*` skill'i). Tüm ekosistem MIT lisanslı ve PR'lara açık.
 
 Sıradakiler:
 - **[`atl`'yi kur](/tr/guide/install)**

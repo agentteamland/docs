@@ -23,15 +23,18 @@ atl remove starter-extended
 2. `.claude/agents/`, `.claude/skills/`, `.claude/rules/` altında bu takımın yüklediği her project-local copy, manifest'in per-resource SHA-256 baseline'larına bakılarak tespit edilir.
 3. **Modification check**: her resource'un mevcut SHA-256'sı install-time baseline ile karşılaştırılır. Bir resource lokal olarak modifiye edilmişse CLI `⚠ N kaynakta lokal değişiklik var` özetini basar ve onay ister. `--force` prompt'u atlar.
 4. **Manifest-driven allowlist**: yalnızca bu takımın register ettiği dosyalar silinir. `.claude/` altındaki kullanıcı-yazımı dosyalar (otomatik büyüyen `children/`, `learnings/`, custom skill'ler, journal entry'leri, wiki sayfaları dahil) **korunur** — atl ile register edilmedikleri için uninstall'dan sağ çıkarlar.
-5. **Inheritance koruması**: takım başka yüklü bir takımın parent'ıysa (`extends` yoluyla), `--force` geçmediğin sürece `atl remove` reddeder — parent'ı kaldırmak child'ı bozardı.
-6. `.claude/.team-installs.json` atomik (tmp + rename) olarak güncellenir.
-7. Shared cache'e **dokunulmaz**. Takımın Git clone'u tekrar kullanım için `~/.claude/repos/agentteamland/` altında kalır. Disk geri kazanmak için cache klasörünü manuel sil.
+5. `.claude/.team-installs.json` atomik (tmp + rename) olarak güncellenir.
+6. Shared cache'e **dokunulmaz**. Takımın Git clone'u tekrar kullanım için `~/.claude/repos/agentteamland/` altında kalır. Disk geri kazanmak için cache klasörünü manuel sil.
+
+::: warning Inheritance kaldırma sırasında zorlanmaz
+`atl remove`, başka bir yüklü takımın `extends` yoluyla referans verdiği bir takımı kaldırmayı **reddetmez**. Bir child takım hâlâ parent'ı referans ederken parent'ı kaldırırsan, child'ın effective resource set'i bir sonraki `atl update` veya `atl list`'te tutarsız hale gelir. Önce `atl list` çalıştırıp inheritance chain'i gör — child'ları parent'lardan önce kaldır.
+:::
 
 ## Bayraklar
 
 | Bayrak | Etki |
 |---|---|
-| `--force` | Modification-check onay prompt'unu atla VE bu takım başka yüklü bir takımın parent'ı olsa bile kaldır. |
+| `--force` | Lokal modifikasyonu olan projeler için modification-check onay prompt'unu atla. CI / scripted teardown için kullanışlı. |
 
 ## Örnek — CI'da zorla kaldırma
 

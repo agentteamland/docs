@@ -10,6 +10,7 @@ Every team is a Git repository with a `team.json` at its root. That file is the 
   "name": "my-team",
   "version": "0.1.0",
   "description": "A starter team for small Next.js projects.",
+  "author": { "name": "Your Name", "url": "https://github.com/you" },
   "agents": [
     { "name": "web-agent", "description": "Next.js + Tailwind reviewer and builder." }
   ]
@@ -23,21 +24,25 @@ That's enough to install. The CLI will clone the repo, copy `agents/web-agent.md
 | Field | Type | Required | Description |
 |---|---|---|---|
 | `schemaVersion` | integer | ✅ | Currently `1`. Bumped on breaking schema changes. |
-| `name` | string | ✅ | Registry name. Lowercase, kebab-case. Must match the directory name in the registry. |
+| `name` | string | ✅ | Registry name. Lowercase kebab-case, 3–40 chars. Must match the directory name in the registry. |
 | `version` | semver string | ✅ | SemVer 2.0.0 (`1.2.3`, `1.2.3-beta.1`). |
-| `description` | string | ✅ | One-sentence pitch. Shows up in `atl search`. |
-| `author` | string | — | `"Your Name <email@example.com>"` format recommended. |
+| `description` | string | ✅ | One-sentence pitch shown in `atl search`. **`minLength: 10`, `maxLength: 200`.** Exceeding 200 characters is the most common registry-PR validation failure — keep it tight. |
+| `author` | object | — | `{ "name": "...", "url": "...", "email": "..." }`. `name` is required when present. **Must be an object, not a string** — a plain string like `"Your Name <you@example.com>"` will fail schema validation. |
 | `license` | SPDX string | — | `"MIT"`, `"Apache-2.0"`, etc. Defaults to `"MIT"` if omitted. |
-| `keywords` | string[] | — | For search matching. `["nextjs", "tailwind", "blog"]`. |
-| `repository` | string | — | Git URL. If omitted, the CLI uses the clone origin. |
+| `keywords` | string[] | — | For search matching. Up to 20 entries, each ≤ 40 chars. `["nextjs", "tailwind", "blog"]`. |
+| `repository` | string | — | Git URL (`https://`, `git@`, or `ssh://`). If omitted, the CLI uses the clone origin. |
 | `homepage` | string | — | Docs / landing URL. |
-| `agents` | object[] | — | Each: `{ name, description }`. Names must match files under `agents/`. |
-| `skills` | object[] | — | Each: `{ name, description }`. Names must match directories under `skills/`. |
-| `rules` | object[] | — | Each: `{ name, description }`. Names must match files under `rules/`. |
+| `agents` | object[] | — | Each: `{ name, description, tags? }`. Names must match files/directories under `agents/` and be lowercase kebab-case. |
+| `skills` | object[] | — | Each: `{ name, description, tags? }`. Names must match directories under `skills/`. |
+| `rules` | object[] | — | Each: `{ name, description, tags? }`. Names must match files under `rules/`. |
 | `extends` | string | — | Parent team spec: `"name"` or `"name@version-constraint"`. See [Inheritance](./inheritance). |
 | `excludes` | string[] | — | Names (agent/skill/rule) from inherited parents to drop. |
 | `dependencies` | object | — | Map of `team-name → version-constraint` for additional teams the CLI must install alongside. |
-| `requires.atl` | string | — | Minimum `atl` version. E.g. `">=0.1.0"`. |
+| `requires.atl` | string | — | Minimum `atl` version. E.g. `">=1.0.0"`. |
+
+::: tip Validate before you push
+The `description.maxLength = 200` constraint trips most first-time contributors. Run `./scripts/validate.sh` (in the registry repo) or any local Draft 2020-12 JSON Schema validator against [`team.schema.json`](https://github.com/agentteamland/core/blob/main/schemas/team.schema.json) before opening a PR. CI runs the same check; failing locally is faster than failing on GitHub.
+:::
 
 ## Version constraints
 

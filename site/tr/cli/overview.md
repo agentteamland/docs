@@ -1,6 +1,8 @@
 # CLI genel bakış
 
-`atl`'nin beş komutu var. Hepsi **mevcut proje** üzerinde (yani `atl`'yi çalıştırdığın dizinde) çalışır — aksi belirtilmedikçe.
+`atl`'nin sekiz komutu var. Beş **kullanıcı komutu** **mevcut proje** üzerinde (yani `atl`'yi çalıştırdığın dizinde) çalışır — aksi belirtilmedikçe. Üç **otomasyon komutu** ise tipik olarak Claude Code hook'larına bağlanır ve gözetimsiz çalışır — manuel olarak genelde yalnızca kurulum veya troubleshooting için çalıştırırsın.
+
+## Kullanıcı komutları
 
 | Komut | Ne yapar |
 |---|---|
@@ -9,6 +11,14 @@
 | [`atl remove`](/tr/cli/remove) | Takımı kaldırır. |
 | [`atl update`](/tr/cli/update) | Bir veya tüm takımların son sürümünü çeker. |
 | [`atl search`](/tr/cli/search) | Herkese açık registry'de arar. |
+
+## Otomasyon komutları
+
+| Komut | Ne yapar |
+|---|---|
+| [`atl setup-hooks`](/tr/cli/setup-hooks) | Auto-update + learning capture'ı bağlayan Claude Code hook'larını (`SessionStart`, `UserPromptSubmit`) tek seferlik kurar/kaldırır. |
+| `atl session-start` | `SessionStart` hook'u tarafından çağrılan composite boot-time wrapper (cache pull + symlink→kopya migration + auto-refresh + önceki transkript marker taraması + atl self-version kontrolü). Normal şartlarda elle çalıştırılmaz. |
+| [`atl learning-capture`](/tr/cli/learning-capture) | Claude Code transkriptlerini `<!-- learning -->` marker'ları için tarar. `SessionStart` wrapper tarafından çağrılır; test veya backfill için manuel de çalıştırılabilir. |
 
 ## Global flag'ler
 

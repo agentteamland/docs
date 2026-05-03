@@ -30,7 +30,9 @@ Every team is just a Git repository with a `team.json` file at the root. There's
 
 ## Where it stands
 
-`atl` is at **v0.1.x** — early, but real. One team (`software-project-team`) ships a production-grade 13-agent bundle and is used to build at least one real product. The ecosystem is MIT-licensed and open for PRs.
+`atl` is at **v1.1.x** — production. The install topology is project-local copies (with a global cache as source-of-truth), the auto-update path runs through Claude Code `SessionStart` + `UserPromptSubmit` hooks, and a self-updating learning loop persists session knowledge into journal/wiki/agent-children/skill-learnings layers.
+
+Two verified teams ship in the registry today: `software-project-team` (13 agents — .NET API + Flutter + React + Docker stack) and `design-system-team` (2 agents + 10 `/dst-*` skills for design-system + prototype tooling). The full ecosystem is MIT-licensed and open for PRs.
 
 Next up:
 - **[Install `atl`](/guide/install)**
