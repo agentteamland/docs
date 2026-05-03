@@ -55,7 +55,8 @@ export default defineConfig({
                 { text: 'What is atl?', link: '/guide/what-is-atl' },
                 { text: 'Install', link: '/guide/install' },
                 { text: 'Quickstart', link: '/guide/quickstart' },
-                { text: 'Concepts', link: '/guide/concepts' }
+                { text: 'Concepts', link: '/guide/concepts' },
+                { text: 'Karpathy guidelines', link: '/guide/karpathy-guidelines' }
               ]
             }
           ],
@@ -106,7 +107,8 @@ export default defineConfig({
                 { text: 'Creating a team', link: '/authoring/creating-a-team' },
                 { text: 'Inheritance', link: '/authoring/inheritance' },
                 { text: 'Scaffolder spec', link: '/authoring/scaffolder-spec' },
-                { text: 'Registry submission', link: '/authoring/registry-submission' }
+                { text: 'Registry submission', link: '/authoring/registry-submission' },
+                { text: 'Team-repo maintenance', link: '/authoring/team-repo-maintenance' }
               ]
             }
           ],
@@ -153,7 +155,8 @@ export default defineConfig({
                 { text: 'atl nedir?', link: '/tr/guide/what-is-atl' },
                 { text: 'Kurulum', link: '/tr/guide/install' },
                 { text: 'Hızlı başlangıç', link: '/tr/guide/quickstart' },
-                { text: 'Kavramlar', link: '/tr/guide/concepts' }
+                { text: 'Kavramlar', link: '/tr/guide/concepts' },
+                { text: 'Karpathy guidelines', link: '/tr/guide/karpathy-guidelines' }
               ]
             }
           ],
@@ -204,7 +207,8 @@ export default defineConfig({
                 { text: 'Takım oluşturma', link: '/tr/authoring/creating-a-team' },
                 { text: 'Miras (inheritance)', link: '/tr/authoring/inheritance' },
                 { text: 'Scaffolder spec', link: '/tr/authoring/scaffolder-spec' },
-                { text: 'Registry başvurusu', link: '/tr/authoring/registry-submission' }
+                { text: 'Registry başvurusu', link: '/tr/authoring/registry-submission' },
+                { text: 'Team-repo maintenance', link: '/tr/authoring/team-repo-maintenance' }
               ]
             }
           ],
