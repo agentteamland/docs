@@ -58,6 +58,21 @@ export default defineConfig({
                 { text: 'Concepts', link: '/guide/concepts' },
                 { text: 'Karpathy guidelines', link: '/guide/karpathy-guidelines' }
               ]
+            },
+            {
+              text: 'Knowledge model',
+              items: [
+                { text: 'Knowledge system', link: '/guide/knowledge-system' },
+                { text: 'Children + learnings', link: '/guide/children-and-learnings' },
+                { text: 'Learning marker lifecycle', link: '/guide/learning-marker-lifecycle' },
+                { text: 'Claude Code conventions', link: '/guide/claude-code-conventions' }
+              ]
+            },
+            {
+              text: 'Operations',
+              items: [
+                { text: 'Governance', link: '/guide/governance' }
+              ]
             }
           ],
           '/cli/': [
@@ -157,6 +172,21 @@ export default defineConfig({
                 { text: 'Hızlı başlangıç', link: '/tr/guide/quickstart' },
                 { text: 'Kavramlar', link: '/tr/guide/concepts' },
                 { text: 'Karpathy guidelines', link: '/tr/guide/karpathy-guidelines' }
+              ]
+            },
+            {
+              text: 'Bilgi modeli',
+              items: [
+                { text: 'Knowledge system', link: '/tr/guide/knowledge-system' },
+                { text: 'Children + learnings', link: '/tr/guide/children-and-learnings' },
+                { text: 'Learning marker lifecycle', link: '/tr/guide/learning-marker-lifecycle' },
+                { text: 'Claude Code conventions', link: '/tr/guide/claude-code-conventions' }
+              ]
+            },
+            {
+              text: 'Operations',
+              items: [
+                { text: 'Governance', link: '/tr/guide/governance' }
               ]
             }
           ],
