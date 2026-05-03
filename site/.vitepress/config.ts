@@ -36,6 +36,7 @@ export default defineConfig({
           { text: 'Skills', link: '/skills/save-learnings', activeMatch: '/skills/' },
           { text: 'Teams', link: '/teams/', activeMatch: '/teams/' },
           { text: 'Team Authoring', link: '/authoring/team-json', activeMatch: '/authoring/' },
+          { text: 'Contributing', link: '/contributing/workspace', activeMatch: '/contributing/' },
           { text: 'Reference', link: '/reference/faq', activeMatch: '/reference/' },
           {
             text: 'Ecosystem',
@@ -121,9 +122,20 @@ export default defineConfig({
                 { text: 'team.json', link: '/authoring/team-json' },
                 { text: 'Creating a team', link: '/authoring/creating-a-team' },
                 { text: 'Inheritance', link: '/authoring/inheritance' },
+                { text: 'Worked example: starter-extended', link: '/authoring/starter-extended-example' },
                 { text: 'Scaffolder spec', link: '/authoring/scaffolder-spec' },
                 { text: 'Registry submission', link: '/authoring/registry-submission' },
                 { text: 'Team-repo maintenance', link: '/authoring/team-repo-maintenance' }
+              ]
+            }
+          ],
+          '/contributing/': [
+            {
+              text: 'Contributing',
+              items: [
+                { text: 'Workspace (maintainer hub)', link: '/contributing/workspace' },
+                { text: 'Release pipeline', link: '/contributing/release-pipeline' },
+                { text: 'winget upstream-PR process', link: '/contributing/winget-process' }
               ]
             }
           ],
@@ -151,6 +163,7 @@ export default defineConfig({
           { text: 'Skill\'ler', link: '/tr/skills/save-learnings', activeMatch: '/tr/skills/' },
           { text: 'Takımlar', link: '/tr/teams/', activeMatch: '/tr/teams/' },
           { text: 'Takım Yazımı', link: '/tr/authoring/team-json', activeMatch: '/tr/authoring/' },
+          { text: 'Katkı', link: '/tr/contributing/workspace', activeMatch: '/tr/contributing/' },
           { text: 'Başvuru', link: '/tr/reference/faq', activeMatch: '/tr/reference/' },
           {
             text: 'Ekosistem',
@@ -236,9 +249,20 @@ export default defineConfig({
                 { text: 'team.json', link: '/tr/authoring/team-json' },
                 { text: 'Takım oluşturma', link: '/tr/authoring/creating-a-team' },
                 { text: 'Miras (inheritance)', link: '/tr/authoring/inheritance' },
+                { text: 'Worked example: starter-extended', link: '/tr/authoring/starter-extended-example' },
                 { text: 'Scaffolder spec', link: '/tr/authoring/scaffolder-spec' },
                 { text: 'Registry başvurusu', link: '/tr/authoring/registry-submission' },
                 { text: 'Team-repo maintenance', link: '/tr/authoring/team-repo-maintenance' }
+              ]
+            }
+          ],
+          '/tr/contributing/': [
+            {
+              text: 'Katkı',
+              items: [
+                { text: 'Workspace (maintainer hub)', link: '/tr/contributing/workspace' },
+                { text: 'Release pipeline', link: '/tr/contributing/release-pipeline' },
+                { text: 'winget upstream-PR süreci', link: '/tr/contributing/winget-process' }
               ]
             }
           ],
