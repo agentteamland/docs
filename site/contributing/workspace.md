@@ -28,7 +28,7 @@ repos/
 ├── software-project-team/     # 13 agents + 3 skills (.NET + Flutter + React stack)
 ├── design-system-team/        # 2 agents + 10 /dst-* skills (native design + prototype)
 ├── starter-extended/          # inheritance example team
-├── create-project/            # DEPRECATED — scaffolder moved into teams
+├── create-project/            # 🗄 ARCHIVED 2026-05-04 — scaffolder moved into teams; kept for history
 ├── registry/                  # teams.json — canonical team catalog
 ├── docs/                      # this docs site (VitePress, EN + TR)
 ├── homebrew-tap/              # auto-managed by goreleaser
