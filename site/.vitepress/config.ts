@@ -33,6 +33,7 @@ export default defineConfig({
         nav: [
           { text: 'Guide', link: '/guide/what-is-atl', activeMatch: '/guide/' },
           { text: 'CLI', link: '/cli/overview', activeMatch: '/cli/' },
+          { text: 'Skills', link: '/skills/save-learnings', activeMatch: '/skills/' },
           { text: 'Teams', link: '/teams/', activeMatch: '/teams/' },
           { text: 'Team Authoring', link: '/authoring/team-json', activeMatch: '/authoring/' },
           { text: 'Reference', link: '/reference/faq', activeMatch: '/reference/' },
@@ -70,6 +71,20 @@ export default defineConfig({
                 { text: 'atl search', link: '/cli/search' },
                 { text: 'atl setup-hooks', link: '/cli/setup-hooks' },
                 { text: 'atl learning-capture', link: '/cli/learning-capture' }
+              ]
+            }
+          ],
+          '/skills/': [
+            {
+              text: 'Global Skills',
+              items: [
+                { text: '/save-learnings', link: '/skills/save-learnings' },
+                { text: '/wiki', link: '/skills/wiki' },
+                { text: '/brainstorm', link: '/skills/brainstorm' },
+                { text: '/rule', link: '/skills/rule' },
+                { text: '/rule-wizard', link: '/skills/rule-wizard' },
+                { text: '/create-pr', link: '/skills/create-pr' },
+                { text: '/create-code-diagram', link: '/skills/create-code-diagram' }
               ]
             }
           ],
@@ -116,6 +131,7 @@ export default defineConfig({
         nav: [
           { text: 'Rehber', link: '/tr/guide/what-is-atl', activeMatch: '/tr/guide/' },
           { text: 'CLI', link: '/tr/cli/overview', activeMatch: '/tr/cli/' },
+          { text: 'Skill\'ler', link: '/tr/skills/save-learnings', activeMatch: '/tr/skills/' },
           { text: 'Takımlar', link: '/tr/teams/', activeMatch: '/tr/teams/' },
           { text: 'Takım Yazımı', link: '/tr/authoring/team-json', activeMatch: '/tr/authoring/' },
           { text: 'Başvuru', link: '/tr/reference/faq', activeMatch: '/tr/reference/' },
@@ -153,6 +169,20 @@ export default defineConfig({
                 { text: 'atl search', link: '/tr/cli/search' },
                 { text: 'atl setup-hooks', link: '/tr/cli/setup-hooks' },
                 { text: 'atl learning-capture', link: '/tr/cli/learning-capture' }
+              ]
+            }
+          ],
+          '/tr/skills/': [
+            {
+              text: 'Global Skill\'ler',
+              items: [
+                { text: '/save-learnings', link: '/tr/skills/save-learnings' },
+                { text: '/wiki', link: '/tr/skills/wiki' },
+                { text: '/brainstorm', link: '/tr/skills/brainstorm' },
+                { text: '/rule', link: '/tr/skills/rule' },
+                { text: '/rule-wizard', link: '/tr/skills/rule-wizard' },
+                { text: '/create-pr', link: '/tr/skills/create-pr' },
+                { text: '/create-code-diagram', link: '/tr/skills/create-code-diagram' }
               ]
             }
           ],
