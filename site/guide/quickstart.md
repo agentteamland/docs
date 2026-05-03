@@ -41,7 +41,7 @@ atl install software-project-team
 In a few seconds:
 
 - The team is cloned into the shared cache (first time only)
-- 13 agents, 2 skills (`create-new-project`, `verify-system`), and 1 rule are copied into `.claude/`
+- 13 agents and 3 skills (`create-new-project`, `verify-system`, `design-screen`) are copied into `.claude/`
 - `team.json` is recorded in `.claude/.team-installs.json`
 
 You now have a full .NET + Flutter + React + Docker agent team wired into your project.
@@ -61,7 +61,7 @@ Open Claude Code in this directory. The team's skills are available as slash com
 - `/create-new-project MyApp` — scaffolds a full stack (Phase 1–5: gather → scaffold → build → verify → commit)
 - `/verify-system` — runs an end-to-end health check on containers, ports, apps, and pipelines
 
-And every agent (api-agent, socket-agent, worker-agent, flutter-agent, react-agent, database-agent, redis-agent, rmq-agent, infra-agent, code-reviewer-agent, project-reviewer-agent, design-system-agent, ux-agent) is available for Claude to delegate to.
+And every agent (api-agent, socket-agent, worker-agent, flutter-agent, react-agent, database-agent, redis-agent, rmq-agent, infra-agent, code-reviewer, project-reviewer, design-system-agent, ux-agent) is available for Claude to delegate to.
 
 ## 7. Keep up to date
 

@@ -17,7 +17,7 @@ cd your-project
 atl install design-system-team
 ```
 
-Requires [`atl`](/cli/overview) ≥ 0.1.3.
+Requires [`atl`](/cli/overview) ≥ 0.1.2 (per `team.json`'s `requires.atl`). Practical baseline for current behavior is `atl ≥ 1.0.0` — earlier versions predate the project-local copy install model.
 
 ## Quickstart
 

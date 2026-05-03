@@ -16,15 +16,17 @@ Takımı bir projeye kurduğunda içeriği `.claude/` altında kopyalar olarak g
 
 ## Agent
 
-Agent, bir rolü tanımlayan Markdown dosyasıdır. `api-agent.md`, `flutter-agent.md`, `code-reviewer-agent.md` — her biri, kendine özgü sorumluluk alanı ve bilgi tabanı olan odaklı bir kişilik.
+Agent, bir rolü tanımlayan Markdown dosyasıdır. `api-agent`, `flutter-agent`, `code-reviewer` — her biri, kendine özgü sorumluluk alanı ve bilgi tabanı olan odaklı bir kişilik.
 
-Karmaşık agent'lar için konvansiyon **children pattern**'idir: üst düzey `agent.md` kısa kalır (kimlik, sorumluluk, ilkeler) ve detaylı bilgi `children/` altında konu-başına-dosya olarak yaşar. Bu, üst dosyayı sıkı tutar ve tek bir konuyu güncellerken diğerlerine dokunmama maliyetini düşürür.
+Karmaşık agent'lar için konvansiyon **children pattern**'idir: üst düzey `agent.md` kısa kalır (kimlik, sorumluluk, ilkeler) ve detaylı bilgi `children/` altında konu-başına-dosya olarak yaşar. Bu, üst dosyayı sıkı tutar ve tek bir konuyu güncellerken diğerlerine dokunmama maliyetini düşürür. Her child dosyası bir `knowledge-base-summary` frontmatter satırı taşır; `/save-learnings` bu satırları `agent.md`'nin otomatik yeniden inşa edilen **Knowledge Base** bölümüne taşır — yani üst dosyadaki indeks her zaman child'lardan türetilir, asla elle düzenlenmez.
 
 ## Skill
 
 Skill, kullanıcı tarafından çağrılan bir slash komutudur. `/create-new-project`, `/verify-system`, `/save-learnings`. Skill'ler; kök dizininde `skill.md` dosyası bulunan bir dizin olarak yayılır; bu dosya skill'in ne zaman ve nasıl kullanılacağını açıklar.
 
-Skill'ler **global** (bootstrap ile gelir) veya **takıma özel** (belirli bir takımla gelir, sadece o takım kurulduğunda görünür) olabilir. `/create-new-project` ve `/verify-system` takıma özeldir çünkü yaptıkları iş her zaman stack'e özgüdür. `/brainstorm`, `/rule`, `/save-learnings`, `/wiki` globaldir çünkü her yerde geçerlidir.
+Skill'ler agent şeklini aynalar: karmaşık skill'ler `learnings/` adında konu-başına-dosya bir alt dizin taşır — edge case'ler ve birikmiş deneyim için — aynı `knowledge-base-summary` frontmatter sözleşmesiyle. `/save-learnings` `skill.md`'nin **Accumulated Learnings** bölümünü o frontmatter satırlarından yeniden kurar — `learnings/`, skill'ler için ne ise `children/` agent'lar için odur.
+
+Skill'ler **global** (bootstrap ile gelir) veya **takıma özel** (belirli bir takımla gelir, sadece o takım kurulduğunda görünür) olabilir. `/create-new-project`, `/verify-system` ve `/design-screen` takıma özeldir çünkü yaptıkları iş her zaman stack'e özgüdür. `/brainstorm`, `/rule`, `/save-learnings`, `/wiki`, `/create-pr`, `/create-code-diagram` globaldir çünkü her yerde geçerlidir.
 
 ## Rule
 

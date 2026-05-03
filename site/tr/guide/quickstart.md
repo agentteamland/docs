@@ -41,7 +41,7 @@ atl install software-project-team
 Birkaç saniye içinde:
 
 - Takım, paylaşımlı önbelleğe klonlanır (ilk seferinde).
-- 13 agent, 2 skill (`create-new-project`, `verify-system`) ve 1 rule `.claude/` altına kopya ile yerleşir.
+- 13 agent ve 3 skill (`create-new-project`, `verify-system`, `design-screen`) `.claude/` altına kopya ile yerleşir.
 - `.claude/.team-installs.json` içinde hangi takımların kurulu olduğu kayda geçer.
 
 Artık projenle tam bir .NET + Flutter + React + Docker agent takımı bağlanmış durumda.
@@ -61,7 +61,7 @@ Bu dizinde Claude Code'u aç. Takımın skill'leri slash komut olarak hazır:
 - `/create-new-project MyApp` — tam bir stack'i iskele olarak kur (Aşama 1–5: gather → scaffold → build → verify → commit).
 - `/verify-system` — container, port, uygulama ve pipeline'lar üzerinde uçtan uca sağlık kontrolü.
 
-Ve her agent (api-agent, socket-agent, worker-agent, flutter-agent, react-agent, database-agent, redis-agent, rmq-agent, infra-agent, code-reviewer-agent, project-reviewer-agent, design-system-agent, ux-agent) Claude'un delege edebileceği şekilde kullanımda.
+Ve her agent (api-agent, socket-agent, worker-agent, flutter-agent, react-agent, database-agent, redis-agent, rmq-agent, infra-agent, code-reviewer, project-reviewer, design-system-agent, ux-agent) Claude'un delege edebileceği şekilde kullanımda.
 
 ## 7. Güncel kal
 

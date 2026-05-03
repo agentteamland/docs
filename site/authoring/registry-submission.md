@@ -49,16 +49,30 @@ Your team should be:
    - `name` — must match the `name` in your `team.json`.
    - `url` — the Git HTTPS URL (no trailing `.git` required).
    - `status` — new submissions start at `"community"`. Maintainers promote to `"verified"` after review.
-   - `description` — user-facing one-liner (same as `team.json` `description`).
+   - `description` — user-facing one-liner. **10–200 characters** (`description.maxLength = 200` in the schema). Same value as your `team.json` `description`. Going over 200 is the most common reason a registry PR fails CI.
    - `keywords` — for `atl search` matching.
 
-3. **Open a PR.** CI will validate:
-   - JSON schema conformance
+3. **Validate locally before you push.** The registry repo ships a script that runs the same offline checks CI runs:
+
+   ```bash
+   npm install -g ajv-cli ajv-formats   # one-time; only if you don't already have ajv
+   ./scripts/validate.sh
+   ```
+
+   ::: tip Wire it into git push so you can never push an invalid registry
+   ```bash
+   git config core.hooksPath .githooks   # one-time per clone
+   ```
+   After this, every `git push` that touches `teams.json` or `schemas/` runs `./scripts/validate.sh` automatically and aborts the push if validation fails. Catches the 200-char `description` overflow locally instead of in a failed PR check.
+   :::
+
+4. **Open a PR.** CI will validate:
+   - JSON schema conformance (including the `description` 10–200 char range)
    - The `url` returns 200 when fetching `team.json`
    - The fetched `team.json` validates against the team schema
    - `name` uniqueness (no duplicates in the registry)
 
-4. **Wait for review.** Maintainers check that the team exists, installs, and does what it says. Verified status is granted after review.
+5. **Wait for review.** Maintainers check that the team exists, installs, and does what it says. Verified status is granted after review.
 
 ## Status lifecycle
 

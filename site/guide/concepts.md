@@ -16,15 +16,17 @@ Install a team into a project and its contents appear as copies inside `.claude/
 
 ## Agent
 
-An agent is a Markdown file that defines a role. `api-agent.md`, `flutter-agent.md`, `code-reviewer-agent.md` — each one is a focused personality with its own area of responsibility and its own knowledge base.
+An agent is a Markdown file that defines a role. `api-agent`, `flutter-agent`, `code-reviewer` — each one is a focused personality with its own area of responsibility and its own knowledge base.
 
-The convention for complex agents is the **children pattern**: the top-level `agent.md` is short (identity, scope, principles) and detailed knowledge lives under `children/` as topic-per-file. This keeps the top-level file tight and makes it cheap to update one topic without touching the rest.
+The convention for complex agents is the **children pattern**: the top-level `agent.md` is short (identity, scope, principles) and detailed knowledge lives under `children/` as topic-per-file. This keeps the top-level file tight and makes it cheap to update one topic without touching the rest. Each child file carries a `knowledge-base-summary` frontmatter line that `/save-learnings` lifts into the auto-rebuilt **Knowledge Base** section of `agent.md` — so the index in the parent file is always derived from the children, never hand-edited.
 
 ## Skill
 
 A skill is a user-invocable slash command. `/create-new-project`, `/verify-system`, `/save-learnings`. Skills ship as directories with a `skill.md` at their root; the file describes when to use the skill and what it should do.
 
-Skills can be **global** (shipped via bootstrap) or **team-scoped** (shipped by a specific team and only visible after the team is installed). `/create-new-project` and `/verify-system` are team-scoped because the work they do is always stack-specific. `/brainstorm`, `/rule`, `/save-learnings`, `/wiki` are global because they apply universally.
+Skills mirror the agent shape: complex skills carry a `learnings/` subdirectory of topic-per-file edge cases and accumulated wisdom, with the same `knowledge-base-summary` frontmatter contract. `/save-learnings` rebuilds the **Accumulated Learnings** section of `skill.md` from those frontmatter lines — `learnings/` is to skills what `children/` is to agents.
+
+Skills can be **global** (shipped via bootstrap) or **team-scoped** (shipped by a specific team and only visible after the team is installed). `/create-new-project`, `/verify-system`, and `/design-screen` are team-scoped because the work they do is always stack-specific. `/brainstorm`, `/rule`, `/save-learnings`, `/wiki`, `/create-pr`, `/create-code-diagram` are global because they apply universally.
 
 ## Rule
 
