@@ -59,7 +59,7 @@ Upgrading: rerun the same command. It always pulls the latest release.
 Pinning a specific version:
 
 ```powershell
-$env:ATL_VERSION = 'v0.1.5'
+$env:ATL_VERSION = 'v1.1.4'
 irm https://raw.githubusercontent.com/agentteamland/cli/main/scripts/install.ps1 | iex
 ```
 

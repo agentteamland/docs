@@ -49,16 +49,30 @@ Takımın şunlar olmalı:
    - `name` — `team.json`'daki `name` ile uyuşmalı.
    - `url` — Git HTTPS URL'i (`.git` son eki şart değil).
    - `status` — yeni başvurular `"community"` ile başlar. Bakımcılar inceleme sonrası `"verified"`'a yükseltir.
-   - `description` — kullanıcı-yüzlü tek cümle (`team.json` `description` ile aynı).
+   - `description` — kullanıcı-yüzlü tek cümle. **10–200 karakter** (schema'da `description.maxLength = 200`). `team.json` `description` ile aynı değer. 200'ü aşmak, registry PR'larının CI'da fail olmasının en yaygın sebebidir.
    - `keywords` — `atl search` eşleşmesi için.
 
-3. **PR aç.** CI doğrulayacaklar:
-   - JSON schema uyumu
+3. **Push'tan önce lokalde doğrula.** Registry repo'su, CI'nin koştuğu offline kontrolleri lokalde koşturan bir script ile gelir:
+
+   ```bash
+   npm install -g ajv-cli ajv-formats   # tek seferlik; ajv yoksa
+   ./scripts/validate.sh
+   ```
+
+   ::: tip git push'a bağla; geçersiz registry asla push edemezsin
+   ```bash
+   git config core.hooksPath .githooks   # her clone başına tek seferlik
+   ```
+   Bundan sonra `teams.json` veya `schemas/`'a dokunan her `git push`, `./scripts/validate.sh`'i otomatik koşturur ve doğrulama başarısız olursa push'u iptal eder. 200-karakter `description` taşmasını fail olmuş bir PR check'i yerine lokalde yakalar.
+   :::
+
+4. **PR aç.** CI doğrulayacaklar:
+   - JSON schema uyumu (`description`'ın 10–200 karakter aralığı dahil)
    - `url`'nin `team.json`'u 200 ile getirdiği
    - Getirilen `team.json`'un takım schema'sına uygun olduğu
    - `name` benzersizliği (registry'de çift yok)
 
-4. **İncelemeyi bekle.** Bakımcılar, takımın var olduğunu, kurulduğunu ve söylediğini yaptığını kontrol eder. Verified statüsü inceleme sonrası verilir.
+5. **İncelemeyi bekle.** Bakımcılar, takımın var olduğunu, kurulduğunu ve söylediğini yaptığını kontrol eder. Verified statüsü inceleme sonrası verilir.
 
 ## Statü yaşam döngüsü
 

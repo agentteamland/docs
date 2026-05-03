@@ -59,7 +59,7 @@ Güncelleme: aynı komutu tekrar çalıştır. Her zaman latest'i çeker.
 Belirli sürüme pin'lemek:
 
 ```powershell
-$env:ATL_VERSION = 'v0.1.5'
+$env:ATL_VERSION = 'v1.1.4'
 irm https://raw.githubusercontent.com/agentteamland/cli/main/scripts/install.ps1 | iex
 ```
 
