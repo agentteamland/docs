@@ -1,6 +1,8 @@
 # CLI Overview
 
-`atl` has five commands. All of them operate on the **current project** (the directory you ran `atl` in) unless otherwise noted.
+`atl` has eight commands. The five **user commands** operate on the **current project** (the directory you ran `atl` in) unless otherwise noted. The three **automation commands** are typically wired to Claude Code hooks and run unattended — you'll usually only invoke them manually for setup or troubleshooting.
+
+## User commands
 
 | Command | What it does |
 |---|---|
@@ -9,6 +11,14 @@
 | [`atl remove`](/cli/remove) | Uninstall a team. |
 | [`atl update`](/cli/update) | Pull latest for one or all installed teams. |
 | [`atl search`](/cli/search) | Search the public registry. |
+
+## Automation commands
+
+| Command | What it does |
+|---|---|
+| [`atl setup-hooks`](/cli/setup-hooks) | One-time install/remove of Claude Code hooks (`SessionStart`, `UserPromptSubmit`) that wire up auto-update + learning capture. |
+| `atl session-start` | Composite boot-time wrapper invoked by the `SessionStart` hook (cache pull + symlink→copy migration + auto-refresh + previous-transcript marker scan + atl self-version check). Not normally run by hand. |
+| [`atl learning-capture`](/cli/learning-capture) | Scan Claude Code transcripts for `<!-- learning -->` markers. Invoked by the `SessionStart` wrapper; can also be run manually for testing or backfill. |
 
 ## Global flags
 

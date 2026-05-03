@@ -23,15 +23,18 @@ atl remove starter-extended
 2. Every project-local copy under `.claude/agents/`, `.claude/skills/`, `.claude/rules/` that this team installed is identified by consulting the manifest's per-resource SHA-256 baselines.
 3. **Modification check**: each resource's current SHA-256 is compared with the install-time baseline. If any resource has been locally modified, the CLI prints a `⚠ N resources have local modifications` summary and prompts for confirmation. `--force` bypasses the prompt.
 4. **Manifest-driven allowlist**: only files this team registered are removed. Any user-authored files under `.claude/` (including auto-grown `children/`, `learnings/`, custom skills, journal entries, wiki pages) are **preserved** — they were never registered with `atl`, so they survive the uninstall.
-5. **Inheritance protection**: if the team was a parent of another installed team (via `extends`), `atl remove` refuses unless you pass `--force` — removing a parent would break the child.
-6. `.claude/.team-installs.json` is updated atomically (tmp + rename).
-7. The shared cache is **not** touched. The team's Git clone stays in `~/.claude/repos/agentteamland/` for reuse. To reclaim disk, delete the cache directory manually.
+5. `.claude/.team-installs.json` is updated atomically (tmp + rename).
+6. The shared cache is **not** touched. The team's Git clone stays in `~/.claude/repos/agentteamland/` for reuse. To reclaim disk, delete the cache directory manually.
+
+::: warning Inheritance is not enforced at remove time
+`atl remove` does NOT refuse to remove a team that another installed team extends. If you remove a parent team while a child team still references it, the child's effective resource set will become inconsistent on the next `atl update` or `atl list`. Run `atl list` first to see the inheritance chain — and remove children before parents.
+:::
 
 ## Flags
 
 | Flag | Effect |
 |---|---|
-| `--force` | Skip the modification-check confirmation prompt AND remove even if this team is a parent of another installed team. |
+| `--force` | Skip the modification-check confirmation prompt for projects with locally modified copies. Useful in CI / scripted teardown. |
 
 ## Example — forced removal in CI
 

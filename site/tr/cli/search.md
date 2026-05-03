@@ -17,20 +17,23 @@ atl search dotnet
 ```
 
 ```
-AD                     DURUM      AÇIKLAMA
-─────────────────────────────────────────────────────────────────────────
-software-project-team  verified   .NET 9 API + Flutter + React + tam Docker stack
+Found 1 team(s) matching "dotnet":
+
+  software-project-team@1.2.1 [verified]
+    .NET 9 API + Flutter + React + tam Docker stack
+    https://github.com/agentteamland/software-project-team
+    keywords: dotnet, csharp, flutter, react
 ```
 
-Durum etiketleri:
+Durum etiketleri (`name@version` sonrası köşeli parantezde):
 
-- **`verified`** — AgentTeamLand bakımcıları tarafından incelendi. Temiz kurulması ve konvansiyonlara uyması beklenir.
-- **`community`** — registry'de listeli, henüz incelenmemiş. Çalışır, ama riski sana ait.
-- **`deprecated`** — hâlâ kurulabilir ama artık bakılmıyor. Uygun zamanda göç et.
+- **`[verified]`** — AgentTeamLand bakımcıları tarafından incelendi. Temiz kurulması ve konvansiyonlara uyması beklenir.
+- **`[community]`** — registry'de listeli, henüz incelenmemiş. Çalışır, ama riski sana ait.
+- **`[deprecated]`** — hâlâ kurulabilir ama artık bakılmıyor. Uygun zamanda göç et.
 
-## Boş sorgu
+## Sorgu zorunlu
 
-Sorgu vermeden `atl search` çalıştırmak registry'nin tamamını alfabetik olarak yazar.
+`atl search` tam olarak bir positional argüman ister. Sorgu vermeden çalıştırmak usage hatası ile çıkar — tüm katalog için [GitHub'daki registry'ye](https://github.com/agentteamland/registry/blob/main/teams.json) bak veya `atl search team` gibi geniş bir keyword kullan.
 
 ## Çevrimdışı davranış
 
