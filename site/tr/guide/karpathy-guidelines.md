@@ -1,115 +1,115 @@
-# Karpathy guidelines
+# Karpathy ilkeleri
 
-Platform tarafından her Claude Code session'ına yüklenen davranış rehberleri. Yaygın LLM kodlama hatalarını azaltır — gizlenen varsayımlar, overengineering, drive-by edit'ler ve muğlak execution.
+Platform tarafından her Claude Code oturumuna yüklenen davranış rehberleri. Yaygın LLM kodlama hatalarını azaltır — gizlenmiş varsayımlar, fazla karmaşıklaştırma, geçerken yapılan düzenlemeler ve muğlak yürütme.
 
-2026-04-22'de AgentTeamLand `core@1.1.0`'a platform-wide rule olarak eklendi, böylece her mevcut ve gelecekteki takım otomatik miras alır (per-team duplication yok). Kaynak: [forrestchang/andrej-karpathy-skills](https://github.com/forrestchang/andrej-karpathy-skills) — [Andrej Karpathy'nin LLM kodlama tuzakları üzerine gözlemlerinden](https://x.com/karpathy/status/2015883857489522876) türetildi. MIT-licensed.
+2026-04-22 tarihinde AgentTeamLand `core@1.1.0` sürümüne platform genelinde bir kural olarak eklendi; böylece mevcut ve gelecekteki her takım onu kendiliğinden miras alır (takım başına yinelenen tanım yok). Kaynak: [forrestchang/andrej-karpathy-skills](https://github.com/forrestchang/andrej-karpathy-skills) — [Andrej Karpathy'nin LLM kodlama tuzakları üzerine gözlemlerinden](https://x.com/karpathy/status/2015883857489522876) türetildi. MIT lisanslı.
 
-## Neden platform seviyesinde bir kural
+## Neden platform seviyesinde bir kural?
 
-Kendi haline bırakılan LLM'ler şunları yapma eğiliminde:
+Kendi başına bırakılan LLM'ler şu eğilimleri gösterir:
 
-- **Confusion'larını gizlerler** sormak yerine ("birini seçeyim")
-- **Overengineer ederler** ("ileride lazım olur diye esnek bir abstraction")
-- **Drive-by edit yaparlar** istenen değişikliği yaparken yan koddaki şeyleri de düzenlerler
-- **Muğlak execute ederler** net success kriteri olmadan
+- Sormak yerine **kafa karışıklığını gizlemek** ("birini seçeyim").
+- **Fazla karmaşıklaştırmak** ("ileride lazım olur diye esnek bir soyutlama").
+- İstenen değişikliği yaparken yan koda da dokunarak **geçerken düzenleme yapmak**.
+- Net başarı kriteri olmadan **muğlak yürütmek**.
 
-Bu dört pattern observable failure mode — vibe değil. Karpathy'nin ilkeleri bunları doğrudan hedefler. Her session'a yüklemek friction'ı kaydırır: trivial task'larda biraz hız maliyeti getirir ama non-trivial olanlarda gerçek zaman kazandırır (daha az rewrite, daha az scope creep, daha az "dur, neden o dosyayı da değiştirdin?" anı).
+Bu dört desen gözlenebilir başarısızlık kalıplarıdır — havadan değil. Karpathy'nin ilkeleri bunları doğrudan hedefler. Onları her oturuma yüklemek, sürtünmenin yerini değiştirir: önemsiz görevlerde biraz hız maliyeti getirir ama önemsiz olmayanlarda gerçek zaman kazandırır (daha az yeniden yazım, daha az kapsam kayması, daha az "dur, neden o dosyayı da değiştirdin?" anı).
 
-> **Tradeoff:** Bu rehberler hıza karşı dikkati öne çıkarır. Trivial task'lar için yargı kullan.
+> **Ödünleşim:** Bu rehberler hız yerine dikkati öne çıkarır. Önemsiz görevlerde kendi yargını kullan.
 
 ## Dört ilke
 
-### 1. Think Before Coding
+### 1. Kodlamadan Önce Düşün
 
-> **Varsayma. Confusion'ı gizleme. Tradeoff'ları yüzeye çıkar.**
+> **Varsayma. Kafa karışıklığını gizleme. Ödünleşimleri yüzeye çıkar.**
 
-Implement etmeden önce:
+Uygulamaya geçmeden önce:
 
 - Varsayımlarını açıkça belirt. Emin değilsen sor.
-- Birden fazla yorum varsa, sun — sessizce seçme.
-- Daha basit bir yaklaşım varsa, söyle. Gerektiğinde push back et.
-- Bir şey net değilse, dur. Neyin kafa karıştırıcı olduğunu adlandır. Sor.
+- Birden çok yorum mümkünse hepsini sun — sessizce birini seçme.
+- Daha basit bir yaklaşım varsa söyle. Gerektiğinde geri it.
+- Bir şey net değilse dur. Neyin kafa karıştırıcı olduğunu adlandır. Sor.
 
-### 2. Simplicity First
+### 2. Önce Sadelik
 
-> **Problemi çözen minimum kod. Speculative hiçbir şey.**
+> **Sorunu çözen en az kod. Speküle hiçbir şey yok.**
 
-- İstenen ötesinde feature yok.
-- Tek-kullanımlık kod için abstraction yok.
-- İstenmemiş "esneklik" veya "configurability" yok.
-- İmkansız senaryolar için error handling yok.
-- 200 satır yazıyorsan ve 50 olabilirse, yeniden yaz.
+- İstenenin ötesinde özellik yok.
+- Tek kullanımlık kod için soyutlama yok.
+- İstenmemiş "esneklik" ya da "yapılandırılabilirlik" yok.
+- İmkânsız senaryolar için hata yönetimi yok.
+- 200 satır yazıyorsan ve 50 satırla olabiliyorsa, yeniden yaz.
 
-Self-test: "Senior engineer bunu overcomplicated bulur muydu?" Evet ise, basitleştir.
+Kendi kendine test: "Kıdemli bir mühendis buna fazla karmaşık der miydi?" Evet ise sadeleştir.
 
-### 3. Surgical Changes
+### 3. Cerrahi Değişiklikler
 
 > **Yalnızca dokunman gerekene dokun. Sadece kendi pisliğini temizle.**
 
 Mevcut kodu düzenlerken:
 
-- Yan koda, comment'lara veya formatting'e "iyileştirme" yapma.
-- Bozuk olmayan şeyleri refactor etme.
-- Sen farklı yapardın bile olsa mevcut style'ı eşle.
-- İlgisiz dead code görürsen, bahset — silme.
+- Yan koda, yorumlara ya da biçimlendirmeye "iyileştirme" yapma.
+- Bozuk olmayan şeyleri yeniden tasarlama.
+- Sen farklı yapacak olsan bile mevcut biçeme uy.
+- İlgisiz ölü kod fark edersen söyle — silme.
 
-Değişikliklerin orphan yarattığında:
+Değişikliklerin yetim parçalar bıraktığında:
 
-- SENİN değişikliklerinin kullanılmaz hale getirdiği import / variable / function'ları kaldır.
-- İstenmedikçe önceden var olan dead code'u kaldırma.
+- SENİN değişikliklerinin kullanılmaz hale getirdiği `import`, değişken ya da işlevleri kaldır.
+- İstenmedikçe önceden var olan ölü kodu silme.
 
-Test: değişen her satır kullanıcının request'ine doğrudan trace etmeli.
+Sınama: değişen her satır doğrudan kullanıcının isteğine kadar izlenebilmeli.
 
-### 4. Goal-Driven Execution
+### 4. Hedef Odaklı Yürütme
 
-> **Success kriteri tanımla. Doğrulanana kadar loop'la.**
+> **Başarı kriterini tanımla. Doğrulanana kadar döngüde kal.**
 
-Task'ları doğrulanabilir hedeflere dönüştür:
+Görevleri doğrulanabilir hedeflere dönüştür:
 
-| Muğlak | Goal-driven |
+| Muğlak | Hedef odaklı |
 |---|---|
-| "Validation ekle" | "Geçersiz input için test yaz, sonra geçir" |
-| "Bug'ı düzelt" | "Bug'ı reproduce eden test yaz, sonra geçir" |
-| "X'i refactor et" | "Önce ve sonra test'lerin geçtiğini garanti et" |
+| "Doğrulama ekle" | "Geçersiz girdiler için test yaz, sonra geçmesini sağla" |
+| "Hatayı düzelt" | "Hatayı yeniden üreten bir test yaz, sonra geçmesini sağla" |
+| "X'i yeniden tasarla" | "Öncesinde ve sonrasında testlerin geçtiğinden emin ol" |
 
-Çok-adımlı task'lar için kısa bir plan belirt:
+Çok adımlı görevlerde kısa bir plan belirt:
 
 ```
-1. [Adım] → doğrulama: [check]
-2. [Adım] → doğrulama: [check]
-3. [Adım] → doğrulama: [check]
+1. [Adım] → doğrulama: [denetim]
+2. [Adım] → doğrulama: [denetim]
+3. [Adım] → doğrulama: [denetim]
 ```
 
-Güçlü success kriterleri agent'ın bağımsız loop'lamasına izin verir. Zayıf kriterler ("çalıştır işte") sürekli netleştirme gerektirir.
+Güçlü başarı kriterleri ajanın bağımsız döngü kurmasına izin verir. Zayıf kriterler ("çalıştır işte") sürekli netleştirme gerektirir.
 
-## Çalışma sinyalleri
+## Etkili olduğunun sinyalleri
 
-Bu rehberlerin etkili olduğunu şuradan anlarsın:
+Bu rehberlerin işe yaradığını şuradan anlarsın:
 
-- **Diff'ler küçülür.** PR başına daha az gereksiz değişiklik.
-- **Rewrite'lar kaybolur.** "Aslında, basitleştir lütfen"den daha az gidip-gel.
-- **Netleştirme soruları** öne gelir, yanlış implementation'dan sonra değil.
+- **Farklar küçülür.** PR başına daha az gereksiz değişiklik.
+- **Yeniden yazımlar kaybolur.** "Aslında, lütfen sadeleştir" türünden daha az gidip gelme.
+- **Netleştirme soruları** önden gelir; yanlış uygulamadan sonra değil.
 
 Atlandığını şuradan anlarsın:
 
-- Agent varsayım yapar ve sonra özür diler.
-- Agent tek call site'lı bir abstraction ship eder.
-- Agent'ın diff'i ilgisiz formatting değişiklikleri içerir.
-- Agent'ın planı "yol giderken çözerim".
+- Ajan varsayım yapar ve sonradan özür diler.
+- Ajan, tek çağrı yeri olan bir soyutlama yayımlar.
+- Ajanın farkı ilgisiz biçimlendirme değişiklikleri içerir.
+- Ajanın planı "yol giderken çözerim" şeklindedir.
 
-## Projene nasıl ulaşır
+## Projene nasıl ulaşır?
 
-Kural [`core/rules/karpathy-guidelines.md`](https://github.com/agentteamland/core/blob/main/rules/karpathy-guidelines.md)'de yaşar. [`atl install`](/tr/cli/install) çalıştırmış her proje (herhangi bir takım) `core` cache üzerinden auto-install alır, ve `atl update` [project-local copy refresh modeli](/tr/cli/update#neyi-g%C3%BCnceller) üzerinden günceli tutar.
+Kuralın kendisi [`core/rules/karpathy-guidelines.md`](https://github.com/agentteamland/core/blob/main/rules/karpathy-guidelines.md) dosyasında yaşar. [`atl install`](/tr/cli/install) komutunu (herhangi bir takım için) çalıştırmış her proje, `core` önbelleği üzerinden bu kuralı kendiliğinden alır; `atl update` ise [proje-yerel kopya yenileme modeli](/tr/cli/update#what-it-updates) üzerinden onu güncel tutar.
 
-Kural her session başında Claude'un context'ine yüklenir ([knowledge-system architecture](https://github.com/agentteamland/core/blob/main/rules/knowledge-system.md) gereği) — per-prompt invocation gerekmez.
+Kural her oturum başında Claude'un bağlamına yüklenir (bkz. [knowledge-system mimarisi](https://github.com/agentteamland/core/blob/main/rules/knowledge-system.md)) — istem başına ayrı bir çağrıya gerek yoktur.
 
-## Daha derinlere
+## Daha derinine
 
-- Upstream paired examples (her ilke için yan-yana wrong/right kod): [EXAMPLES.md](https://github.com/forrestchang/andrej-karpathy-skills/blob/main/EXAMPLES.md)
-- Orijinal Karpathy thread: [@karpathy on X](https://x.com/karpathy/status/2015883857489522876)
-- Kuralın source-of-truth'ı (session'larına yüklenen): [core/rules/karpathy-guidelines.md](https://github.com/agentteamland/core/blob/main/rules/karpathy-guidelines.md)
+- Üst kaynaktaki yan yana doğru-yanlış kod örnekleri (her ilke için): [EXAMPLES.md](https://github.com/forrestchang/andrej-karpathy-skills/blob/main/EXAMPLES.md)
+- Karpathy'nin orijinal ileti dizisi: [@karpathy on X](https://x.com/karpathy/status/2015883857489522876)
+- Kuralın kaynak doğruluğu (oturumlarına yüklenen sürüm): [core/rules/karpathy-guidelines.md](https://github.com/agentteamland/core/blob/main/rules/karpathy-guidelines.md)
 
 ## İlgili
 
-- [team-repo-maintenance](/tr/authoring/team-repo-maintenance) — shared repo work'ünde bu kodlama rehberleriyle eşleşen governance disiplini
-- [Kavramlar: Rule](/tr/guide/concepts#rule) — rule'lar nedir ve nasıl yüklenir
+- [team-repo-maintenance](/tr/authoring/team-repo-maintenance) — paylaşılan depo işlerinde bu kodlama rehberleriyle birlikte uygulanan yönetişim disiplini.
+- [Kavramlar: Kural](/tr/guide/concepts#rule) — kuralların ne olduğu ve nasıl yüklendiği.

@@ -1,22 +1,22 @@
-# Claude Code conventions
+# Claude Code sözleşmeleri
 
-`atl` ve kardeş skill'lerin session'lar arası state'i koordine etmek için `CLAUDE.md` içinde kullandığı marker-block konvansiyonları. Bunlar Claude Code'un project-instruction mekanizması tarafından auto-loaded HTML-comment-delimited bloklar — render edilmiş Markdown'da görünmez, Claude dosyayı okuduğunda kaçırılması imkansız.
+`atl` ve onunla birlikte gelen becerilerin oturumlar arasında durumu eşgüdümlemek için `CLAUDE.md` içinde kullandığı işaretçi blok sözleşmeleri. Bunlar, Claude Code'un proje yönergesi mekanizması tarafından kendiliğinden yüklenen, HTML yorumlarıyla sınırlanan bloklardır — görüntülenmiş Markdown içinde görünmezler, Claude dosyayı okuduğunda kaçırılması olanaksızdır.
 
-Aynı pattern'i kendi `CLAUDE.md` dosyalarında da kullanabilirsin. Bloklar sadece konvansiyon — özel parser yok. Comment delimiter'ları onları programatik olarak find/update/remove için güvenli yapar.
+Aynı deseni kendi `CLAUDE.md` dosyalarında sen de kullanabilirsin. Bloklar yalnızca bir sözleşmedir — özel bir ayrıştırıcı yoktur. Yorum sınırlayıcıları, blokları program yoluyla bulmak, güncellemek ve kaldırmak için güvenli kılar.
 
 ## Üç blok
 
 | Blok | Yazan | Amaç |
 |---|---|---|
-| `<!-- wiki:index -->` | [`/save-learnings`](/tr/skills/save-learnings) | `.claude/wiki/` sayfaları için auto-rebuilt içindekiler tablosu. Project context ile yüklenir, Claude'a sıfır cost'ta bilgi haritası verir. |
-| `<!-- brainstorm:active -->` | [`/brainstorm start`](/tr/skills/brainstorm) ve [`/brainstorm done`](/tr/skills/brainstorm) | Aktif brainstorm topic'lerini project context'e pin'ler ki bir sonraki session kaçırmasın. |
-| `<!-- pending-implementation -->` | Brainstorm `done` akışı | Bir brainstorm'un X'i decide ettiği ama implementation'ın henüz ship etmediği bir sonraki session'a hatırlatır. |
+| `<!-- wiki:index -->` | [`/save-learnings`](/tr/skills/save-learnings) | `.claude/wiki/` sayfaları için kendiliğinden yeniden inşa edilen içindekiler tablosu. Proje bağlamıyla yüklenir, Claude'a sıfır maliyetle bilgi haritasını sunar. |
+| `<!-- brainstorm:active -->` | [`/brainstorm start`](/tr/skills/brainstorm) ve [`/brainstorm done`](/tr/skills/brainstorm) | Etkin beyin fırtınası konularını proje bağlamına sabitler; bir sonraki oturum bunları kaçıramaz. |
+| `<!-- pending-implementation -->` | Beyin fırtınası `done` akışı | Bir beyin fırtınasının X kararını verdiğini ama uygulamasının henüz yayımlanmadığını bir sonraki oturuma anımsatır. |
 
-Üçü de aynı `<!-- block:start --> ... <!-- block:end -->` delimiter pattern'ini kullanır. Strict anlamda hiçbirinin parser'ı yok — konvansiyon, syntax değil. Ama konvansiyon basit `sed`/regex ile find/update/remove için yeterince tutarlı.
+Üçü de aynı `<!-- block:start --> ... <!-- block:end -->` sınırlayıcı desenini kullanır. Hiçbirinin katı anlamda bir ayrıştırıcısı yoktur — sözdizim değil, sözleşmedir. Ama sözleşme, gerektiğinde basit `sed` ya da düzenli ifadeyle bulmak, güncellemek ve kaldırmak için yeterince tutarlıdır.
 
 ## `<!-- wiki:index -->` — bilgi haritası
 
-`.claude/wiki/`'deki her değişiklikten sonra `/save-learnings` tarafından auto-rebuilt. `CLAUDE.md`'nin tepesine yakın yaşar, H1 + intro'dan sonra:
+`.claude/wiki/` dizinindeki her değişiklikten sonra `/save-learnings` tarafından yeniden inşa edilir. `CLAUDE.md` dosyasının üst kısmına yakın, H1 ve giriş paragrafından sonra yaşar:
 
 ```markdown
 <!-- wiki:index:start -->
@@ -34,13 +34,13 @@ Knowledge lives in `.claude/wiki/` (current truth, topic-organized) and `.claude
 <!-- wiki:index:end -->
 ```
 
-Her entry tek satır: `- [topic](.claude/wiki/topic.md) — one-line summary` (filename'e göre alfabetik sıralı). Özet her wiki sayfasının ilk non-frontmatter, non-heading satırından gelir.
+Her madde tek satırdır: `- [topic](.claude/wiki/topic.md) — tek satırlık özet` (dosya adına göre alfabetik sıralı). Özet, her wiki sayfasının frontmatter ve başlık dışındaki ilk satırından alınır.
 
-**Neden marker block, sadece normal section değil:** blok programatik olarak rebuild ediliyor. Marker'ların içine yapılan hand-edit'ler bir sonraki `/save-learnings` çalıştırmasında üzerine yazılır. Bir topic eklemek için: `CLAUDE.md`'yi doğrudan edit ETME — wiki sayfasını topic title ile oluştur, sonra `/save-learnings` index'i rebuild eder.
+**Neden normal bir bölüm değil de işaretçi bloku:** blok program yoluyla yeniden inşa ediliyor. İşaretçilerin içine yapılan elle düzenlemeler bir sonraki `/save-learnings` çalıştırmasında üzerine yazılır. Bir konu eklemek için: `CLAUDE.md` dosyasını doğrudan DÜZENLEME — wiki sayfasını konu başlığıyla oluştur; ardından `/save-learnings` dizini yeniden inşa eder.
 
-## `<!-- brainstorm:active -->` — aktif topic pin
+## `<!-- brainstorm:active -->` — etkin konu sabitleyici
 
-`/brainstorm start` tarafından yazılır, `/brainstorm done` tarafından kaldırılır. Scope'un `CLAUDE.md`'sinin (project) veya `~/.claude/CLAUDE.md`'sinin (global) veya team `README.md`'sinin (team-scope) tepesine yakın yaşar:
+`/brainstorm start` tarafından yazılır, `/brainstorm done` tarafından kaldırılır. Kapsamın `CLAUDE.md` dosyasının (proje), `~/.claude/CLAUDE.md` dosyasının (global) ya da takım `README.md` dosyasının (takım kapsamı) üst kısmına yakın yaşar:
 
 ```markdown
 <!-- brainstorm:active:start -->
@@ -52,15 +52,15 @@ These topics have an in-progress brainstorm — read the file before making any 
 <!-- brainstorm:active:end -->
 ```
 
-Birden fazla aktif brainstorm aynı blokta bullet olarak yan yana yaşar. `done` akışı sadece tamamlanan brainstorm için bullet'ı kaldırır; bullet listesi boşalırsa, tüm blok kaldırılır (geride bayatlamış "Active brainstorms" başlığı kalmaz).
+Birden çok etkin beyin fırtınası, aynı blok içinde madde olarak yan yana yaşar. `done` akışı yalnızca tamamlanmakta olan beyin fırtınasının maddesini kaldırır; madde listesi boşalırsa blok tümüyle kaldırılır (ortada bayatlamış bir "Active brainstorms" başlığı kalmaz).
 
-**Bu konvansiyon neden var:** brainstorm rule'unun "her session başında `.claude/brain-storms/`'u `status: active` dosyalar için tara" adımı Claude'un her session başında bunu yapmayı hatırlamasına bağlıydı. Aktif brainstorm'u `CLAUDE.md`'ye pin'lemek auto-load yapar — kaçırılması imkansız. Directory scan artık bir redundancy mekanizması, primary signal değil.
+**Bu sözleşme neden var:** beyin fırtınası kuralının "her oturum başında `.claude/brain-storms/` dizinini `status: active` dosyalar için tara" adımı, Claude'un her oturum başında bunu yapmayı anımsamasına bağlıydı. Etkin beyin fırtınasını `CLAUDE.md` dosyasına sabitlemek, kendiliğinden yüklenmesini sağlar — kaçırılması olanaksızdır. Dizin taraması artık birincil sinyal değil, bir yedeklilik düzeneğidir.
 
-`brainstorm@1.1.0`'da ship oldu.
+`brainstorm@1.1.0` ile yayımlandı.
 
-## `<!-- pending-implementation -->` — decided-but-unshipped hatırlatma
+## `<!-- pending-implementation -->` — kararı verilmiş ama yayımlanmamış anımsatıcı
 
-Bir brainstorm'un `done` akışı henüz implement edilmemiş bir değişikliğe karar verdiğinde yazılır. Bir sonraki session'a kararın var olduğunu ve işin sıraya alındığını hatırlatır:
+Bir beyin fırtınasının `done` akışı henüz hayata geçirilmemiş bir değişikliğe karar verdiğinde yazılır. Bir sonraki oturuma kararın var olduğunu ve işin sıraya alındığını anımsatır:
 
 ```markdown
 <!-- pending-implementation:start -->
@@ -72,18 +72,18 @@ Brainstorms have decided these but the work hasn't shipped yet:
 <!-- pending-implementation:end -->
 ```
 
-Implementation land ettiğinde kaldırılır (tipik olarak değişikliği ship eden PR tarafından).
+Uygulama yayımlandığında kaldırılır (tipik olarak değişikliği yayımlayan PR tarafından).
 
-**Bu neden önemli:** hatırlatma olmadan, tamamlanmış brainstorm'lar `.claude/docs/`'de haftalarca otururken implementation diğer iş'in arkasında sıraya alınır. Pin sırayı görünür tutar.
+**Bu neden önemli:** anımsatıcı olmadan, tamamlanmış beyin fırtınaları `.claude/docs/` dizininde haftalarca otururken uygulama başka işlerin arkasında sırada bekleyebilir. Sabitleme, sırayı görünür kılar.
 
 ## Bloklar nerede yaşar
 
-Bir projenin kök `CLAUDE.md`'sinde:
+Bir projenin kök `CLAUDE.md` dosyasında:
 
 ```markdown
 # Project Name
 
-Kısa intro paragrafı.
+Kısa giriş paragrafı.
 
 <!-- brainstorm:active:start -->
 ## ⚠️ Active brainstorms
@@ -101,54 +101,54 @@ Kısa intro paragrafı.
 <!-- wiki:index:end -->
 
 ## What this is
-... (normal CLAUDE.md content'in geri kalanı)
+... (normal CLAUDE.md içeriğinin geri kalanı)
 ```
 
-Sıra visual hierarchy için önemli (en urgent aktif brainstorm → pending implementation queue → genel knowledge map → free-form content), ama parser sıraya aldırış etmez — sadece comment delimiter'larına.
+Sıra, görsel hiyerarşi için önemlidir (en aciliyle başla: etkin beyin fırtınaları → kararı verilmiş ama yayımlanmamış kuyruğu → genel bilgi haritası → serbest biçimli içerik), ama ayrıştırıcı için sıranın önemi yoktur — yalnızca yorum sınırlayıcıları sayılır.
 
-Team repo'larda (`~/.claude/repos/agentteamland/{team}/`), aynı bloklar `CLAUDE.md` yerine `README.md`'de yaşayabilir (team `README.md`, team-scope iş için aynı loaded-by-Claude rolünü oynar).
+Takım depolarında (`~/.claude/repos/agentteamland/{team}/`) aynı bloklar `CLAUDE.md` yerine `README.md` dosyasında yaşayabilir (takım kapsamlı iş için takım `README.md`, Claude tarafından yüklenen aynı rolü üstlenir).
 
-## Kendi marker block'unu ekle
+## Kendi işaretçi bloğunu ekle
 
-Pattern sadece konvansiyon. Kendi otomatize bölümünü eklemek için:
+Bu desen yalnızca bir sözleşmedir. Kendi otomatik bölümünü eklemek için:
 
-1. Unique bir blok adı seç (örn. `<!-- ci-status -->`).
-2. Auto-rebuilt content'ini `<!-- block:start --> ... <!-- block:end -->`'a sar.
-3. Script'inin her rebuild'de bloğu find/replace etmesini sağla.
+1. Benzersiz bir blok adı seç (örneğin `<!-- ci-status -->`).
+2. Yeniden inşa edilecek içeriğini `<!-- block:start --> ... <!-- block:end -->` arasına sar.
+3. Betiğinin her yeniden inşada bloğu bulup yerine yazmasını sağla.
 
-Örneğin, basit bir "current sprint" bloğu:
+Örneğin, basit bir "geçerli sprint" bloğu:
 
 ```markdown
 <!-- sprint:start -->
-## 🏃 Current sprint
+## 🏃 Geçerli sprint
 
-Sprint 5 — Phase 1.D-η — concept pages.
-- [ ] knowledge-system page (EN + TR)
-- [ ] children-and-learnings page (EN + TR)
+Sprint 5 — Phase 1.D-η — kavram sayfaları.
+- [ ] knowledge-system sayfası (EN + TR)
+- [ ] children-and-learnings sayfası (EN + TR)
 - ...
 <!-- sprint:end -->
 ```
 
-Sprint adı + checklist input olarak alan ve `CLAUDE.md`'deki blok content'ini değiştiren bir script ile update et. Project context ile otomatik yüklenir.
+Sprint adını ve kontrol listesini girdi olarak alıp `CLAUDE.md` içindeki blok içeriğini değiştiren bir betikle güncelle. Proje bağlamıyla birlikte kendiliğinden yüklenir.
 
-## Neden HTML comment
+## Neden HTML yorumu?
 
-Plain markdown başlıkları (`## Active brainstorms`) visual section olarak çalışırdı, ama:
+Düz Markdown başlıkları (`## Active brainstorms`) görsel bölüm olarak iş görürdü, ama:
 
-- İçinde hand-edit yapmak auto-rebuild'i bozabilir
-- Bir regex find/replace heading-aware olmak zorunda kalır (kırılgan)
-- Kullanıcı related-but-different content ile gerçek bir "Active brainstorms" section yazabilir
+- İçinde elle düzenleme yapmak yeniden inşayı bozabilir.
+- Düzenli ifade tabanlı bul-değiştir, başlık duyarlı olmak zorunda kalırdı (kırılgan).
+- Kullanıcı, ilgili ama farklı içerikle gerçek bir "Active brainstorms" bölümü yazabilir.
 
-HTML comment'lar:
+HTML yorumları:
 
-- Render edilmiş Markdown'da görünmez (blok boş / ilgili olmadığında visual clutter yok)
-- Basit regex ile find/update/remove kolay (heading-parser gerekmez)
-- İnsan tarafından yazılan section'lardan ayrı (namespace çakışması yok)
-- Claude Code'un project-instruction mekanizması tarafından auto-loaded (Claude `<!-- -->` framing'ine rağmen okur)
+- Görüntülenmiş Markdown'da görünmezler (blok boş ya da ilgisiz olduğunda görsel kalabalık olmaz).
+- Basit düzenli ifadeyle bulmak, güncellemek ve kaldırmak kolaydır (başlık ayrıştırıcısı gerekmez).
+- İnsan eliyle yazılan bölümlerden ayrıdır (ad alanı çakışması olmaz).
+- Claude Code'un proje yönergesi mekanizması tarafından kendiliğinden yüklenir (Claude, `<!-- -->` çerçevesine karşın okur).
 
 ## İlgili
 
-- [`/brainstorm`](/tr/skills/brainstorm) — `<!-- brainstorm:active -->` bloğunu yazar/kaldırır
-- [`/save-learnings`](/tr/skills/save-learnings) — `<!-- wiki:index -->` bloğunu yazar
-- [Knowledge system](/tr/guide/knowledge-system) — wiki:index bloğunun ne'yi index'lediği
-- [Kavramlar: Skill](/tr/guide/concepts#skill) — bu konvansiyonların geniş resme nereye oturduğu
+- [`/brainstorm`](/tr/skills/brainstorm) — `<!-- brainstorm:active -->` bloğunu yazar ve kaldırır.
+- [`/save-learnings`](/tr/skills/save-learnings) — `<!-- wiki:index -->` bloğunu yazar.
+- [Bilgi sistemi](/tr/guide/knowledge-system) — wiki:index bloğunun neyi indekslediği.
+- [Kavramlar: Beceri](/tr/guide/concepts#skill) — bu sözleşmelerin geniş resme nereye oturduğu.

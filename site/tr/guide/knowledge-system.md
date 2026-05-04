@@ -1,111 +1,111 @@
-# Knowledge system
+# Bilgi sistemi
 
-`atl` kullanan bir projede bilginin nasıl organize edildiği. İki katman: **journal** (tarih-tabanlı tarihsel kayıt) ve **wiki** (topic-tabanlı güncel gerçek). Hepsi bu. İki katman. Daha fazla ekleme.
+`atl` kullanan bir projede bilginin nasıl düzenlendiği. İki katman: **Journal** (tarih tabanlı tarihsel kayıt) ve **Wiki** (konu tabanlı güncel doğru). Hepsi bu. İki katman. Üzerine ekleme.
 
-Kanonik kural [`core/rules/knowledge-system.md`](https://github.com/agentteamland/core/blob/main/rules/knowledge-system.md)'de yaşar. Bu sayfa kullanıcıya yönelik özet.
+Kanonik kuralın kendisi [`core/rules/knowledge-system.md`](https://github.com/agentteamland/core/blob/main/rules/knowledge-system.md) dosyasında yaşar. Bu sayfa kullanıcıya yönelik özettir.
 
-(`core@1.8.0`'da `memory-system`'den yeniden adlandırıldı, post-Q4 gerçeğini yansıtmak için: artık ayrı bir "memory" katmanı yok. İki tarih-tabanlı katman — agent memory + journal — [self-updating-learning-loop](https://github.com/agentteamland/workspace/blob/main/.claude/docs/self-updating-learning-loop.md) Q4'te tek bir `journal/` katmanına merge edildi. Önceki dosya adı yanıltıcıydı.)
+(`core@1.8.0` sürümünde `memory-system` adından yeniden adlandırıldı; Q4 sonrası gerçekliği yansıtmak için: artık ayrı bir "memory" katmanı yok. İki tarih tabanlı katman — `agent-memory` ve `journal` — [self-updating-learning-loop](https://github.com/agentteamland/workspace/blob/main/.claude/docs/self-updating-learning-loop.md) Q4'te tek bir `journal/` katmanına birleştirildi. Önceki dosya adı yanıltıcıydı.)
 
-## İki katman bir bakışta
+## İki katmana bir bakış
 
-| Katman | Yer | Amaç | Update style |
+| Katman | Konum | Amaç | Güncelleme biçimi |
 |---|---|---|---|
-| **Journal** | `.claude/journal/{YYYY-MM-DD}_{agent}.md` | Tarih-tabanlı tarihsel kayıt. Per-agent learning history VE inter-agent sinyaller (Q4'te merge edildi — pratikte redundant). | Append-only |
-| **Wiki** | `.claude/wiki/{topic}.md` | Topic-tabanlı güncel gerçek. ŞU AN doğru olanı yansıtır; eski gerçekler değiştirilir, append edilmez. | Replace / update |
+| **Journal** | `.claude/journal/{YYYY-MM-DD}_{agent}.md` | Tarih tabanlı tarihsel kayıt. Hem ajan başına öğrenme geçmişi HEM de ajanlar arası sinyaller (Q4'te birleştirildi — pratikte yedekliydiler). | Yalnızca eklemeli |
+| **Wiki** | `.claude/wiki/{topic}.md` | Konu tabanlı güncel doğru. ŞU AN doğru olanı yansıtır; eski doğrular eklenmez, değiştirilir. | Yerine yazma / güncelleme |
 
 Farklı paradigmalar, farklı amaçlar:
 
-- **Journal** "zaman içinde ne oldu?" sorusunu yanıtlar (kronolojik narrative)
-- **Wiki** "şu an ne doğru?" sorusunu yanıtlar (topic-tabanlı snapshot)
+- **Journal** "zaman içinde ne oldu?" sorusunu yanıtlar (kronolojik anlatı).
+- **Wiki** "şu an ne doğru?" sorusunu yanıtlar (konu tabanlı anlık görüntü).
 
-İkisini de okuyabilirsin; mutually exclusive değiller. Ama farklı yazılırlar.
+İkisini de okuyabilirsin; birbirini dışlamazlar. Ama farklı yazılırlar.
 
-## Journal — append, asla edit etme
+## Journal — ekle, asla düzenleme
 
-Filename: `{YYYY-MM-DD}_{agent-name}.md`. Aynı tarihte birden fazla agent → birden fazla dosya. Aynı agent günde birden fazla → tek dosya, sub-heading'lerle.
+Dosya adı: `{YYYY-MM-DD}_{agent-name}.md`. Aynı tarihte birden çok ajan → birden çok dosya. Aynı ajan gün içinde birkaç kez → tek dosya, alt başlıklarla.
 
-Buraya gider:
+Buraya şunlar girer:
 
-- Olanların tarih-stamped narrative'i: keşifler, kararlar, bug fix'ler, ne çalıştı, ne çalışmadı
-- Cross-agent notları ("X'e bir sonra dokunan için: …")
-- Auto-created artifact listeleri ("bu session wiki sayfası Y, agent children dosyası Z oluşturdu")
-- User-approved structural değişiklikler (yeni skill / rule / agent kararları ve red'leri)
+- Olup biteni tarihleyen anlatı: keşifler, kararlar, hata düzeltmeleri, neyin işe yaradığı, neyin yaramadığı.
+- Ajanlar arası notlar ("X'e sıradaki dokunan için: …").
+- Otomatik oluşturulan üretim listeleri ("bu oturum Y wiki sayfasını ve Z ajan-çocuk dosyasını oluşturdu").
+- Kullanıcı onaylı yapısal değişiklikler (yeni beceri / kural / ajan kararları ve reddedilenleri).
 
 Kurallar:
 
-- **Append-only.** Mevcut entry'ler edit edilmez; yeni entry'ler sona gider.
-- **Idempotency:** [`/save-learnings`](/tr/skills/save-learnings) bir journal bullet yazdığında, `(kind + topic + body)`'yi hash'ler ve aynı tarihteki diğer `.claude/journal/*.md` dosyalarında zaten olan duplicate'leri atlar.
+- **Yalnızca eklemeli.** Mevcut kayıtlar düzenlenmez; yenileri sona eklenir.
+- **İdempotenlik:** [`/save-learnings`](/tr/skills/save-learnings) bir günlük maddesi yazdığında `(kind + topic + body)` üçlüsünü hashler ve aynı dosyada ya da aynı tarihli `.claude/journal/*.md` dosyalarında zaten bulunan yinelenenleri atlar.
 - **Asla silinmez** (tarihsel kayıt).
-- **`*.local.md` filename pattern gitignored** — gerçekten private content için kullan (uncommon).
+- **`*.local.md` dosya adı kalıbı `.gitignore` kapsamındadır** — gerçekten özel olan içerik için kullanılır (seyrek).
 
-Journal katmanı, `.claude/agent-memory/`'nin OLDUĞU şey (per-agent history) ARTI orijinal journal katmanının olduğu şey (cross-agent sinyaller). Q4 of self-updating-learning-loop bunları merge etti çünkü pratikte iki katmanın da formatı aynıydı (date + agent + narrative) ve sıkça birbirini cite ediyorlardı.
+Journal katmanı, eskiden `.claude/agent-memory/` olan şeyi (ajan başına geçmiş) ARTI özgün journal katmanını (ajanlar arası sinyaller) tek başına kapsar. Self-updating-learning-loop Q4 bunları birleştirdi çünkü pratikte iki katmanın da biçimi aynıydı (tarih + ajan + anlatı) ve sıkça birbirine atıf yapıyorlardı.
 
-## Wiki — replace, sadece güncel gerçek
+## Wiki — yerine yaz, yalnızca güncel doğru
 
-Filename: `{topic}.md` (kebab-case, sayfa başına bir kavram).
+Dosya adı: `{topic}.md` (kebab-case, sayfa başına bir kavram).
 
-Projenin yaşayan bilgi tabanı. Journal'ın (tarihsel kayıt) aksine, wiki **güncel gerçeği** yansıtır — bir gerçek değişince sayfa update edilir, append edilmez.
+Projenin yaşayan bilgi tabanıdır. Journal'ın (tarihsel kayıt) aksine, wiki **güncel doğruyu** yansıtır — bir bilgi değiştiğinde sayfa eklenmez, güncellenir.
 
 Kurallar:
 
-- **Topic'e göre düzenli, tarihe göre değil** (kavram başına bir sayfa)
-- **`<!-- learning -->` marker'larından update edilir** [`/save-learnings`](/tr/skills/save-learnings) üzerinden, veya doğrudan [`/wiki ingest`](/tr/skills/wiki) üzerinden
-- **Sayfalar ŞU AN doğru olanı yansıtır** — eski info değiştirilir, append edilmez
-- **Cross-referenced:** ilgili sayfalar birbirine link verir
-- **`index.md` auto-maintained** içindekiler tablosu olarak
-- **`CLAUDE.md`'nin tepesinde `<!-- wiki:index -->` marker bloğu** topic listesini auto-aggregate eder ([self-updating-learning-loop Q5](https://github.com/agentteamland/workspace/blob/main/.claude/docs/self-updating-learning-loop.md) gereği)
-- **Bootstrap:** `.claude/wiki/`'si olmayan bir projede [`/wiki init`](/tr/skills/wiki) çalıştır kurmak için
-- **Lint** [`/wiki lint`](/tr/skills/wiki) ile periyodik
+- **Konuya göre düzenli, tarihe göre değil** (kavram başına bir sayfa).
+- **`<!-- learning -->` işaretçilerinden güncellenir** ([`/save-learnings`](/tr/skills/save-learnings) yoluyla) ya da doğrudan [`/wiki ingest`](/tr/skills/wiki) ile.
+- **Sayfalar ŞU AN doğru olanı yansıtır** — eski bilgi yerine yenisi yazılır.
+- **Çapraz başvurulu:** ilgili sayfalar birbirine bağ verir.
+- **`index.md` kendiliğinden bakım görür** — içindekiler tablosu olarak.
+- **`CLAUDE.md` üst kısmındaki `<!-- wiki:index -->` işaretçi bloğu** konu listesini kendiliğinden derler ([self-updating-learning-loop Q5](https://github.com/agentteamland/workspace/blob/main/.claude/docs/self-updating-learning-loop.md) gereği).
+- **İlk kurulum:** `.claude/wiki/` bulunmayan bir projede [`/wiki init`](/tr/skills/wiki) komutuyla iskeleyi kur.
+- **Düzenli denetim** için [`/wiki lint`](/tr/skills/wiki) komutunu çalıştır.
 
-## Agent başlangıç rutini
+## Ajanın açılış rutini
 
-Her konuşmanın başında, agent okur (uygulanabildiyse):
+Her konuşmanın başında ajan şunları okur (geçerli olduğu durumda):
 
-1. **Kendi agent dosyası** — takımdan, project-local copy üzerinden. `agent.md` `children/*.md` frontmatter'ından auto-aggregated bir Knowledge Base bölümüyle gelir ([Children + learnings](/tr/guide/children-and-learnings) gereği).
-2. **`CLAUDE.md` `<!-- wiki:index -->` bloğu** — auto-loaded; sıfır maliyetle bilgi haritası verir. Agent'lar `.claude/wiki/`'yi doğrudan taramak yerine bu listeden ilgili wiki sayfalarını keşfeder.
-3. **Yakın journal entry'leri** task önceki çalışmayla overlap ediyorsa — `.claude/journal/` (son birkaç entry genellikle yeterli).
-4. **Project-specific rule'lar** `.claude/docs/coding-standards/{app}.md`'de varsa.
+1. **Kendi ajan dosyası** — takımdan, proje-yerel kopya üzerinden. `agent.md`, `children/*.md` frontmatter'ından kendiliğinden derlenmiş bir Knowledge Base bölümüyle birlikte gelir (bkz. [Children + learnings](/tr/guide/children-and-learnings)).
+2. **`CLAUDE.md` `<!-- wiki:index -->` bloğu** — kendiliğinden yüklenir; bilgi haritasını sıfır maliyetle verir. Ajanlar `.claude/wiki/` dizinini doğrudan taramak yerine ilgili wiki sayfalarını bu listeden keşfeder.
+3. **Yakın tarihli journal kayıtları** — görev önceki çalışmayla örtüşüyorsa `.claude/journal/` dizininden (genellikle son birkaç kayıt yeter).
+4. **Projeye özgü kurallar** — varsa `.claude/docs/coding-standards/{app}.md` dosyasından.
 
-Agent TÜM wiki sayfalarını okumaz. Index'i okur (auto-loaded), ve sadece task o domain'e dokununca detail page'lere link'i takip eder. Bu context'i sıkı tutar discoverability'yi koruyarak.
+Ajan bütün wiki sayfalarını okumaz. Yalnızca dizini okur (kendiliğinden yüklenir) ve görev o alana dokunduğunda ayrıntı sayfasına olan bağı izler. Bu, bağlamı sıkı tutarken keşfedilebilirliği korur.
 
-## Konuşma sonu rutini — SessionStart üzerinden auto-trigger
+## Konuşma sonu rutini — `SessionStart` üzerinden otomatik tetikleme
 
-"Save at session end" semantiği **scan-on-next-session-start** olarak implement edilmiş çünkü Claude Code'un `SessionEnd` hook çıktısı bir sonraki session Claude'una asla ulaşmaz ([Learning marker lifecycle](/tr/guide/learning-marker-lifecycle) sayfasına bakın). Auto-trigger akışı:
+"Oturum sonunda kaydet" anlamı, **bir sonraki oturum başında tara** olarak hayata geçirildi; çünkü Claude Code'un `SessionEnd` hook çıktısı bir sonraki oturumun Claude'una asla ulaşmaz (bkz. [Öğrenme işaretçisi yaşam döngüsü](/tr/guide/learning-marker-lifecycle)). Otomatik tetikleme akışı:
 
-- **Konuşma sırasında:** learning anları olduğunda `<!-- learning -->` marker'ları düşür. Marker formatı ve disiplin için [marker lifecycle sayfasına](/tr/guide/learning-marker-lifecycle) bak.
-- **Bir sonraki session başında:** [`atl session-start`](/tr/cli/setup-hooks) wrapper → [`atl learning-capture --previous-transcripts`](/tr/cli/learning-capture) → çıktı additionalContext'te görünür → [`/save-learnings --from-markers --transcripts ...`](/tr/skills/save-learnings) çağırırsın → loop kapanır.
-- **Bir değişiklik user-facing olduğunda:** değişikliğin yapıldığı aynı turda, eşleşen README / docs-site sayfasını da update et. [`docs-sync` rule](https://github.com/agentteamland/core/blob/main/rules/docs-sync.md)'a bak.
+- **Konuşma sırasında:** öğrenme anları gerçekleştikçe `<!-- learning -->` işaretçileri düşür. İşaretçi biçimi ve disiplini için [işaretçi yaşam döngüsü sayfasına](/tr/guide/learning-marker-lifecycle) bak.
+- **Bir sonraki oturum başında:** [`atl session-start`](/tr/cli/setup-hooks) sarmalayıcısı → [`atl learning-capture --previous-transcripts`](/tr/cli/learning-capture) → çıktı `additionalContext` içinde belirir → sen [`/save-learnings --from-markers --transcripts ...`](/tr/skills/save-learnings) komutunu çalıştırırsın → döngü kapanır.
+- **Bir değişiklik kullanıcıya görünür olduğunda:** değişikliğin yapıldığı turun içinde, eşleşen README / dokümantasyon sayfasını da güncelle. Bkz. [`docs-sync` kuralı](https://github.com/agentteamland/core/blob/main/rules/docs-sync.md).
 
-`atl setup-hooks` kurulu değilse, marker'lar yine de transkriptte birikir ve manuel `/save-learnings` invocation için müsait kalır. Hook akışı otomasyon; marker disiplini + manuel invocation temel.
+`atl setup-hooks` kurulu değilse de işaretçiler transkriptte birikmeye devam eder ve elle yapılan `/save-learnings` çağrısı için kullanılabilir kalır. Hook akışı otomasyondur; işaretçi disiplini ve elle yapılan çağrı temeldir.
 
-## Neden iki katman, üç değil
+## Neden iki katman, üç değil?
 
-Bu kuralın daha eski versiyonları üç katman tanımlıyordu: **memory** (per-project, per-agent, append-only history), **journal** (per-project, cross-agent sinyaller, append-only), **wiki** (per-project, topic-tabanlı, replace/update).
+Bu kuralın daha eski sürümleri üç katman tanımlıyordu: **memory** (proje başına, ajan başına, yalnızca eklemeli geçmiş), **journal** (proje başına, ajanlar arası sinyaller, yalnızca eklemeli) ve **wiki** (proje başına, konu tabanlı, yerine yazma / güncelleme).
 
-İlk ikisi de tarih-tabanlı, append-only, narrative-shaped'di. Her workspace'te birbirini cross-reference ediyorlardı veya aynı olayları redundant şekilde yakalıyorlardı. "Agent'ın private memory'si vs. başkalarına broadcast" ayrımı asla enforce edilmedi — herkes ikisini de okuyabiliyordu.
+İlk ikisi de tarih tabanlı, yalnızca eklemeli ve anlatı biçimliydi. Her çalışma alanında birbirine atıfta bulunarak ya da aynı olayları yedekli olarak yakalayarak son buluyorlardı. "Ajanın kendine özel hafızası vs. başkalarına yayın" ayrımı asla zorlanmadı — herkes iki katmanı da okuyabiliyordu.
 
-Q4 of self-updating-learning-loop bunları merge etti çünkü:
+Self-updating-learning-loop Q4 bunları birleştirdi çünkü:
 
-- Aynı format → semantik ayrım yok
-- Aynı audience (tüm agent'lar ikisini de okur)
-- Aynı write pattern (tarih ile append)
-- Split, farklı içerik üretmeden cognitive overhead ekledi ("bu benim için mi, başkaları için mi?")
+- Aynı biçim → anlamsal ayrım yok.
+- Aynı kitle (tüm ajanlar her ikisini de okur).
+- Aynı yazma deseni (tarihe göre eklemeli).
+- Bölünme, farklı içerik üretmeden zihinsel yük getiriyordu ("bu benim için mi yoksa başkaları için mi?").
 
-Merge edilen katman sadece `journal/`. Wiki ayrı kalıyor çünkü paradigması (topic-tabanlı current truth) journal'ınkinden (tarih-tabanlı history) gerçekten farklı.
+Birleşen katmanın adı `journal/`. Wiki ayrı kalır çünkü paradigması (konu tabanlı güncel doğru) journal'ınkinden (tarih tabanlı geçmiş) gerçekten farklıdır.
 
-## Per-team / per-project ayna'lar
+## Takım başına / proje başına yansımalar
 
-Aynı iki-katman sistem hem kullanıcı projesinin içinde (`.claude/journal/`, `.claude/wiki/`) hem cross-project bilgi için team-repo tarafında uygulanır:
+Aynı iki-katmanlı sistem hem kullanıcının projesi içinde (`.claude/journal/`, `.claude/wiki/`) hem de projeler arası bilgi için takım deposu tarafında uygulanır:
 
-- **Agent children dosyaları** (`children/{topic}.md` team repo'nun agent dizininde) wiki'nin team-side eşdeğeri — topic-tabanlı, replace/update, agent için cross-project domain knowledge.
-- **Skill learnings dosyaları** (`learnings/{topic}.md` team repo'nun skill dizininde) per-skill eşdeğer — aynı şekil, skill'e scoped.
+- **Ajan çocuk dosyaları** (`children/{topic}.md`, takım deposundaki ajan dizininde) wiki'nin takım tarafındaki karşılığıdır — konu tabanlı, yerine yazma / güncelleme, ajan için projeler arası alan bilgisi.
+- **Beceri öğrenim dosyaları** (`learnings/{topic}.md`, takım deposundaki beceri dizininde) beceri başına karşılıktır — aynı biçim, kapsamı beceriye sıkıştırılmış.
 
-İkisinin de `knowledge-base-summary:` frontmatter alanı vardır, `agent.md` (Knowledge Base bölümü) veya `skill.md` (Accumulated Learnings bölümü)'ne auto-aggregate olur. Tam pattern için [Children + learnings](/tr/guide/children-and-learnings)'e bak.
+Her ikisinde de bir `knowledge-base-summary:` frontmatter alanı bulunur ve bu alan `agent.md` (Knowledge Base bölümü) ya da `skill.md` (Accumulated Learnings bölümü) içine kendiliğinden derlenir. Tüm desen için bkz. [Children + learnings](/tr/guide/children-and-learnings).
 
 ## İlgili
 
-- [`/save-learnings`](/tr/skills/save-learnings) — journal entry'leri ve wiki sayfaları yazar
-- [`/wiki`](/tr/skills/wiki) — wiki bakım (init / ingest / query / lint)
-- [Children + learnings](/tr/guide/children-and-learnings) — bu pattern'in team-side aynası
-- [Learning marker lifecycle](/tr/guide/learning-marker-lifecycle) — bilginin konuşma → marker → journal/wiki'ye nasıl aktığı
-- Kanonik rule: [`core/rules/knowledge-system.md`](https://github.com/agentteamland/core/blob/main/rules/knowledge-system.md)
+- [`/save-learnings`](/tr/skills/save-learnings) — journal kayıtları ve wiki sayfaları yazar.
+- [`/wiki`](/tr/skills/wiki) — wiki bakımı (init / ingest / query / lint).
+- [Children + learnings](/tr/guide/children-and-learnings) — bu desenin takım tarafındaki yansıması.
+- [Öğrenme işaretçisi yaşam döngüsü](/tr/guide/learning-marker-lifecycle) — bilginin konuşmadan işaretçilere ve oradan journal/wiki'ye nasıl aktığı.
+- Kanonik kural: [`core/rules/knowledge-system.md`](https://github.com/agentteamland/core/blob/main/rules/knowledge-system.md).
