@@ -1,125 +1,125 @@
-# Team-repo maintenance
+# Takım deposu bakımı
 
-**Shared `agentteamland/` public repo'larında** değişiklikler için governance — team repo'lar (cli, core, brainstorm, rule, team-manager, software-project-team, design-system-team, registry, docs, starter-extended, create-project, workspace, .github). Kural, 2026-04-24'te tüm public repo'lara branch protection eklenmeden önce var olan disiplin gap'ini kapsar.
+Paylaşılan **`agentteamland/` herkese açık depolarındaki** değişiklikler için yönetişim — takım depoları (cli, core, brainstorm, rule, team-manager, software-project-team, design-system-team, registry, docs, starter-extended, create-project, workspace, .github). Kural, 2026-04-24 tarihinde tüm herkese açık depolara dal koruması eklenmeden önce var olan disiplin boşluğunu kapatır.
 
-Branch protection **safety net** — org'daki her public repo'da `main`'e doğrudan commit'i reddeder. Bu kural **method**: safety net'i tatmin eden VE git log'u okuyan sonraki maintainer'a faydalı olan temiz bir değişiklik nasıl üretilir.
+Dal koruması **güvenlik ağıdır** — organizasyondaki her herkese açık deponun `main` dalına yapılan doğrudan commit'leri reddeder. Bu kural ise **yöntemdir**: güvenlik ağını karşılayacak ve git günlüğünü okuyan bir sonraki bakımcıya yararlı olacak temiz bir değişikliği nasıl üretebileceğin.
 
-Kanonik kural [`core/rules/team-repo-maintenance.md`](https://github.com/agentteamland/core/blob/main/rules/team-repo-maintenance.md)'de yaşar. Bu sayfa kullanıcıya yönelik özet.
+Kanonik kuralın kendisi [`core/rules/team-repo-maintenance.md`](https://github.com/agentteamland/core/blob/main/rules/team-repo-maintenance.md) dosyasında yaşar. Bu sayfa kullanıcıya yönelik özettir.
 
-## Ne zaman uygulanır
+## Bu ne zaman geçerlidir?
 
-Sen (veya senin adına Claude) `~/.claude/repos/agentteamland/{team}/` altındaki cached agentteamland repo'sundaki bir dosyayı değiştirdiğinde. Hem team repo'ları (software-project-team, design-system-team, vb.) hem global repo'ları (core, brainstorm, rule, team-manager, cli, docs, registry, workspace) içerir.
+Sen (ya da senin adına Claude) `~/.claude/repos/agentteamland/{team}/` altındaki önbelleklenmiş bir agentteamland deposundaki bir dosyayı her değiştirdiğinde. Hem takım depoları (software-project-team, design-system-team vb.) hem de global depolar (core, brainstorm, rule, team-manager, cli, docs, registry, workspace) buna dâhildir.
 
-**Şuna uygulanmaz:**
+**Şunlar için geçerli DEĞİLDİR:**
 
-- Kendi lokal projenin `.claude/` dizini (proje memory'si, shared değil)
-- `homebrew-tap` / `scoop-bucket` / `winget-pkgs` (goreleaser-managed; release pipeline için doğrudan push'a izin var)
+- Senin kendi yerel projendeki `.claude/` dizini (bu proje belleğidir, paylaşılan değildir).
+- `homebrew-tap` / `scoop-bucket` / `winget-pkgs` (goreleaser ile yönetilir; sürüm yayım hattı için doğrudan push'a izin verilir).
 
 ## Beş sabit adım
 
-Her shared-repo değişikliği aynı beş adımı izler. Sıralı — her biri öncekinin üzerine inşa edilir.
+Paylaşılan depo değişikliklerinin tamamı aynı beş adımdan geçer. Adımlar sıralıdır — her biri bir öncekinin üstüne kurulur.
 
 ### 0. PR açmadan önce `/save-learnings` çalıştır
 
-1–4 adımlarından önce, **feature branch'in son commit'i olarak** [`/save-learnings`](/tr/skills/save-learnings) çalıştır. Bu, ship olmak üzere olan iş'ten wisdom'ı yakalar ve aynı PR'da yolculuk yapmasına izin verir.
+1-4. adımlardan önce, [`/save-learnings`](/tr/skills/save-learnings) komutunu **özellik dalının son commit'i** olarak çalıştır. Bu, yayımlanmak üzere olan işten birikmiş deneyimi yakalar ve aynı PR'ın içinde yolculuk etmesine olanak tanır.
 
-Bu timing'in nedeni:
+Bu zamanlamanın nedeni:
 
-- PR boundary doğal bir kristalleşme anı — kararlar somut
-- `save-learnings`'in **mevcut PR'ın repo'suna** dokunan çıktıları (agent.md güncellemeleri, README doc-impact taslakları, yeni children dosyaları, known-issues entry'leri) feature branch'te otomatik commit olur ve PR'da ship olur
-- Review hem işi HEM de çıkarılan wisdom'ı tek atomik birimde kapsar
+- PR sınırı doğal bir billurlaşma anıdır — kararlar somutlaşır.
+- `save-learnings`'in **mevcut PR'ın deposuna** dokunan çıktıları (agent.md güncellemeleri, doc-impact taslakları, yeni çocuk dosyaları, bilinen sorunlar girişleri) kendiliğinden özellik dalında commit'lenir ve PR'ın içinde yolculuk eder.
+- İnceleme hem işi hem de çıkarılan deneyimi tek atomik birim olarak görür.
 
-Multi-repo caveat'i: `/save-learnings` genellikle repo'lar arası yayılan çıktılar üretir. Sadece **mevcut PR'ın repo'suna** dokunan çıktılar yolculuk yapar; diğer-repo çıktıları yine kendi PR akışlarına ihtiyaç duyar.
+Çoklu depo uyarısı: `/save-learnings` çoğu zaman birden çok depoya yayılan çıktılar üretir. Yalnızca **mevcut PR'ın deposuna** dokunan çıktılar yolculuk eder; diğer depolara ait çıktıların kendi PR akışına ihtiyacı vardır.
 
-Bu kural inline `<!-- learning -->` marker + `SessionStart` hook ile eşlidir (bkz. [learning-capture rule](https://github.com/agentteamland/core/blob/main/rules/learning-capture.md)). PR-zamanı `/save-learnings` ship olmak üzere olan işten kristalleşmiş learning'leri yakalar; *sonraki* session'da SessionStart hook zaten ship olmuş işten marker'ları yakalar (review feedback, conflict-resolution insight'ları, post-merge keşifler). Tamamlayıcı, redundant değil — ikisini de tut.
+Bu kural, satır içi `<!-- learning -->` işaretçileri ve `SessionStart` hook'uyla eşlidir (bkz. [learning-capture kuralı](https://github.com/agentteamland/core/blob/main/rules/learning-capture.md)). PR zamanında çalıştırılan `/save-learnings`, yayımlanmak üzere olan işten billurlaşmış öğrenmeleri yakalar; *bir sonraki* oturumun `SessionStart` hook'u ise zaten yayımlanmış işten kalan işaretçileri (inceleme geri bildirimleri, çakışma çözümü içgörüleri, birleştirme sonrası keşifler) yakalar. Tamamlayıcıdırlar, gereksiz değildir — ikisini de tut.
 
-### 1. Versiyonu bump et (takımlar için `team.json`; CLI için `internal/config.Version`)
+### 1. Sürümü artır (takımlar için `team.json`; CLI için `internal/config.Version`)
 
-Strict SemVer'i izle:
+Kesin SemVer'i izle:
 
-| Bump | Ne zaman | Örnek |
+| Artırma | Ne zaman | Örnek |
 |---|---|---|
-| **Patch** (0.4.1 → 0.4.2) | Bug fix, API değişikliği yok, davranış advertised'a restore | `fix(dst-new-ds): Q3 cap` |
-| **Minor** (0.4.2 → 0.5.0) | Yeni skill / agent / rule / komut, backward-compatible | `feat(core): new rule learning-capture` |
-| **Major** (0.4.2 → 1.0.0) | Breaking: kaldırılan/yeniden adlandırılan komut, incompatible config, kullanıcıların bağımlı olduğu davranış değişikliği | `feat(cli)!: rename atl install-team → atl install` |
+| **Yama** (0.4.1 → 0.4.2) | Hata düzeltmesi, API değişikliği yok, davranış ilan edilen biçime geri getirildi. | `fix(dst-new-ds): Q3 cap`. |
+| **Küçük** (0.4.2 → 0.5.0) | Yeni beceri / ajan / kural / komut, geriye uyumlu. | `feat(core): new rule learning-capture`. |
+| **Ana** (0.4.2 → 1.0.0) | Geriye uyumsuz: kaldırılmış / yeniden adlandırılmış komut, uyumsuz yapılandırma, kullanıcıların güvendiği bir davranış değişikliği. | `feat(cli)!: rename atl install-team → atl install`. |
 
-CLI için versiyon `internal/config/config.go`'da yaşar (build sırasında goreleaser tag ile ldflags override). Takımlar için versiyon `team.json`'da.
+CLI için sürüm `internal/config/config.go` içinde yaşar (goreleaser etiketleri üzerinden derleme zamanında ldflags ile bastırılır). Takımlar için sürüm `team.json` içindedir.
 
-**Asla** versiyon bump'sız bir davranış değişikliği ship etme — `atl update`'in `X → Y` notification'ını sessizce bozar, tüm update pipeline'ını boşa çıkarır.
+Bir davranış değişikliğini sürüm artırımı olmadan **asla** yayımlama — bu, `atl update`'in `X → Y` bildirimini sessizce kırar ve tüm güncelleme hattını anlamsızlaştırır.
 
-#### Bump etmemen gereken durum
+#### Ne zaman ARTIRILMAMALIDIR?
 
-Gerçekten docs-only PR'lar (çeviri, typo fix, README güncelleme, comment değişiklikleri) davranış delta'sı taşımaz ve `atl update`'in `X → Y` notification'ında yüzeye çıkmasına gerek yok. `main` `team.json`'da pre-existing schema violation'ları taşıyorsa (en sık 200-char description tavanı), bump aynı-PR trim'i zorlar ve scope'u şişirir. Pragmatik hareket:
+Gerçekten yalnızca belge olan PR'lar (çeviriler, yazım hatası düzeltmeleri, README güncellemeleri, yorum değişiklikleri) bir davranış farkı taşımaz ve `atl update`'in `X → Y` bildiriminde görünmesi gerekmez. Eğer `main` üzerinde önceden var olan şema ihlalleri (genellikle 200 karakterlik açıklama tavanı) varsa, sürümü artırmak aynı PR'da bir kırpmayı zorunlu kılar ve kapsamı şişirir. Pragmatik yol:
 
-1. **Bump'ı atla** docs-only PR'da.
-2. **Atlamayı PR body'sinde explicit not et** — örn. "Version bump: skipped — `main` carries pre-existing description-length violations; will be addressed in a follow-up `chore: trim ...` PR."
-3. **Adanmış bir** `chore: trim team.json descriptions` PR aç bump ile.
+1. Yalnızca belge olan PR'da **sürüm artırımını atla**.
+2. **Atlamayı PR gövdesinde açıkça not et** — örneğin: "Sürüm artırımı: atlandı — `main` önceden var olan açıklama uzunluğu ihlalleri taşıyor; izleyen bir `chore: trim ...` PR'ında ele alınacak."
+3. Sürüm artırımıyla birlikte **özel bir** `chore: trim team.json descriptions` PR'ı aç.
 
-"Her değişiklik için versiyon bump" kuralı, kullanıcıların anlamlı davranış delta'larını görmesini sağlamak içindir — kozmetik edit'lerde törensel cadence için değil.
+"Her değişiklik için sürüm artırımı" kuralı, kullanıcıların anlamlı davranış farklarını görmesini sağlamakla ilgilidir — kozmetik düzenlemelerde tören temposuyla değil.
 
-#### `team.json` format konvansiyonları
+#### `team.json` biçim sözleşmeleri
 
-`team.json`'ı düzenlerken:
+`team.json` dosyasını düzenlerken:
 
-1. **Pretty-print, multi-line object'ler** 2-space indent ile. Her agent / skill / keyword kendi satırında.
-2. **Description string'lerinde em-dash karakterler için `—` Unicode escape** (literal `—` yerine).
+1. **Hoş biçimli, çok satırlı nesneler** (2 boşluklu girinti). Her ajan / beceri / anahtar sözcük kendi satırında.
+2. **Tire (em-dash) karakterleri için Unicode kaçışı `—`** açıklama dizelerinde (gerçek `—` yerine).
 
-Reformat:
+Yeniden biçimlendir:
 
 ```bash
 python3 -m json.tool team.json > tmp && mv tmp team.json
 ```
 
-Bir feature branch ve main her ikisi de `team.json`'ı düzenler ve format üzerinde çakışırsa (örn. compact vs pretty-print), **main'in formatını benimse ve feature branch'in içeriğini üzerine yeniden uygula**. Konvansiyonla savaşma — içine kat.
+Bir özellik dalı ile `main` her ikisi de `team.json` dosyasını düzenleyip biçim üzerinde çakıştığında (örneğin yoğun biçim ile hoş biçim arasında), **`main`'in biçimini benimse ve özellik dalının içeriğini onun üstüne yeniden uygula.** Sözleşmeyle savaşma — onun içine kıvrıl.
 
-#### `team.json`'u push'tan ÖNCE doğrula — non-negotiable
+#### Push'tan ÖNCE `team.json` doğrulaması — pazarlığa kapalı
 
-Schema constraint'leri ([`core/schemas/team.schema.json`](https://github.com/agentteamland/core/blob/main/schemas/team.schema.json)'da tanımlı):
+Şema kısıtları ([`core/schemas/team.schema.json`](https://github.com/agentteamland/core/blob/main/schemas/team.schema.json) içinde tanımlı):
 
 | Alan | Kural |
 |---|---|
-| `description` (top-level) | 10–200 karakter |
-| `agents[*].description`, `skills[*].description`, `rules[*].description` | max 200 karakter |
-| `name` (top-level + agents/skills/rules) | kebab-case pattern `^[a-z][a-z0-9-]*$` |
-| `keywords[*]` | 1–40 karakter, max 20 keyword, unique |
-| `version` | strict SemVer `MAJOR.MINOR.PATCH` |
+| `description` (üst düzey) | 10-200 karakter. |
+| `agents[*].description`, `skills[*].description`, `rules[*].description` | en çok 200 karakter. |
+| `name` (üst düzey + agents/skills/rules) | kebab-case deseni `^[a-z][a-z0-9-]*$`. |
+| `keywords[*]` | 1-40 karakter, en çok 20 anahtar sözcük, benzersiz. |
+| `version` | kesin SemVer `MAJOR.MINOR.PATCH`. |
 
-200-char description maxLength production'da üç kez ısırdı. Her seferinde düzeltme bir follow-up "trim description" commit oldu. **Daha fazla yok.**
+200 karakterlik `description` üst sınırı üretimde üç kez tökezletti. Her seferinde düzeltme bir takip eden "açıklama kırp" commit'iydi. **Daha fazla yok.**
 
-`team.json`'a dokunan her push'tan önce:
+`team.json` dosyasına dokunan her push'tan önce:
 
 ```bash
 ~/.claude/repos/agentteamland/core/scripts/validate-team-json.sh path/to/team.json
 ```
 
-Veya core repo'nun içinden:
+Ya da `core` deposunun içinden:
 
 ```bash
 ./scripts/validate-team-json.sh team.json
 ```
 
-Script sadece Python stdlib kullanan hızlı bir length check yapar VE, `ajv-cli` PATH'te ise, CI'nin koştuğu tam `ajv validate`'i çalıştırır — böylece GitHub Actions'ın kontrol edeceği şeyle parite alırsın. Kaçırılan length check'inde CI failure 2-saniyelik lokal koşturmadan daha pahalı.
+Betik, yalnızca Python standart kütüphanesini kullanarak hızlı bir uzunluk denetimi yapar; ayrıca `ajv-cli` PATH üzerindeyse CI'nin çalıştırdığı tam `ajv validate` komutunu da çalıştırır — böylece GitHub Actions'ın yapacağı denetimle eşitlik elde edersin. Atlanan bir uzunluk denetimi nedeniyle CI'de başarısız olmak, 2 saniyelik yerel çalıştırmadan çok daha pahalıya mal olur.
 
-ajv olmadan bile, script'in Python length check'i tarihsel olarak fail eden constraint'i yakalar. Çalıştır. Daima.
+`ajv` olmasa bile betiğin Python uzunluk denetimi tarihsel olarak hata veren kısıtı yakalar. Çalıştır. Daima.
 
-### 2. Conventional commit format
+### 2. Conventional commit biçimi
 
 ```
-<type>(<scope>): <70 karakter altı tek-satır özet>
+<type>(<scope>): <70 karakterin altında tek satırlık özet>
 
-<body — değişikliğin NEDEN'i, NE'si değil (NE'yi diff gösterir)>
-<context — hangi proje / session ihtiyacı ortaya çıkardı>
+<gövde — değişikliğin NEDEN'i, NE'si değil (farkı diff gösterir)>
+<bağlam — ihtiyacı hangi proje / oturum ortaya çıkardı>
 
-<footer — co-author, issue ref'leri, breaking-change notları>
+<ayak — eş yazar, sorun başvuruları, geriye uyumsuzluk notları>
 ```
 
-Type'lar: `fix`, `feat`, `docs`, `chore`, `style`, `refactor`, `test`, `perf`. Breaking için type'tan sonra `!`: `feat(cli)!: …`.
+Türler: `fix`, `feat`, `docs`, `chore`, `style`, `refactor`, `test`, `perf`. Geriye uyumsuzluk için türden sonra `!` ekle: `feat(cli)!: …`.
 
-Scope değişen alt-modüldür (agent adı, skill adı, CLI komut, repo alanı).
+Kapsam, değiştirilen alt modüldür (ajan adı, beceri adı, CLI komutu, depo alanı).
 
-### 3. Body'de "Discovered via" context'i
+### 3. Gövdede "Discovered via" bağlamı
 
-Shared repo'ya bir fix farklı bir proje üzerinde çalışırken bulundu ise, **daima** o context'i yüzeye çıkar:
+Paylaşılan bir depodaki bir düzeltme, başka bir proje üzerinde çalışırken bulunduysa o bağlamı **daima** yüzeye çıkar:
 
 ```
 Discovered while scaffolding a design system for a downstream project.
@@ -127,151 +127,151 @@ The bug is not project-specific; every project running /dst-new-ds
 hits the same wall.
 ```
 
-Bu audit trail, gelecek-sen'in (veya başka bir maintainer'ın) motivasyonu hafızadan reconstruct etmek zorunda kalmadan anlamasını sağlar. Team repo git log'u self-documenting hale gelir.
+Bu denetim izi, gelecekteki sana (ya da başka bir bakımcıya) güdülenmeyi belleğinden yeniden inşa etmek zorunda kalmadan anlama olanağı tanır. Takım deposu git günlüğü kendi kendini belgeler.
 
-### 4. PR akışı (default, branch protection ile enforce)
+### 4. PR akışı (varsayılan, dal koruması ile zorunlu)
 
-Tüm public `agentteamland/` repo'ları `main`'e merge için pull request gerektirir. Doğrudan push'lar branch protection tarafından reddedilir.
+Tüm herkese açık `agentteamland/` depoları, `main` dalına birleştirme için bir pull request gerektirir. Doğrudan push'lar dal koruması tarafından reddedilir.
 
 ```bash
 cd ~/.claude/repos/agentteamland/{team}
 git checkout -b <fix|feat|chore>/<short-description>
-# … değişiklikleri yap, versiyon bump et …
+# … değişiklik yap, sürümü artır …
 git add <files>
 git commit -m "<conventional message>"
 git push -u origin <branch-name>
 gh pr create \
   --title "<type>(<scope>): <summary>" \
-  --body  "<aşağıdaki PR body template'ine bak>"
+  --body  "<aşağıdaki PR gövdesi şablonuna bak>"
 ```
 
-**Kendi PR'larında `--assignee` veya `--reviewer` EKLEME.** Mevcut solo-maintainer setup'ında, Claude maintainer'ın GitHub hesabı altında push eder, bu da maintainer'ı otomatik PR author yapar:
+**Kendi PR'larında `--assignee` ya da `--reviewer` EKLEME.** Mevcut tek bakımcılı kurulumda Claude, bakımcının GitHub hesabı üzerinden push yapar; bu da bakımcıyı kendiliğinden PR yazarı yapar:
 
-- Author alanı zaten PR'ı maintainer'ın "Created by me" / "Involves me" dashboard'larında yüzeye çıkarır
-- Explicit `--assignee @me` redundant (author == assignee) ve "Assigned to me" kuyruğunu kirletir
-- GitHub PR author'dan review istemeyi blok eder, dolayısıyla `--add-reviewer mkurak` kendi PR'larda sessizce fail olur
+- Yazar alanı, PR'ı bakımcının "Created by me" / "Involves me" panolarında zaten gösterir.
+- Açık `--assignee @me` gereksizdir (yazar = atanan) ve "Assigned to me" kuyruğunu kirletir.
+- GitHub, PR yazarından inceleme istenmesini engeller; bu nedenle kendi PR'larda `--add-reviewer mkurak` sessizce başarısız olur.
 
-(Eğer / ne zaman Claude'un push'ları için ayrı bir bot hesabı kurulursa — author ≠ maintainer olunca — `--reviewer mkurak` mümkün ve uygun olur.)
+(Claude'un push'ları için ayrı bir bot hesabı kurulduğunda — yazar ≠ bakımcı olduğunda — `--reviewer mkurak` olası ve uygun hâle gelir.)
 
-#### PR body template'i
+#### PR gövdesi şablonu
 
 ```markdown
 ## Summary
-<Ne değişti ve neden — 2-4 bullet>
+<Ne değişti ve neden — 2-4 madde>
 
 ## Discovered via
-<Hangi proje / session / senaryo bunu ortaya çıkardı>
+<Hangi proje / oturum / senaryo bunu ortaya çıkardı>
 
 ## Version bump
-<version: X.Y.Z → X.Y.Z+1> (patch | minor | major — gerekçe)
+<sürüm: X.Y.Z → X.Y.Z+1> (patch | minor | major — gerekçe)
 
 ## Test plan
-- [ ] <fix'in çalıştığını nasıl doğrularsın>
-- [ ] <regression check>
+- [ ] <düzeltmenin işe yaradığını doğrulama yolu>
+- [ ] <gerileme denetimi>
 ```
 
-Solo maintainer flow için onay gerekmez (count: 0) — PR external gate olarak değil **ceremony + audit trail** olarak vardır.
+Tek bakımcılı akış için onaylar zorunlu değildir (sayı: 0) — PR, dış bir kapı olarak değil **ritüel ve denetim izi** olarak vardır.
 
-## 🚫 PR merge disiplini — mutlak, istisnasız
+## 🚫 PR birleştirme disiplini — mutlak, istisnasız {#pr-merge-discipline-absolute-no-exceptions}
 
-**Claude pull request'leri asla merge etmez.** Bu non-negotiable ve scope limit'i yok.
+**Claude pull request'leri asla birleştirmez.** Bu pazarlığa kapalıdır ve hiçbir kapsam sınırı yoktur.
 
-Yasak `main`'e PR landing herhangi bir aksiyonu kapsar:
+Yasak, bir PR'ı `main` dalına indiren her eylemi kapsar:
 
-- `gh pr merge` herhangi bir formda (`--squash`, `--rebase`, `--merge`)
-- `gh pr review --approve`
-- Herhangi bir MCP-driven browser üzerinden "Merge pull request" tıklama
-- GitHub REST / GraphQL API üzerinden eşdeğer server-side aksiyon
+- Herhangi bir biçimde `gh pr merge` (`--squash`, `--rebase`, `--merge`).
+- `gh pr review --approve`.
+- Herhangi bir MCP güdümlü tarayıcıyla "Merge pull request" tıklama.
+- GitHub REST / GraphQL API üzerinden eşdeğer bir sunucu tarafı eylem.
 
 Şu durumlarda bile:
 
-- PR trivial (tek-satır typo, formatting fix, broken link)
-- `required_approving_review_count` 0 (solo maintainer)
-- PR Claude tarafından author'lı
-- Konuşmada daha önce kullanıcı "push this" veya "let's do it" dedi
-- Branch protection admin bypass'a izin verir
-- Maintainer ulaşılamaz ve hotfix urgent hissediliyor
+- PR önemsiz olsa bile (tek satırlık yazım hatası, biçim düzeltmesi, kırık bağlantı).
+- `required_approving_review_count` 0 olsa bile (tek bakımcı).
+- PR'ı Claude'un kendisi yazmış olsa bile.
+- Kullanıcı sohbette daha önce "push'la" ya da "yapalım" demiş olsa bile.
+- Dal koruması yönetici atlatmasına izin veriyor olsa bile.
+- Bakımcı ulaşılamaz ve acil bir yama acil görünüyor olsa bile.
 
-→ Cevap **yine hayır**. Merge etmek insan reviewer'a aittir. Bir şey gerçekten urgent ise, PR URL'sini yüzeye çıkar ve kullanıcıya açıkça blocking olduğunu söyle — 10 saniyede merge'e tıklarlar.
+→ Yanıt **yine de hayır**. Birleştirme insan inceleyiciye aittir. Bir şey gerçekten acilse PR URL'sini yüzeye çıkar ve kullanıcıya açıkça engelleyici olduğunu söyle — birleştirme düğmesine 10 saniyede basar.
 
-### PR'larda NE'YE izin var
+### PR'larda neye izin var?
 
-- `gh pr create` — PR aç
-- `gh pr edit` — title/body'de typo düzelt, label add/remove
-- `gh pr list` / `gh pr view` / `gh pr diff` / `gh pr checkout` — read-only inspection
-- `gh pr review --comment` — feedback comment bırak (approve DEĞİL, request-changes DEĞİL)
+- `gh pr create` — PR açma.
+- `gh pr edit` — başlık / gövdedeki yazım hatalarını düzeltme, etiket ekleme / kaldırma.
+- `gh pr list` / `gh pr view` / `gh pr diff` / `gh pr checkout` — yalnızca okuma niteliğinde inceleme.
+- `gh pr review --comment` — bir geri bildirim yorumu bırakma (ONAYLAMA, DEĞİŞİKLİK İSTEME).
 
-### NE'YE izin YOK
+### Neye izin yok?
 
-- Merge etme (yukarıya bak)
-- Approve etme (`--approve`)
-- Başkasının PR'ında changes isteme (`--request-changes`)
-- Close etme (`gh pr close`) — destructive; PR'ı sadece author veya kullanıcı kapatır
-- Explicit kullanıcı talimatı olmadan kapalı PR'ı reopen etme
+- Birleştirme (yukarıya bak).
+- Onaylama (`--approve`).
+- Başkasının PR'ında değişiklik isteme (`--request-changes`).
+- Kapatma (`gh pr close`) — yıkıcıdır; PR'ları yalnızca yazar ya da kullanıcı kapatır.
+- Açık talimat olmadan kapanmış bir PR'ı yeniden açma.
 
-### İstisna: tooling üzerinden GitHub native auto-merge
+### İstisna: araçlar üzerinden GitHub yerel auto-merge
 
-**Bir** narrow istisna var: kullanıcı tooling üzerinden auto-merge'i explicit yetkilendirdiğinde — en sık [`/create-pr --auto-merge`](/tr/skills/create-pr) — Claude GitHub'ın native auto-merge'ini açmak için `gh pr merge --auto --merge` çalıştırabilir.
+**Tek dar bir istisna** vardır: kullanıcı, araçlar üzerinden auto-merge'i açıkça yetkilendirdiğinde — en sık [`/create-pr --auto-merge`](/tr/skills/create-pr) ile — Claude, GitHub'ın yerel auto-merge düzeneğini etkinleştirmek için `gh pr merge --auto --merge` komutunu çalıştırabilir.
 
-Bu istisna bounded:
+Bu istisna sınırlıdır:
 
-- **Flag aynı turda kullanıcıdan gelmeli.** "Önceki yetkilendirme" veya "broad authorization" SAYILMAZ. Kullanıcı `--auto-merge` (veya eşdeğer explicit talimat) yazması gate'tir.
-- **`--auto` zorunlu.** Anında merge eden herhangi bir şey (`gh pr merge` `--auto` olmadan) hâlâ yasak.
-- **Branch protection'ın check gate'i korunur.** GitHub merge etmeden önce required check'leri bekler; check'ler fail olursa merge olmaz. "Review gate" CI'a delegate edilir — atlanmaz.
-- **`--approve`, `--auto`'suz `--squash` veya başka bir merge varyantı için istisna yok.** Sadece `gh pr merge --auto --merge` (veya repo'nun ayarları öyle dikte ederse `--auto --squash` / `--auto --rebase`) kapsamında.
+- **Bayrak aynı turda kullanıcıdan gelmek zorundadır.** "Önceden yetkilendirme" ya da "geniş yetkilendirme" sayılmaz. Kullanıcının `--auto-merge` (ya da eşdeğer açık talimat) yazması kapıdır.
+- **`--auto` zorunludur.** Anında birleştiren her şey (`--auto` olmadan `gh pr merge`) yine yasaktır.
+- **Dal korumasının denetim kapısı korunur.** GitHub, gerekli denetimlerin geçmesini bekler; denetimler başarısız olursa birleştirme gerçekleşmez. "İnceleme kapısı" CI'ye devredilir — atlanmaz.
+- **`--approve`, `--auto` olmadan `--squash` ya da herhangi başka bir birleştirme türevi için istisna yoktur.** Yalnızca `gh pr merge --auto --merge` (ya da deponun ayarları öyle gerektiriyorsa `--auto --squash` / `--auto --rebase`) kapsamdadır.
 
-Kullanıcı tooling üzerinden explicit auto-merge flag'i geçmediyse, orijinal yasak geçerlidir: PR URL'sini yüzeye çıkar ve dur.
+Kullanıcı araçlar üzerinden açık bir auto-merge bayrağı geçirmediyse özgün yasak yürürlüktedir: PR URL'sini yüzeye çıkar ve dur.
 
-### PR açtıktan sonra handoff
+### PR açtıktan sonra teslim
 
-`gh pr create` başarılı olduktan sonra, URL'yi yüzeye çıkar ve o PR'da dur:
+`gh pr create` başarılı olduktan sonra URL'yi yüzeye çıkar ve o PR'da dur:
 
-> PR opened: https://github.com/.../pull/N — let me know once you've reviewed and merged, and I'll continue.
+> PR opened: https://github.com/.../pull/N — incelediğin ve birleştirdiğinde haber ver, sonra devam ederim.
 
-CI'nin green'de auto-merge etmesini bekleme. Self-approve etme. "5 dakikadır bir şey olmadığı için" `gh pr merge`'i yeniden invoke etme. Merge aksiyonu kullanıcının review ettiğine dair sinyal; o sinyali atlamak gate'i yok eder.
+CI'nin yeşil sonrası kendiliğinden birleştirmesi için bekleme. Kendini onaylama. "5 dakikadır bir şey olmadı" diye `gh pr merge`'i yeniden çağırma. Birleştirme eylemi, kullanıcının PR'ı incelediğine dair sinyalidir; o sinyali atlamak kapıyı yıkar.
 
 ## Kaçış kapakları (yalnızca doğrudan push, asla auto-merge)
 
-### Doğrudan push için admin bypass (yalnızca acil)
+### Doğrudan push için yönetici atlatması (yalnızca acil durum)
 
-Branch protection `enforce_admins` false (default'umuz) iken admin'in doğrudan push etmesine izin verir. Bu PR-flow bypass'ın **tek** formu — ve commit push eder, merge değil. Sadece şu durumlarda kullan:
+Dal koruması, `enforce_admins` `false` (varsayılanımız) olduğunda yöneticinin doğrudan push yapmasına izin verir. Bu, PR akışı atlatmasının **tek** biçimidir — ve bir commit push'lar, bir birleştirme değil. Yalnızca şu durumlarda kullan:
 
-- Release-pipeline-breaking issue `brew upgrade atl` / `scoop install atl`'ı blok ediyor
-- Public regression'ı durdurmak için bir revert dakikalar içinde land etmeli
-- Maintainer explicit talimat veriyor: "doğrudan push et, PR yok"
+- Sürüm yayım hattını kıran sorun `brew upgrade atl` / `scoop install atl`'i engelliyor.
+- Kamuya açık bir gerilemeyi durdurmak için bir geri alma dakikalar içinde inmek zorunda.
+- Bakımcı açıkça talimat veriyor: "doğrudan push'la, PR yok."
 
-Bunu kullanırken, hâlâ:
+Bunu kullanırken yine de:
 
-- Versiyonu bump et
-- Conventional commit kullan
-- Bir retrospective ile takip et: `chore(postmortem): ...` commit veya issue
+- Sürümü artır.
+- Conventional commit kullan.
+- Bir geriye dönük değerlendirmeyle takip et: `chore(postmortem): ...` commit'i ya da issue'su.
 
-User-side beklenti: admin bypass **onların** tool'u. Claude initiate etmez.
+Kullanıcı tarafının beklentisi: yönetici atlatması **onun** aracıdır. Claude bunu başlatmaz.
 
-### Trivial değişiklikler bile PR'dan geçer
+### Önemsiz değişiklikler de PR'dan geçer
 
-En küçük değişiklik için bile — bir typo, broken link, `gofmt` çalıştırma — yol:
+En küçük değişiklikte bile — bir yazım hatası, kırık bir bağlantı, bir `gofmt` çalıştırması — yol şudur:
 
-1. Feature branch → commit → push → `gh pr create`
-2. Kullanıcı review eder, merge'e tıklar
+1. Özellik dalı → commit → push → `gh pr create`.
+2. Kullanıcı inceler, birleştirme düğmesine basar.
 
-"PR için çok küçük" kategorisi yok. PR ceremony cheap (30 saniye iş); review gate trivial görünen ama olmayan hataları yakalar.
+"PR için fazla küçük" diye bir sınıf yoktur. PR töreni ucuzdur (30 saniyelik iş); inceleme kapısı, önemsiz görünüp gerçekte öyle olmayan hataları yakalar.
 
 ## Bu kuralın KAPSAMADIĞI şeyler
 
-- **Private project repo'lar** — kendi projenin git workflow'u sana ait. Bu kural özellikle `agentteamland/` public repo'lar için.
-- **Release-pipeline repo'lar** (`homebrew-tap`, `scoop-bucket`, `winget-pkgs`) — goreleaser auto-push yapar; branch protection bilerek uygulanmaz.
-- **Tag-based release'ler** — `cli v0.2.1` tag'lerken, tag push goreleaser'ı tetikler. Tag oluşturulması için PR gerekmez (zaten merge edilmiş bir commit'i main'de işaret eder).
+- **Özel proje depoları** — kendi projenin Git iş akışı sana aittir. Bu kural yalnızca `agentteamland/` herkese açık depoları içindir.
+- **Sürüm yayım hattı depoları** (`homebrew-tap`, `scoop-bucket`, `winget-pkgs`) — goreleaser kendiliğinden push yapar; dal koruması bilinçli olarak uygulanmaz.
+- **Etiket tabanlı sürümler** — `cli v0.2.1` etiketlenirken etiket push'u goreleaser'ı tetikler. Etiket oluşturmak için PR gerekmez (etiket zaten birleştirilmiş bir commit'i `main` dalında gösterir).
 
 ## İlgili
 
-- [`/create-pr`](/tr/skills/create-pr) — bu disiplini otomatize eden skill
-- [`/save-learnings`](/tr/skills/save-learnings) — Adım 0 invocation
-- [karpathy-guidelines](/tr/guide/karpathy-guidelines) — bu governance kuralının kodlama-rehberi karşılığı
-- Kanonik kaynak: [`core/rules/team-repo-maintenance.md`](https://github.com/agentteamland/core/blob/main/rules/team-repo-maintenance.md)
+- [`/create-pr`](/tr/skills/create-pr) — bu disiplini otomatikleştiren beceri.
+- [`/save-learnings`](/tr/skills/save-learnings) — Adım 0 çağrısı.
+- [karpathy-guidelines](/tr/guide/karpathy-guidelines) — bu yönetişim kuralının kodlama-rehberi karşılığı.
+- Kanonik kaynak: [`core/rules/team-repo-maintenance.md`](https://github.com/agentteamland/core/blob/main/rules/team-repo-maintenance.md).
 
 ## Tarihçe
 
-2026-04-24 öncesi, `/save-learnings` üzerinden team-repo yazımları doğrudan `main`'e ad-hoc commit mesajıyla land edebiliyordu. Bu gerçek bug fix'lerin hızlıca ship olmasına izin verdi ama versiyon bump'larının sıkça unutulmasına (bozarak `atl update`'in diff notification'ını) ve commit-mesaj disiplininin klavyede kim olursa ona bağlı olmasına da yol açtı.
+2026-04-24'ten önce, takım depolarına `/save-learnings` üzerinden yapılan yazımlar `main` dalına gelişigüzel bir commit mesajıyla doğrudan inebiliyordu. Bu, gerçek hata düzeltmelerinin hızla yayımlanmasına olanak tanıyordu ama sürüm artırımları sıkça unutuluyor (`atl update`'in fark bildirimleri kırılıyordu) ve commit mesajı disiplini klavyede o sırada kim varsa ona kalıyordu.
 
-2026-04-24'te maintainer org'daki her public repo'ya branch protection ekledi ve principled bir workflow istedi; bu kural o workflow. Doğrudan push enforcement-refused; PR ceremony hafif (solo maintainer için external onay gerekmez) ama zorunlu — her team-repo değişikliğinin versiyon bump, conventional message ve "Discovered via" context'i olmasını garanti eder.
+2026-04-24 tarihinde bakımcı organizasyondaki her herkese açık depoya dal koruması ekledi ve ilkeli bir iş akışı talep etti; bu kural o iş akışıdır. Doğrudan push reddedilir; PR töreni hafiftir (tek bakımcı için dış onay gerekmez) ama zorunludur — her takım deposu değişikliğinin bir sürüm artırımı, bir conventional mesaj ve bir "Discovered via" bağlamı taşımasını güvence altına alır.

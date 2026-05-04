@@ -1,12 +1,12 @@
-# Workspace — maintainer hub'ı
+# Workspace — bakımcı merkezi
 
-[`agentteamland/workspace`](https://github.com/agentteamland/workspace) repo'su AgentTeamLand ekosisteminin **maintainer hub**'ıdır. Meta-repo: clone'layıp tek script çalıştırınca her peer repo (cli, core, registry, software-project-team, vb.) tek bir ağaç altında `./repos/` içinde checked-out olur. Platformun her hareketli parçası bir `cd repos/<name>` uzaklıkta.
+[`agentteamland/workspace`](https://github.com/agentteamland/workspace) deposu, AgentTeamLand ekosisteminin **bakımcı merkezidir**. Bir meta-depodur: klonlayıp tek bir betiği çalıştırınca her eş depo (cli, core, registry, software-project-team vb.) tek bir ağaç altında, `./repos/` dizininde, kontrol edilmiş hâle gelir. Platformun her hareketli parçası bir `cd repos/<name>` uzaklıktadır.
 
-Workspace'i **birden fazla repo'yu kapsayan maintenance işi** yaparken kullan: cross-repo refactor, multi-PR rollout, governance audit, ya da sadece 14 ayrı `cd` komutu olmadan org genelinde `git status`.
+Çalışma alanını, **birden çok depoyu kapsayan bakım işi** yaparken kullan: depolar arası yeniden tasarımlar, çoklu PR yayımları, yönetişim denetimleri ya da yalnızca 14 ayrı `cd` komutu olmadan organizasyon genelinde `git status` çalıştırmak.
 
-Sadece atl KULLANMAK istiyorsan (kendi projelerine takım kurmak), workspace gerekmez — `brew install agentteamland/tap/atl` yeterli. Workspace ekosistem-tarafı iş için.
+`atl`'yi yalnızca KULLANMAK istiyorsan (kendi projelerine takım kurmak için) çalışma alanına ihtiyacın yoktur — `brew install agentteamland/tap/atl` yeterlidir. Çalışma alanı, ekosistem tarafındaki iş içindir.
 
-## Bootstrap
+## İlk kurulum
 
 ```bash
 git clone https://github.com/agentteamland/workspace.git
@@ -14,97 +14,97 @@ cd workspace
 ./scripts/sync.sh
 ```
 
-`sync.sh` `agentteamland/` altındaki her peer repo'yu `./repos/<name>/`'e clone'lar. Idempotent — yeniden çalıştırma var olan clone'ları fast-forward-pull eder, son run'dan beri org'a eklenmiş yeni repo'ları clone'lar.
+`sync.sh`, `agentteamland/` altındaki her eş depoyu `./repos/<name>/` dizinine klonlar. İdempotent çalışır — yeniden çalıştırmak var olan klonları ileri-sarmalı çekimle günceller ve son çalıştırmadan bu yana organizasyona eklenen yeni depoları klonlar.
 
-Sync sonrası `./repos/` tam org snapshot'ını içerir (2026-05-03 itibarıyla 16 repo):
+Eşzamanlamadan sonra `./repos/`, organizasyonun tam anlık görüntüsünü içerir (2026-05-03 itibarıyla 16 depo):
 
 ```
 repos/
-├── cli/                       # atl binary (Go) — kullanıcıların kurduğu CLI
-├── core/                      # global skill'ler + rule'lar + JSON schema'lar
-├── brainstorm/                # /brainstorm skill + rule
-├── rule/                      # /rule + /rule-wizard skill'leri
-├── team-manager/              # bootstrap install.sh (post-v1.0.0 atl'ye delege)
-├── software-project-team/     # 13 agent + 3 skill (.NET + Flutter + React stack)
-├── design-system-team/        # 2 agent + 10 /dst-* skill (native design + prototype)
-├── starter-extended/          # inheritance örnek takımı
-├── create-project/            # 🗄 ARCHIVED 2026-05-04 — scaffolder takımlara taşındı; tarih için saklandı
+├── cli/                       # atl ikilisi (Go) — kullanıcıların kurduğu CLI
+├── core/                      # global beceriler + kurallar + JSON şemalar
+├── brainstorm/                # /brainstorm becerisi + kuralı
+├── rule/                      # /rule + /rule-wizard becerileri
+├── team-manager/              # bootstrap install.sh (v1.0.0 sonrası atl'ye devreder)
+├── software-project-team/     # 13 ajan + 3 beceri (.NET + Flutter + React yığını)
+├── design-system-team/        # 2 ajan + 10 /dst-* becerisi (yerel tasarım + prototip)
+├── starter-extended/          # kalıtım örnek takımı
+├── create-project/            # 🗄 ARCHIVED 2026-05-04 — iskele takımlara taşındı; tarih için saklandı
 ├── registry/                  # teams.json — kanonik takım kataloğu
-├── docs/                      # bu docs site (VitePress, EN + TR)
-├── homebrew-tap/              # goreleaser tarafından otomatik yönetilir
-├── scoop-bucket/              # goreleaser tarafından otomatik yönetilir
-├── winget-pkgs/               # microsoft/winget-pkgs fork'u
-└── .github/                   # organization profile
+├── docs/                      # bu belgeler sitesi (VitePress, EN + TR)
+├── homebrew-tap/              # goreleaser tarafından kendiliğinden yönetilir
+├── scoop-bucket/              # goreleaser tarafından kendiliğinden yönetilir
+├── winget-pkgs/               # microsoft/winget-pkgs çatallaması
+└── .github/                   # organizasyon profili
 ```
 
 ## Günlük komutlar
 
-Workspace `./scripts/` altında üç script ile gelir:
+Çalışma alanı `./scripts/` altında üç betik ile gelir:
 
 ```bash
-./scripts/sync.sh         # eksik repo'ları clone et; var olanları fast-forward pull et
-./scripts/status.sh       # tabular özet — kim dirty, ahead, behind
-./scripts/push-all.sh     # unpushed commit'lerin dry-run listesi (push için --force)
+./scripts/sync.sh         # eksik depoları klonla; var olanları ileri-sarmalı çekimle güncelle
+./scripts/status.sh       # tablolu genel görünüm — kim kirli, kim önde, kim geride
+./scripts/push-all.sh     # push'lanmamış commit'lerin kuru çalıştırma listesi (gerçekten push'lamak için --force)
 ```
 
-`status.sh` her repo için tek satırlık tablo basar — branch, ahead/behind sayıları, dirty marker. Org'un mevcut state'ini bir bakışta görmek için her session başında çalıştır.
+`status.sh`, her depo için tek satırlık bir tablo yazdırır — dal, önde / geride sayıları, kirli işareti. Organizasyonun mevcut durumunu bir bakışta görmek için her oturumun başında çalıştır.
 
-`push-all.sh` default dry-run — NE push edileceğini gösterir, push ETMEZ. Gerçekten push etmek için `--force` geç. ("force" adı dry-run override etmeye işaret eder, `git push --force` değil — gerçek push normal git semantiğini kullanır.)
+`push-all.sh` varsayılan olarak kuru çalıştırma yapar — NE'nin push'lanacağını gösterir, gerçek push'lamayı yapmaz. Gerçekten push'lamak için `--force` geç. ("force" adı kuru çalıştırmayı bastırmaya işaret eder, `git push --force` değil — gerçek push olağan Git anlamlarını kullanır.)
 
-## Bir peer repo'da çalışma
+## Bir eş depoda çalışmak
 
 ```bash
 cd repos/<repo-name>
 # Değişikliklerini yap, team-repo-maintenance disiplinini izle
 git checkout -b <type>/<short-description>
-# ... dosyaları edit et ...
+# ... dosyaları düzenle ...
 git add <files> && git commit -m "<conventional message>"
 git push -u origin <branch-name>
 gh pr create
-# Maintainer'ın review + merge'ünü bekle
+# Bakımcının inceleyip birleştirmesini bekle
 ```
 
-Her peer repo kendi remote'una sahip kendi git clone'u. 16'nın 12'si üzerinde branch protection (release-pipeline + .github hariç) PR akışını enforce eder. Tam disiplin için bkz. [Team-repo maintenance](../authoring/team-repo-maintenance).
+Her eş depo kendi uzak deposu olan kendi Git klonudur. 16 deponun 12'sinde dal koruması (sürüm yayım hattı + .github hariç) PR akışını zorunlu kılar. Tüm disiplin için bkz. [Takım deposu bakımı](../authoring/team-repo-maintenance).
 
-## Workspace'i Claude Code ile kullanma
+## Çalışma alanını Claude Code ile kullanmak
 
-Workspace kökünde Claude Code aç:
+Çalışma alanının kökünde Claude Code aç:
 
 ```bash
 cd ~/projects/my/agentteamland/workspace
-claude    # veya Claude Code'u nasıl invoke ediyorsan
+claude    # ya da Claude Code'u nasıl çağırıyorsan
 ```
 
-Claude Code burada başladığında otomatik şunları görür:
+Claude Code burada başladığında kendiliğinden şunları görür:
 
-- **`./repos/` altındaki her peer repo** doğrudan edit için — ayrı `cd` gerekmez
-- **Tüm aktif brainstorm'lar** ([brainstorm rule](https://github.com/agentteamland/brainstorm/blob/main/rules/brainstorm.md) gereği `CLAUDE.md`'de auto-pinned)
-- **Workspace `CLAUDE.md`** — platform-seviye orientation document
-- **Final kararlar** `.claude/docs/` içinde (tamamlanmış brainstorm'lardan türeyen settled architecture decisions)
-- **Wiki + journal** `.claude/wiki/` ve `.claude/journal/` içinde ([knowledge system](../guide/knowledge-system) gereği)
+- **`./repos/` altındaki her eş depo** doğrudan düzenleme için — ayrı `cd` gerekmez.
+- **Tüm etkin beyin fırtınaları** ([brainstorm kuralı](https://github.com/agentteamland/brainstorm/blob/main/rules/brainstorm.md) gereği `CLAUDE.md`'ye kendiliğinden sabitlenmiş).
+- **Çalışma alanının `CLAUDE.md` dosyası** — platform düzeyinde yönlendirme belgesi.
+- **Yerleşmiş kararlar** `.claude/docs/` altında (tamamlanmış beyin fırtınalarından türeyen mimari kararlar).
+- **Wiki + journal** — `.claude/wiki/` ve `.claude/journal/` içinde ([bilgi sistemi](../guide/knowledge-system) gereği).
 
-Cross-repo iş için doğal kurulum: Claude'un working set'i tüm org.
+Bu, depolar arası iş için doğal kurulumdur: Claude'un çalışma kümesi tüm organizasyondur.
 
 ## Bilgi haritası
 
-Workspace'in `CLAUDE.md`'si Claude'un context'ine her wiki sayfasının title + summary'sini auto-load eden `<!-- wiki:index -->` marker bloğu taşır. Marker bloğunun nasıl çalıştığı ve neden var olduğu için bkz. [Claude Code conventions](../guide/claude-code-conventions).
+Çalışma alanının `CLAUDE.md` dosyası, her wiki sayfasının başlığını ve özetini Claude'un bağlamına kendiliğinden yükleyen bir `<!-- wiki:index -->` işaretçi bloğu taşır. İşaretçi bloğunun nasıl çalıştığı ve neden var olduğu için bkz. [Claude Code sözleşmeleri](../guide/claude-code-conventions).
 
-Wiki'nin kendisi (`.claude/wiki/*.md`) maintainer'ın cross-repo concern'ler üzerinde çalışırken elinde olması gereken platform-wide pattern'ler, konvansiyonlar, keşifler, anti-pattern'lerin kanonik kaydı. Sayfalar güncel tutulur — [knowledge system](../guide/knowledge-system) güncel gerçek için replace-style, history için append-only journal.
+Wiki'nin kendisi (`.claude/wiki/*.md`), bakımcının depolar arası endişeler üzerinde çalışırken elinin altında bulundurması gereken platform genelindeki desenler, sözleşmeler, keşifler ve kötü desenlerin kanonik kaydıdır. Sayfalar güncel tutulur — [bilgi sistemi](../guide/knowledge-system), güncel doğru için yerine yazma biçimli, geçmiş için yalnızca eklemeli journal kullanır.
 
-## Session sonu
+## Oturum sonu
 
-Toparlarken:
+Toparlanırken:
 
 ```bash
-./scripts/status.sh        # her şeyin main'de + clean olduğunu doğrula
-./scripts/push-all.sh      # unpushed ne var bak
+./scripts/status.sh        # her şeyin main'de ve temiz olduğunu doğrula
+./scripts/push-all.sh      # push'lanmamış ne var, gör
 ```
 
-Daha kapsamlı session-end pass için, [`/repo-cleanup`](https://github.com/agentteamland/workspace/blob/main/.claude/skills/repo-cleanup/skill.md) şunları otomatize eder: save-learnings → branch + commit + push + PR + auto-merge → tag + registry + branch prune. Workspace'te Claude Code'un içinden çalıştır.
+Daha kapsamlı bir oturum sonu geçişi için [`/repo-cleanup`](https://github.com/agentteamland/workspace/blob/main/.claude/skills/repo-cleanup/skill.md) şunları otomatikleştirir: save-learnings → dal + commit + push + PR + auto-merge → etiket + kayıt defteri + dal budama. Çalışma alanında Claude Code'un içinden çalıştır.
 
 ## İlgili
 
-- [`atl` CLI'yi kur](../guide/install) — sadece atl KULLANMAK istiyorsan workspace'i atla
-- [Team-repo maintenance](../authoring/team-repo-maintenance) — her peer-repo PR'ının izlediği disiplin
-- [Governance](../guide/governance) — branch protection + team-repo-maintenance rule pair
-- [Knowledge system](../guide/knowledge-system) — workspace'in `.claude/` dizininin kullandığı journal + wiki katmanları
+- [`atl` CLI'yi kur](../guide/install) — yalnızca `atl`'yi KULLANMAK istiyorsan çalışma alanını atla.
+- [Takım deposu bakımı](../authoring/team-repo-maintenance) — her eş depo PR'ının izlediği disiplin.
+- [Yönetişim](../guide/governance) — dal koruması ile team-repo-maintenance kuralı eşi.
+- [Bilgi sistemi](../guide/knowledge-system) — çalışma alanının `.claude/` dizinindeki journal ve wiki katmanları.

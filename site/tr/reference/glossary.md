@@ -1,51 +1,51 @@
 # Sözlük
 
-**Agent** — Claude Code için uzmanlaşmış rol tanımlayan Markdown dosyası. Takımın parçası olarak yayımlanır. Takım reposunda `agents/` altında yaşar; projede `.claude/agents/` altına kopya olur.
+**Ajan (agent)** — Claude Code için uzmanlaşmış bir rolü tanımlayan Markdown dosyası. Bir takımın parçası olarak yayımlanır. Takım deposunun `agents/` dizininde yaşar; projedeki `.claude/agents/` dizinine kopyalanır.
 
-**atl** — CLI (`atl install`, `atl list`, …). Takımları projeye kurar. Go binary'si.
+**atl** — CLI (`atl install`, `atl list`, …). Takımları bir projeye kurar. Go ile yazılmış bir ikilidir.
 
-**Önbellek (cache)** — `atl`'nin klonlanmış takım repolarını tuttuğu paylaşımlı disk dizini. Makine başına bir tane: `~/.claude/repos/agentteamland/`. Projeler buraya kopya yapar.
+**Önbellek** — `atl`'nin klonlanmış takım depolarını sakladığı paylaşılan disk dizini. Makine başına bir adettir: `~/.claude/repos/agentteamland/`. Projeler buraya kopya çıkarır.
 
-**Children pattern** — karmaşık agent'lar için konvansiyon: üst seviye `agent.md` kısa kalır (kimlik, sorumluluk, ilkeler, Knowledge Base); detaylı bilgi `children/` altında konu-başına-dosya olarak yaşar. Her child dosyası, `/save-learnings`'in parent agent.md'nin Knowledge Base section'ını otomatik rebuild etmek için kullandığı `knowledge-base-summary` frontmatter alanını taşır. Skill'lerde `learnings/` olarak mirror'lanır (skill.md'nin Accumulated Learnings section'ını otomatik rebuild eder).
+**Children deseni** — karmaşık ajanlar için bir sözleşme: üst düzey `agent.md` kısa kalır (kimlik, kapsam, ilkeler, Knowledge Base); ayrıntılı bilgi `children/` altında konu başına bir dosya olarak yaşar. Her çocuk dosya, `/save-learnings`'in üst `agent.md` dosyasının Knowledge Base bölümünü kendiliğinden yeniden inşa etmek için kullandığı `knowledge-base-summary` frontmatter alanını taşır. Becerilerde aynı desen `learnings/` olarak yansıtılır (`skill.md`'nin Accumulated Learnings bölümünü kendiliğinden yeniden inşa eder).
 
-**Circular chain** — bir takımın `extends` zincirinin kendine dönmesi (`A → B → A`). Kurulumda yakalanır; CLI tam zinciri yazarak fail eder.
+**Döngülü zincir** — bir takımın `extends` zincirinin kendine geri dönmesi (`A → B → A`). Kurulum sırasında yakalanır; CLI tam zinciri yazdırarak başarısız olur.
 
-**Dependencies (bağımlılıklar)** — bir takımın ihtiyaç duyduğu ek takımlar; `team.json`'daki `dependencies` alanıyla belirtilir. Takımla birlikte çözümlenip kurulur.
+**Bağımlılıklar** — bir takımın gereksinim duyduğu ek takımlar; `team.json` içindeki `dependencies` alanıyla belirtilir. Takımın kendisiyle birlikte çözülür ve kurulur.
 
-**`excludes`** — `team.json`'da, child'ın kopya'e dönüşmesini istemediği parent-sağlanan agent/skill/rule adlarının listesi. Parent kurulduktan sonra etki eder.
+**`excludes`** — `team.json` içinde, alt takımın kopyalanmasını istemediği üst takım sağlamalı ajan / beceri / kural adlarının listesi. Üst takım kurulduktan sonra etkili olur.
 
-**`extends`** — tek-parent inheritance. `extends: "parent@^1.0.0"` olan bir takım; önce parent'ı kurar, kendi içeriğini üstüne koyar.
+**`extends`** — tek üst takım kalıtımı. `extends: "parent@^1.0.0"` taşıyan bir takım önce üst takımı kurar ve kendi içeriğini üzerine katmanlar.
 
-**Override** — child takım, parent'taki bir öğeyle aynı ada sahip bir öğe getirirse child'ınki kazanır. Tam replace, merging yok.
+**Bastırma** — alt takım, üst takımdaki bir öğeyle aynı adda bir öğe yayımlarsa alt takımın sürümü kazanır. Tümüyle yerine yazma; birleştirme yok.
 
-**Proje** — `atl`'yi çalıştırdığın dizin. Kurulu takımlara ait kopyalarle dolu bir `.claude/` alt dizini alır.
+**Proje** — `atl`'yi çalıştırdığın bir dizin. Kurulu takımlara ait kopyalarla doldurulmuş bir `.claude/` alt dizini kazanır.
 
-**Registry** — takımların herkese açık kataloğu. [`agentteamland/registry`](https://github.com/agentteamland/registry)'deki tek `teams.json`. PR-tabanlı, schema ile doğrulanır.
+**Kayıt defteri** — takımların herkese açık kataloğu. [`agentteamland/registry`](https://github.com/agentteamland/registry) deposunda tek bir `teams.json` dosyası. PR güdümlüdür ve şema ile doğrulanır.
 
-**Rule** — Claude Code tarafından her zaman yüklenen Markdown dosyası (çağrılmayı bekleyen skill'den farklı). Takımın `rules/` dizinindedir; `.claude/rules/` altına kopya olur.
+**Kural (rule)** — Claude Code tarafından her zaman yüklenen Markdown dosyası (çağrılmayı bekleyen becerilerin aksine). Takımın `rules/` dizinindedir; `.claude/rules/` altına kopyalanır.
 
-**Scaffolder** — takımın stack'inde yeni proje başlatan, `/create-new-project` adlı takım-özel skill. [Scaffolder spec](/tr/authoring/scaffolder-spec)'e uymalı.
+**İskele (scaffolder)** — takımın yığınında yeni bir projeyi başlatan, `/create-new-project` adıyla anılan takım kapsamlı beceri. [İskele belirtimine](/tr/authoring/scaffolder-spec) uymalıdır.
 
-**SemVer constraint** — `extends` ve `dependencies`'te kullanılan version aralık sözdizimi. `^1.0.0` (caret), `~1.2.0` (tilde), `1.2.3` (tam), `>=1.2.0` (açık uçlu).
+**SemVer kısıtı** — `extends` ve `dependencies` alanlarında kullanılan sürüm aralığı sözdizimi. `^1.0.0` (caret), `~1.2.0` (tilde), `1.2.3` (kesin), `>=1.2.0` (açık uçlu).
 
-**Skill** — kullanıcı çağırmalı slash komut (örn. `/verify-system`). Kök dizininde `skill.md` olan bir dizin. Global skill'ler `~/.claude/skills/` altında yaşar; takım-özel skill'ler takımla gelir ve kurulumdan sonra `.claude/skills/` altında görünür.
+**Beceri (skill)** — kullanıcı tarafından çağrılan eğik çizgili komut (örneğin `/verify-system`). Kök dizininde `skill.md` bulunan bir dizin olarak gelir. Global beceriler `~/.claude/skills/` altında yaşar; takım kapsamlı beceriler bir takımla birlikte gelir ve kurulumun ardından `.claude/skills/` altında görünür.
 
-**Status (durum)** — bir takımın registry'deki durumu: `verified`, `community` veya `deprecated`.
+**Durum** — bir takımın kayıt defterindeki durumu: `verified`, `community` ya da `deprecated`.
 
-**Takım (team)** — kök dizininde `team.json` bulunan bir Git reposu; belirli bir tür iş için agent, skill ve rule'ları bir arada paketler.
+**Takım (team)** — kökünde `team.json` bulunan bir Git deposu; belirli bir iş türü için ajanları, becerileri ve kuralları bir araya paketler.
 
-**team.json** — her takım reposunun kökündeki manifest dosyası. Adı, versiyonu, açıklamayı, içerikleri, extend edileni ve dışlananları bildirir.
+**team.json** — her takım deposunun kökündeki manifesto dosyası. Adı, sürümü, açıklamayı, paketlenenleri, genişletilen üst takımı ve dışarıda bırakılanları bildirir.
 
-**Workspace** — `agentteamland/workspace`, tüm peer repo'ların geliştirme için bir araya getirildiği bakımcı hub'ı. AgentTeamLand'i kullanmak için gerekli değil; yalnızca platforma katkı veriyorsan ilgilendirir.
+**Çalışma alanı (workspace)** — `agentteamland/workspace`, tüm eş depoların geliştirme için bir araya getirildiği bakımcı merkezi. AgentTeamLand'i kullanmak için gerekmez; yalnızca platforma katkı veriyorsan ilgilenir.
 
-**Journal** — `.claude/journal/{date}_{agent}.md` altında kronolojik per-agent learning kaydı. Retire edilen `agent-memory/` katmanını değiştirir. `/save-learnings` tarafından yazılır; agent startup sırasında [knowledge-system rule](https://github.com/agentteamland/core/blob/main/rules/knowledge-system.md)'a göre Claude tarafından okunur.
+**Journal** — `.claude/journal/{date}_{agent}.md` altındaki kronolojik, ajan başına öğrenme kaydı. Emekli edilmiş `agent-memory/` katmanının yerini alır. `/save-learnings` tarafından yazılır; ajan açılışında Claude tarafından [knowledge-system kuralı](https://github.com/agentteamland/core/blob/main/rules/knowledge-system.md) gereği okunur.
 
-**knowledge-base-summary** — her `children/{topic}.md` (ve `learnings/{topic}.md`) dosyasında zorunlu YAML frontmatter alanı. `/save-learnings`'in parent agent.md'nin Knowledge Base (veya skill.md'nin Accumulated Learnings) section'ını rebuild ederken extract ettiği bir-üç satırlık özet. Source-of-truth — rebuild edilmiş section'a yapılan elle düzenlemeler bir sonraki save-learnings çalıştırmasında overwrite edilir.
+**knowledge-base-summary** — her `children/{topic}.md` (ve `learnings/{topic}.md`) dosyasında zorunlu olan YAML frontmatter alanı. `/save-learnings`'in üst `agent.md`'nin Knowledge Base (ya da `skill.md`'nin Accumulated Learnings) bölümünü yeniden inşa ederken çıkardığı bir-üç satırlık özet. Kaynak doğruluktur — yeniden inşa edilmiş bölüme yapılan elle düzenlemeler bir sonraki save-learnings çalıştırmasında üzerine yazılır.
 
-**knowledge-system** — iki katmanlı bilgi modelini (`journal/` + `wiki/`) tanımlayan core rule. agent-memory katmanı journal'a merge edildikten sonra `core@1.8.0`'da `memory-system`'den rename'lendi.
+**knowledge-system** — iki katmanlı bilgi modelini (`journal/` + `wiki/`) tanımlayan çekirdek kural. `agent-memory` katmanı journal'a katıldıktan sonra `core@1.8.0` sürümünde `memory-system` adından yeniden adlandırıldı.
 
-**learnings/** — agent'ların `children/`'ını mirror'layan per-skill subdir. Her `learnings/{topic}.md`, `knowledge-base-summary` frontmatter taşır; skill'in `## Accumulated Learnings` section'ı bunlardan auto-rebuild edilir.
+**learnings/** — ajanların `children/` dizinini yansıtan, beceri başına alt dizin. Her `learnings/{topic}.md` dosyası `knowledge-base-summary` frontmatter taşır; becerinin `## Accumulated Learnings` bölümü bu dosyalardan kendiliğinden yeniden inşa edilir.
 
-**Learning marker** — bir learning moment olduğunda Claude'un sohbet sırasında bıraktığı inline HTML comment. Format: `<!-- learning topic: ... kind: ... doc-impact: ... body: ... -->`. Bir sonraki session'ın `SessionStart`'ında `atl learning-capture` tarafından taranır ve `/save-learnings --from-markers` tarafından işlenir.
+**Öğrenme işaretçisi** — bir öğrenme anı geçtiğinde Claude'un konuşma sırasında düşürdüğü satır içi HTML yorumu. Biçim: `<!-- learning topic: ... kind: ... doc-impact: ... body: ... -->`. Bir sonraki oturumun `SessionStart` adımında `atl learning-capture` tarafından taranır ve `/save-learnings --from-markers` tarafından işlenir.
 
-**Wiki** — `.claude/wiki/{topic}.md` altındaki konu-organize current-truth bilgi. Truth değiştiğinde değiştirilir (append edilmez); CLAUDE.md'deki `<!-- wiki:index -->` marker block her session start'ında live index'i Claude'a görünür kılar.
+**Wiki** — `.claude/wiki/{topic}.md` altında konuya göre düzenlenmiş güncel doğru bilgisi. Doğru değiştiğinde eklenmez, yerine yazılır; `CLAUDE.md` dosyasındaki `<!-- wiki:index -->` işaretçi bloğu canlı dizini her oturum başında Claude'a görünür kılar.

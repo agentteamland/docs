@@ -1,18 +1,18 @@
-# Scaffolder spec
+# İskele belirtimi
 
-**Scaffolder**; takımın stack'inde yeni proje başlatan, `/create-new-project` adındaki takıma-özel skill'dir. Bu sayfa, her scaffolder'ın uyması gereken standart şekli tanımlar.
+Bir **iskele**, takımın yığınında yeni bir projeyi başlatan, `/create-new-project` adıyla anılan takım kapsamlı bir beceridir. Bu sayfa, her iskelenin uyması gereken standart şekli tanımlar.
 
-::: tip Kaynak
-Bu spec'in yetkili sürümü [`agentteamland/core/docs/scaffolder-spec.md`](https://github.com/agentteamland/core/blob/main/docs/scaffolder-spec.md) altında yaşar. Bu sayfa onu yansıtır; ayrıştıkları olursa `core` kazanır.
+::: tip Kanonik kaynak
+Bu belirtimin yetkili sürümü [`agentteamland/core/docs/scaffolder-spec.md`](https://github.com/agentteamland/core/blob/main/docs/scaffolder-spec.md) altında yaşar. Bu sayfa onu yansıtır; ikisi ayrılırsa `core` deposu kazanır.
 :::
 
-## Neden spec?
+## Neden bir belirtim?
 
-Farklı takımlar çok farklı scaffolder'lar üretecek (.NET + Docker stack'i vs. Next.js + Sanity blog'u vs. Python + Jupyter veri projesi). Ama UX'in **şekli** tutarlı olmalı. Bir takımın scaffolder'ını öğrenen kullanıcı, başkasını kullanırken de evindeymiş gibi hissetmeli.
+Farklı takımlar çok farklı iskeleler kuracaktır (.NET + Docker yığını ile Next.js + Sanity blog ile Python + Jupyter veri projesi karşılaştırılırsa). Ama UX'in **şekli** tutarlı olmalı. Bir takımın iskelesini öğrenen kullanıcı bir başkasını kullanırken kendini evinde hissetmeli.
 
-## Skill konumu
+## Beceri konumu
 
-Takım reposunda:
+Takım deposunun içinde:
 
 ```
 {team-repo}/skills/create-new-project/skill.md
@@ -23,70 +23,70 @@ Ve `team.json` içinde:
 ```json
 {
   "skills": [
-    { "name": "create-new-project", "description": "Bu takımın stack'inde yeni proje başlat." }
+    { "name": "create-new-project", "description": "Scaffold a new project on this team's stack." }
   ]
 }
 ```
 
-`atl install <team>` ile skill otomatik olarak `.claude/skills/` altına bağlanır.
+Kullanıcı `atl install <team>` çalıştırdığında beceri kendiliğinden `.claude/skills/` dizinine kopyalanır.
 
-## Beş faz
+## Beş aşama
 
-Her scaffolder bu beş fazı sırayla yürütmek ZORUNDADIR:
+Her iskele şu aşamalardan sırayla geçmek ZORUNDADIR:
 
-### Faz 1 — Bilgi topla
+### Aşama 1 — Bilgi topla
 
-Gerekenleri `AskUserQuestion` tool'u ile topla. Tipik sorular:
+Gereksinimleri `AskUserQuestion` aracıyla topla. Tipik sorular:
 
-- Proje adı (argüman olarak verildiyse sormayı atla)
-- Hangi uygulamalar / modüller / özellikler
-- Deploy hedefleri, port offset'leri
-- Lisans seçimi
-- Stack'e özel toggle'lar (SaaS? Multi-tenant? Framework versiyonu?)
+- Proje adı (argüman olarak verildiyse sormayı atla).
+- Hangi uygulamaların / modüllerin / özelliklerin dâhil edileceği.
+- Dağıtım hedefleri, port ofsetleri.
+- Lisans seçimi.
+- Yığına özgü açma-kapama düğmeleri (SaaS mi? Çoklu kiracı mı? Çerçeve sürümü?).
 
 **Kurallar:**
 
-- Soruları odaklı tut — 4–6 yeterli.
-- Makul default'lar koy; en üstteki opsiyonu "Önerilen" olarak işaretle.
-- Argümanın cevapladığı soruyu sorma.
+- Soruları odaklı tut — çoğu iskele için 4-6 yeterlidir.
+- Makul varsayılanlar sağla; en üst seçeneği "Önerilen" olarak işaretle.
+- Kullanıcı bir soruyu yanıtlayan bir argüman geçirdiyse o soruyu sorma.
 
-### Faz 2 — Projeyi iskelele
+### Aşama 2 — Projeyi iskeleyle kur
 
-Yeni projenin ihtiyacı olan her dosyayı yaz. Büyük scaffold'lar için paralel sub-agent'lara delege et — her biri bir ana konuya (API, frontend, infra, mobile, vb.).
+Yeni projenin ihtiyaç duyduğu her dosyayı yaz. Büyük iskeleler için paralel alt ajanlara devret — her biri bir ana konuya (API, ön uç, altyapı, mobil vb.) odaklanır.
 
-**Checklist:**
+**Kontrol listesi:**
 
-- Kök dosyalar (`README.md`, `.gitignore`, dil-özgü lockfile'lar)
-- Proje konfigürasyonu (`CLAUDE.md`, `.mcp.json`, `.env.example`)
-- `.claude/` proje dizini (`agents/`, `skills/`, `rules/`, `docs/`, `brain-storms/`, `wiki/`, `journal/`, `backlog.md`)
-- Source tree (uygulamayı gerçekten çalıştıran her şey)
-- Container / deploy konfigürasyonu (varsa)
+- Kök dosyalar (`README.md`, `.gitignore`, dile özgü kilit dosyaları).
+- Proje yapılandırması (`CLAUDE.md`, `.mcp.json`, `.env.example`).
+- `.claude/` proje dizini (`agents/`, `skills/`, `rules/`, `docs/`, `brain-storms/`, `wiki/`, `journal/`, `backlog.md`).
+- Kaynak ağacı (uygulamanın gerçekten çalışmasını sağlayan her şey).
+- Konteyner / dağıtım yapılandırması (varsa).
 
-### Faz 3 — Build ve başlat (opsiyonel)
+### Aşama 3 — Derle ve başlat (isteğe bağlı)
 
-Stack'ta build adımı varsa (compile, `npm install`, `docker compose up`) onu koş:
+Yığında bir derleme adımı varsa (`compile`, `npm install`, `docker compose up`) onu çalıştır:
 
-- Compile et; hatada yüksek sesle fail et.
+- Derle; hata olursa yüksek sesle başarısız ol.
 - Yerel servisleri başlat.
-- Health check'lerin geçmesini bekle (30–60 saniye tipik).
+- Sağlık denetimlerinin geçmesini bekle (tipik olarak 30-60 saniye).
 
-Sadece template scaffolder'lar için bu fazı atla.
+Yalnızca şablon iskeleler için bu aşamayı atla.
 
-### Faz 4 — Doğrula (ZORUNLU)
+### Aşama 4 — Doğrula (ZORUNLU)
 
-`/verify-system`'i `Skill` tool çağrısı ile çalıştır. **Pazarlık yok.**
+`/verify-system` becerisini bir `Skill` aracı çağrısıyla çalıştır. **Bu pazarlığa kapalıdır.**
 
 ```
 Skill(skill="verify-system")
 ```
 
-Aynı takım, stack'i uçtan uca test etmeyi bilen kendi `/verify-system`'ini sunar. Scaffolder:
+Aynı takım, yığını uçtan uca sınamayı bilen kendi `/verify-system` becerisini yayımlar. İskele şunları yapmalı:
 
-1. Skill'i `Skill` tool ile çağırmalı (inline bash ile değil).
+1. Beceriyi `Skill` aracıyla çağırmalı (satır içi bash ile değil).
 2. Sonucu beklemeli.
-3. Doğrulama geçmezse görünür biçimde fail etmeli.
+3. Doğrulama geçmezse görünür biçimde başarısız olmalı.
 
-### Faz 5 — Commit
+### Aşama 5 — Commit at
 
 Doğrulama geçtikten sonra:
 
@@ -96,38 +96,38 @@ git add .
 git commit -m "chore: initial scaffold via create-new-project"
 ```
 
-Remote'u ayarlama — remote'a push kullanıcının kararıdır.
+Uzak depoyu boş bırak — uzak depoya push'lamak kullanıcının kararıdır.
 
 ## Çıktı sözleşmesi
 
-Başarılı bir koşunun sonunda kullanıcı şunları içeren **final rapor** görür:
+Başarılı bir çalıştırmanın sonunda kullanıcı şunları içeren bir **son rapor** görür:
 
-- Proje yolu
-- Ne oluşturuldu (sayılar: dosya, servis, agent, skill, rule)
-- Doğrulama sonucu (✅ geçti / ❌ ne fail etti)
-- Sonraki adımlar (projeyi nasıl açacak, nasıl çalıştıracak, dokümanlar nerede)
+- Proje yolu.
+- Ne oluşturuldu (sayılar: dosya, servis, ajan, beceri, kural).
+- Doğrulama sonucu (✅ tamamı geçti / ❌ ne başarısız oldu).
+- Sonraki adımlar (projenin nasıl açılacağı, nasıl çalıştırılacağı, belgelerin nerede olduğu).
 
-## Fail modları
+## Başarısızlık kipleri
 
-- **Faz 1 iptal** — kullanıcı ortada vazgeçer. Temiz çıkış, dosya yazılmaz.
-- **Faz 2 hatası** — kısmi scaffold. Skill; ya geri dönmeli ya da kısmi tree'yi açık bir notla bırakmalı.
-- **Faz 3 build hatası** — scaffold yerinde kalır; build hatası raporlanır; Faz 4'e **geçilmez**.
-- **Faz 4 doğrulama hatası** — scaffold durur; kullanıcı neyin fail ettiği ve nasıl düzelteceği konusunda net bilgi alır.
+- **Aşama 1 iptal** — kullanıcı sorgu sırasında vazgeçer. Temiz çıkış, dosya yazılmaz.
+- **Aşama 2 hatası** — kısmi iskele. Beceri ya geri almalı ya da kısmi ağacı açık bir notla bırakmalı.
+- **Aşama 3 derleme hatası** — iskele yerinde kalır; derleme hatası raporlanır; Aşama 4'e **geçilmez**.
+- **Aşama 4 doğrulama hatası** — iskele yerinde kalır; kullanıcı neyin başarısız olduğuna ve nasıl düzeltileceğine dair açık bilgi alır.
 
-## Onboarding UX
+## Yeni başlama deneyimi
 
-Hiç takım kurmadan `/create-new-project` yazan ilk-kullanıcı şunu görür:
+Hiç takım kurmadan `/create-new-project` yazan ilk kez kullanan biri şunu görür:
 
 ```
 Skill not found: create-new-project
 ```
 
-Bu kasıtlı. `/create-new-project` her zaman stack-özeldir; dolayısıyla global jenerik sürümü yoktur. Kullanıcı önce takım kurması gerektiğini öğrenir — `npm create react-app` öncesi npm gerektirmesi gibi.
+Bu kasıtlıdır. `/create-new-project` her zaman yığına özgüdür; bu yüzden genel bir global sürümü yoktur. Kullanıcı önce bir takım kurması gerektiğini öğrenir — `npm create react-app`'in önce `npm`'i gerektirmesi gibi.
 
-İleriki iş: `atl new-project <takım> <ad>` — önceden proje dizini gerektirmeden takımın scaffolder'ına dispatch edecek.
+İleride yapılacak iş: `atl new-project <team> <name>` — önceden var olan bir proje dizini gerektirmeden doğrudan takımın iskelesine yönlendirir.
 
 ## İlgili
 
-- **[Takım oluşturma](./creating-a-team)** — scaffolder skill'leri nerede yaşar.
-- **[team.json](./team-json)** — skill'i nasıl kaydedersin.
-- **[Kavramlar](/tr/guide/concepts)** — skill nedir.
+- **[Bir takım yazma](./creating-a-team)** — iskele becerilerinin nerede yaşadığı.
+- **[team.json](./team-json)** — beceriyi nasıl kaydedeceğin.
+- **[Kavramlar](/tr/guide/concepts)** — bir becerinin ne olduğu.
