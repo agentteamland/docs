@@ -1,101 +1,101 @@
 # `/rule`
 
-Bir kodlama veya mimari kuralı ekle. Kullanıcı kuralı doğal dilde (herhangi bir dil) açıklar; skill bunu doğru dosyaya **İngilizce yapılandırılmış formatta** yazar.
+Bir kodlama ya da mimari kuralı ekle. Kullanıcı kuralı doğal dilde (herhangi bir dilde) anlatır; beceri bunu doğru dosyaya **İngilizce yapılandırılmış biçimde** yazar.
 
-Birden fazla formülasyonun mümkün olduğu kompleks veya belirsiz kurallar için doğrudan [`/rule-wizard`](/tr/skills/rule-wizard) kullan — option-based Q&A round'larından geçer ve sonunda final formu yazmak için `/rule`'u çağırır.
+Birden çok ifadenin olası olduğu karmaşık ya da belirsiz kurallar için doğrudan [`/rule-wizard`](/tr/skills/rule-wizard) kullan — son biçimi yazmak için `/rule` becerisini çağırmadan önce seçenek tabanlı soru-yanıt turlarından geçirir.
 
-Global skill olarak [rule](https://github.com/agentteamland/rule)'da gelir.
+Global beceri olarak [rule](https://github.com/agentteamland/rule) içinde yayımlanır.
 
-## Üç scope
+## Üç kapsam
 
-| Flag | Hedef | Ne zaman |
+| Bayrak | Hedef | Ne zaman |
 |---|---|---|
-| *(yok)* | Proje `.claude/` dosyaları | Bu projeye özel kurallar (default) |
-| `--global` | `~/.claude/rules/` | Her projeye uygulanan kişisel kurallar |
-| `--team` | `~/.claude/repos/agentteamland/{team}/` dosyaları | Team repo'da agent veya team-rule dosyaları |
+| *(yok)* | Proje `.claude/` dosyaları | Bu projeye özgü kurallar (varsayılan). |
+| `--global` | `~/.claude/rules/` | Her projeye uygulanan kişisel kurallar. |
+| `--team` | `~/.claude/repos/agentteamland/{team}/` dosyaları | Takım deposundaki ajan ya da takım kuralı dosyaları. |
 
-`--team` için aktif takım installed `.claude/agents/` symlink'lerinden detect edilir. Tek takım → otomatik kullanılır; birden fazla takım → `AskUserQuestion` ile sorar.
+`--team` için etkin takım, kurulu `.claude/agents/` sembolik bağlarından algılanır. Tek takım → kendiliğinden kullanılır; birden çok takım → `AskUserQuestion` ile sorulur.
 
 ## Akış
 
-### 1. Kuralı analiz et
+### 1. Kuralı çözümle
 
-Kullanıcının doğal-dil ifadesinden çıkar:
+Kullanıcının doğal dildeki ifadesinden çıkar:
 
-- **Topic** — kodlama, mimari, naming, error handling, vb.
-- **Scope** — hangi uygulama(lar)ı etkiler
-- **Motivation** — bu kuralın *neden*i (söylenmemişse makul bir Why türet; emin değilsen sor)
+- **Konu** — kodlama, mimari, adlandırma, hata yönetimi vb.
+- **Kapsam** — hangi uygulama(ları) etkiler.
+- **Gerekçe** — bu kuralın *neden*i (söylenmediyse makul bir Why türet; emin değilsen sor).
 
 ### 2. Hedef dosyayı belirle
 
-**Project scope (default):**
+**Proje kapsamı (varsayılan):**
 
 | Uygulanabilirlik | Dosya |
 |---|---|
-| Tüm uygulamalar için ortak | `.claude/rules/coding-common.md` |
-| Belirli bir uygulama | `.claude/docs/coding-standards/{app}.md` (mevcut dosyalardan seç) |
+| Tüm uygulamalar için ortak | `.claude/rules/coding-common.md`. |
+| Belirli bir uygulama | `.claude/docs/coding-standards/{app}.md` (var olan dosyalardan seçilir). |
 
-**Global scope (`--global`):**
+**Global kapsam (`--global`):**
 
 | Uygulanabilirlik | Dosya |
 |---|---|
-| Genel kural | `~/.claude/rules/{topic}.md` (varsa append, yoksa create) |
+| Genel kural | `~/.claude/rules/{topic}.md` (varsa eklenir, yoksa oluşturulur). |
 
-**Team scope (`--team`):**
+**Takım kapsamı (`--team`):**
 
 | İlgili alan | Dosya |
 |---|---|
-| Bir agent'ın knowledge base | `~/.claude/repos/agentteamland/{team}/agents/{agent}.md` |
-| Team-wide rule | `~/.claude/repos/agentteamland/{team}/rules/{topic}.md` |
+| Bir ajanın bilgi tabanı | `~/.claude/repos/agentteamland/{team}/agents/{agent}.md`. |
+| Takım çapında kural | `~/.claude/repos/agentteamland/{team}/rules/{topic}.md`. |
 
-Birden fazlasına ama hepsine değil uygulanırsa, skill sorar.
+Kural birden çoğuna uyuyor ama hepsine uymuyorsa beceri sorar.
 
-### 3. Mevcut kuralları kontrol et
+### 3. Mevcut kuralları denetle
 
-Hedef dosyayı **daima oku.** Üç durum mümkün:
+Hedef dosyayı **daima oku**. Üç durum vardır:
 
-- **Tamamen yeni kural** → yeni section olarak ekle
-- **Var olan kuralı genişletme / güncelleme** → in-place update; duplicate yapma
-- **Çelişki** (iki kural birbiriyle çelişiyor) → kullanıcıya sor; varsayma
+- **Tümüyle yeni bir kural** → yeni bir bölüm olarak ekle.
+- **Var olan bir kuralı genişletme / güncelleme** → yerinde güncelle; yinelemeyi yapma.
+- **Çelişki** (iki kural birbiriyle çelişiyorsa) → kullanıcıya sor; varsayma.
 
-### 4. Yapılandırılmış formatta yaz
+### 4. Yapılandırılmış biçimde yaz
 
-Detaylı ve net, İngilizce. **Eksik bir kural, var olmayan bir kuraldan daha tehlikelidir.**
+Ayrıntılı ve açık biçimde, İngilizce yaz. **Eksik bir kural, hiç olmamış bir kuraldan daha tehlikelidir.**
 
 ```markdown
 ### {kebab-case-rule-id}
-**Rule:** {Kuralın net, tek-cümle ifadesi}
+**Rule:** {Kuralın tek bir cümleyle açık ifadesi}
 
-**Why:** {Motivation. Neyi önler? Hangi prensibi destekler?
-Geçmiş hatalardan dersler varsa ekle. Bu alan boş veya muğlak bırakılamaz.}
+**Why:** {Gerekçe. Hangi sorunu önler? Hangi ilkeyi destekler?
+Uygulanabiliyorsa geçmiş hatalardan çıkarılan dersler de eklenir. Bu alan boş ya da muğlak bırakılamaz.}
 
-**Apply when:** {Hangi koşullarda — file path'ler, code pattern'leri,
-ne tür değişiklikler? Spesifik ol.}
+**Apply when:** {Hangi koşullarda — dosya yolları, kod desenleri,
+ne tür değişiklikler? Belirgin ol.}
 
-**Don't apply when:** {(Opsiyonel) İstisnaları açıkça belirt.}
+**Don't apply when:** {(İsteğe bağlı) İstisnaları açıkça belirt.}
 
 **Examples:**
-- ✅ Correct: {kod örneği veya somut senaryo}
-- ❌ Wrong: {kod örneği veya somut senaryo}
+- ✅ Correct: {kod örneği ya da somut senaryo}
+- ❌ Wrong: {kod örneği ya da somut senaryo}
 
-**Related:** {(Opsiyonel) İlgili kural ID'leri}
+**Related:** {(İsteğe bağlı) İlgili kural kimlikleri}
 ```
 
 ### 5. Kural yazımı (kritik)
 
 - **Asla varsayma.** Bilgi eksikse sor.
-- **Kısa tutma — açıkla.** Atlanan detay = uygulanmayan kural.
-- **Edge case'leri yakala.** Uygulanabildiğinde `Don't apply when` ekle.
+- **Kısa tutma — açıkla.** Atlanan ayrıntı = uygulanmamış kural.
+- **Sınır durumlarını yakala.** Uygulanabilir olduğunda `Don't apply when` alanını ekle.
 - **Örnek ver.** Hem ✅ hem ❌.
-- **Unique ID ata.** Çakışma önlemek için önce dosyayı oku.
+- **Benzersiz bir kimlik ata.** Çakışmayı önlemek için önce dosyayı oku.
 
 ### 6. Yaz ve doğrula
 
-Hedef dosyayı `Edit` ile güncelle. Kullanıcıya kısa özet ver: hangi dosya ve hangi ID.
+Hedef dosyayı `Edit` ile güncelle. Kullanıcıya kısa bir özet ver: hangi dosya, hangi kimlik.
 
-### 7. Team-scope kuralları persist etme
+### 7. Takım kapsamlı kuralları kalıcılaştırma
 
-Team kuralları takımın lokal clone'unda yaşar. Her public `agentteamland/{team}` repo branch-protected, dolayısıyla `origin/main`'e doğrudan push reddedilir. Bunun yerine PR aç:
+Takım kuralları, takımın yerel klonunda yaşar. Her herkese açık `agentteamland/{team}` deposu dal korumalıdır; bu yüzden `origin/main` dalına doğrudan push reddedilir. Bunun yerine bir PR aç:
 
 ```bash
 cd ~/.claude/repos/agentteamland/{team-name}
@@ -106,23 +106,23 @@ git push -u origin rule/{kebab-case-rule-id}
 gh pr create --fill
 ```
 
-[`/create-pr`](/tr/skills/create-pr) bunu kuruluysa otomatize eder.
+Kuruluysa [`/create-pr`](/tr/skills/create-pr) bunu otomatikleştirir.
 
 ## Önemli kurallar
 
-1. **Dil:** Kullanıcı skill'i herhangi bir dilde çağırabilir; skill kuralı **daima İngilizce yazar**.
-2. **Eksik bilgide sor.** Boşlukları kendi başına doldurma.
-3. **Duplicate yapma.** Mevcut kuralları önce oku.
-4. **File path'leri doğrula.** Yanlış scope → yanlış dosya.
-5. **Format sapması yok.** Tüm zorunlu alanlar dolu: Rule, Why, Apply when, Examples.
-6. **Team-scope kurallar PR ile ship edilir, doğrudan push ile değil.** Branch-protected; skill lokalde yazar ve PR oluşturmaya işaret eder.
+1. **Dil:** Kullanıcı beceriyi herhangi bir dilde çağırabilir; beceri kuralı **daima İngilizce yazar.**
+2. **Bilgi eksikse sor.** Boşlukları kendi başına doldurma.
+3. **Yineleme yapma.** Önce mevcut kuralları oku.
+4. **Dosya yollarını doğrula.** Yanlış kapsam → yanlış dosya.
+5. **Biçim sapması yok.** Tüm zorunlu alanlar doldurulur: Rule, Why, Apply when, Examples.
+6. **Takım kapsamlı kurallar doğrudan push'la değil, PR ile yayımlanır.** Dal korumalıdır; beceri yerelde yazar ve PR oluşturmaya yönlendirir.
 
 ## İlgili
 
-- [`/rule-wizard`](/tr/skills/rule-wizard) — belirsiz kurallar için option-based clarification wizard; sonunda `/rule` çağırır
-- [Kavramlar: Rule](/tr/guide/concepts#rule) — rule'lar nedir ve nasıl yüklenir
-- [team-repo-maintenance rule](https://github.com/agentteamland/core/blob/main/rules/team-repo-maintenance.md) — kural değişikliklerini upstream'e gönderme disiplini
+- [`/rule-wizard`](/tr/skills/rule-wizard) — belirsiz kurallar için seçenek tabanlı netleştirme sihirbazı; sonunda `/rule`'u çağırır.
+- [Kavramlar: Kural](/tr/guide/concepts#rule) — kuralların ne olduğu ve nasıl yüklendiği.
+- [team-repo-maintenance kuralı](https://github.com/agentteamland/core/blob/main/rules/team-repo-maintenance.md) — kural değişikliklerini üst kaynağa gönderme disiplini.
 
 ## Kaynak
 
-- Spec: [rule/skills/rule/skill.md](https://github.com/agentteamland/rule/blob/main/skills/rule/skill.md)
+- Belirtim: [rule/skills/rule/skill.md](https://github.com/agentteamland/rule/blob/main/skills/rule/skill.md).

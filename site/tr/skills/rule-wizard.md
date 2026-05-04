@@ -1,228 +1,228 @@
 # `/rule-wizard`
 
-Bir kural eklemeden önce **option-based Q&A round'ları** kullanan clarification wizard. [`/rule`](/tr/skills/rule)'u doğrudan kullanırken kolayca gözden kaçan detayları yakalar — edge case'ler, istisnalar, alternatif formülasyonlar, scope, motivation, örnek varyantları — ve konuşmanın aslında *birden fazla* kuralla ilgili olduğunu dinamik olarak detect eder.
+Bir kural eklemeden önce **seçenek tabanlı soru-yanıt turları** kullanan bir netleştirme sihirbazı. [`/rule`](/tr/skills/rule)'u doğrudan kullanırken kolayca gözden kaçan ayrıntıları yakalar — sınır durumları, istisnalar, alternatif ifade biçimleri, kapsam, gerekçe, örnek varyantları — ve konuşmanın aslında *birden çok* kuralla ilgili olduğunu devingen biçimde algılar.
 
-Tartışma tamamlanınca, wizard finalize edilen metni `/rule`'a verir kuralı doğru dosyaya yazsın diye.
+Tartışma tamamlanınca sihirbaz, sonlandırılmış metni `/rule`'a verir; böylece kural doğru dosyaya yazılır.
 
-Global skill olarak [rule](https://github.com/agentteamland/rule)'da gelir.
+Global beceri olarak [rule](https://github.com/agentteamland/rule) içinde yayımlanır.
 
-## Hangi durumda hangisi
+## Hangi durumda hangisi?
 
-| Skill | Ne zaman |
+| Beceri | Ne zaman |
 |---|---|
-| [`/rule`](/tr/skills/rule) | Kural net; tek cümlede, bilinen scope ve bilinen why ile ifade edebiliyorsun. |
-| `/rule-wizard` | Kural muğlak. Alanı biliyorsun ama tam wording'i bilmiyorsun. Bir istisnayı, ilgili bir kuralı kaçırmadığından veya aslında *iki* kuralın tek şemsiyenin altına gizlendiğinden emin olmak istiyorsun. |
+| [`/rule`](/tr/skills/rule) | Kural açıktır; tek bir cümleyle, bilinen bir kapsam ve bilinen bir gerekçeyle ifade edebiliyorsun. |
+| `/rule-wizard` | Kural bulanık. Alanı biliyorsun ama tam ifadeyi bilmiyorsun. Bir istisnayı, ilgili bir kuralı atlamadığından ya da aslında *iki* kuralın tek bir şemsiyenin altına gizlenmediğinden emin olmak istiyorsun. |
 
 ## Zorunlu argüman
 
-`/rule-wizard` bir **context** ister — topic, ilk fikir veya karşılaşılan problemi açıklayan kısa bir metin (herhangi bir dil):
+`/rule-wizard` bir **bağlam** ister — konuyu, başlangıç fikrini ya da karşılaşılan sorunu anlatan kısa bir metin (herhangi bir dilde):
 
 - ✅ `/rule-wizard API'de logging kullanımı`
 - ✅ `/rule-wizard Worker doğrudan DB'ye bağlanmamalı`
 - ✅ `/rule-wizard Controller'lar try-catch yazmamalı; global handler devralır`
-- ❌ `/rule-wizard` — context olmadan çağrıldı, wizard reddeder ve context ister
+- ❌ `/rule-wizard` — bağlam olmadan çağrıldı, sihirbaz reddeder ve bağlam ister.
 
-## Üç scope
+## Üç kapsam
 
-[`/rule`](/tr/skills/rule#üç-scope) ile aynı: project (default), `--global`, `--team`. Flag verilmişse wizard scope sorusunu atlar.
+[`/rule`](/tr/skills/rule#three-scopes) ile aynıdır: proje (varsayılan), `--global`, `--team`. Bayrak verildiğinde sihirbaz kapsam sorusunu atlar.
 
-## Faz 1 — anlama ve hazırlık
+## Aşama 1 — anlama ve hazırlık
 
 ### 1.1 Mevcut kuralları oku (zorunlu)
 
-Soru sormadan **önce** oku:
+Soru sormadan **önce** şunları oku:
 
-- `.claude/rules/coding-common.md`
-- `.claude/docs/coding-standards/` altındaki tüm `.md` dosyaları (dinamik listele)
+- `.claude/rules/coding-common.md`.
+- `.claude/docs/coding-standards/` altındaki tüm `.md` dosyalar (devingen biçimde listelenir).
 
 Amaç:
 
-- **Duplication önleme** — aynı veya çok benzer bir kural zaten var mı?
-- **Conflict detection** — yeni kural mevcut bir kuralla çelişiyor mu?
-- **Extension fırsatı** — mevcut bir kurala bullet olarak eklenebilir mi?
-- **Cross-reference** — final `Related` alanını besleyecek kural ID'leri
+- **Yinelemeden kaçınma** — aynı ya da çok benzer bir kural zaten var mı?
+- **Çelişki algılama** — yeni kural mevcut bir kuralla çelişiyor mu?
+- **Genişletme fırsatı** — mevcut bir kurala madde olarak eklenebilir mi?
+- **Çapraz başvuru** — son metnin `Related` alanını besleyebilecek kural kimlikleri.
 
-### 1.2 Context'i analiz et (sessizce)
+### 1.2 Bağlamı çözümle (sessizce)
 
-Kullanıcının context'inden içsel olarak türet:
+Kullanıcının bağlamından içsel olarak türet:
 
-- Olası scope (hangi app(ler)? ortak mı tek mi?)
-- Olası intent (mandatory `must` / prohibitive `must not` / advisory `should`?)
-- Etkilenen katmanlar (Controller, Service, Repository, Consumer, Hub, Job?)
-- `Apply when`, `Why`, `Examples` için ilk hipotezler
-- 1.1'den benzer mevcut kuralların ID'leri
+- Olası kapsam (hangi uygulama(lar)? ortak mı tekil mi?).
+- Olası niyet (zorunlu `must` / yasaklayıcı `must not` / öneri `should`?).
+- Etkilenen katmanlar (Controller, Service, Repository, Consumer, Hub, Job?).
+- `Apply when`, `Why` ve `Examples` için ilk varsayımlar.
+- 1.1'den çıkan benzer mevcut kuralların kimlikleri.
 
-### 1.3 Analiz özetini sun
+### 1.3 Çözümleme özetini sun
 
 Kullanıcıya kısa bir paragraf:
 
-> "Anladığım kadarıyla API controller'ların try-catch bloğu içermesini istemiyorsun ve error handling'in üst katmandaki global handler'a delege edilmesini istiyorsun. Bu `coding-standards/api.md` scope'una düşüyor ve mevcut `no-logic-in-bridges` kuralını tamamlıyor. Şimdi birkaç soruyla detayları netleştireceğim."
+> "Anladığım kadarıyla API controller'larının try-catch bloğu içermesini istemiyorsun ve hata yönetiminin üst katmandaki global handler'a devredilmesini istiyorsun. Bu `coding-standards/api.md` kapsamına düşüyor ve mevcut `no-logic-in-bridges` kuralını tamamlıyor. Şimdi birkaç soruyla ayrıntıları netleştireceğim."
 
-Sonra Faz 2'ye geç.
+Ardından Aşama 2'ye geç.
 
-## Faz 2 — option-based questioning
+## Aşama 2 — seçenek tabanlı sorgulama
 
 ### Temel ilkeler (hepsi bağlayıcı)
 
-1. **Her soru `AskUserQuestion` kullanır.** Düz-metin açık-uçlu soru yok.
-2. **Her sorunun 2–4 seçeneği var.** Platform limit 4. Daha fazla makul seçenek varsa, soruyu **böl**; "en iyi 4" ile sınırlama.
-3. **"Other" seçeneği otomatik.** Tool ekler; explicit yazma.
-4. **Önerilen seçenek varsa önce yerleştir** label'da `(Recommended)` ve `description`'da kısa neden.
-5. **Sorular ve seçenekler için kullanıcının dilini eşle.** `/rule` final adımda İngilizce'ye çevirecek — wizard kullanıcının dilini aynalar.
-6. **Round başına maksimum 4 soru.** 4'ten fazlaysa → round'lara böl; sonraki round'lar önceki cevapları kullanabilir.
-7. **Context'ten net türetilen alanları yeniden sorma.** Bunun yerine confirmation sorusu: "X olarak anladım — doğru mu?" (binary).
-8. **Seçenekler distinct ve net olmalı.** İki seçenek neredeyse aynıysa birini kaldır.
+1. **Her soru `AskUserQuestion` kullanır.** Düz metin, açık uçlu soru yok.
+2. **Her sorunun 2-4 seçeneği vardır.** Platform sınırı 4'tür. Daha makul seçenek varsa soruyu **böl**; "en iyi 4" ile kendini sınırlama.
+3. **"Other" seçeneği kendiliğinden eklenir.** Araç bunu ekler; açıkça yazma.
+4. **Önerilen bir seçenek varsa onu başa koy** — etiketinde `(Recommended)`, `description` alanında kısa bir gerekçe.
+5. **Soruları ve seçenekleri kullanıcının diliyle eşle.** `/rule` son adımda İngilizceye çevirir; sihirbaz kullanıcının dilini aynalar.
+6. **Tur başına en çok 4 soru.** 4'ten fazlaysa → turlara böl; sonraki turlar önceki yanıtları kullanabilir.
+7. **Bağlamdan açıkça türetilen alanları yeniden sorma.** Onun yerine doğrulama sorusu sor: "Bunu X olarak anladım — doğru mu?" (evet/hayır).
+8. **Seçenekler ayrı ve net olmalı.** İki seçenek neredeyse aynıysa birini kaldır.
 
 ### Kapsanacak alanlar
 
-Her kural için (Q&A ile) netleştir:
+Her kural için (soru-yanıt yoluyla) netleştir:
 
-#### A) Scope — nereye yazılsın?
+#### A) Kapsam — nereye yazılacak?
 
-(`--global` veya `--team` set ise atlanır.)
+(`--global` ya da `--team` ayarlıysa atlanır.)
 
-Project scope seçilirse alt-soru: hangi uygulama? (mevcut `.claude/docs/coding-standards/{app}.md` dosyalarını dinamik listeler + bir "common" seçeneği).
+Proje kapsamı seçilirse alt soru: hangi uygulama? (Mevcut `.claude/docs/coding-standards/{app}.md` dosyalarını devingen biçimde listeler artı bir "common" seçeneği.)
 
-Team scope seçilirse alt-soru: hangi agent'ın knowledge base'i? (kurulu takım agent'larını listeler + "team-wide rule" seçeneği).
+Takım kapsamı seçilirse alt soru: hangi ajanın bilgi tabanı? (Kurulu takımın ajanlarını listeler artı "team-wide rule" seçeneği.)
 
-#### B) Tek-cümle kural ifadesi
+#### B) Tek cümlelik kural ifadesi
 
-Context'ten 3 alternatif formülasyon, her biri farklı tonda / kısıtlamada:
+Bağlamdan üç alternatif ifade; her biri farklı tonda / kısıtlamada:
 
-- **Strict prohibition** ("X asla yapılmamalı")
-- **Advisory** ("X için Y kullan")
-- **Conditional** ("X yalnızca Y olduğunda yapılabilir")
+- **Kesin yasak** ("X asla yapılmamalı").
+- **Öneri** ("X için Y kullan").
+- **Koşullu** ("X yalnızca Y olduğunda yapılabilir").
 
 Kullanıcı kendi cümlesini "Other" üzerinden yazabilir.
 
-#### C) Motivation (Why)
+#### C) Gerekçe (Why)
 
-Context-driven listeden multi-select: geçmiş hatadan ders (specify), mimari tutarlılık, testability, performans, güvenlik, okunabilirlik, regulation. Birincil motivation önce.
+Bağlama göre üretilen listeden çoklu seçim: geçmiş hatadan çıkan ders (belirt), mimari tutarlılık, test edilebilirlik, başarım, güvenlik, okunabilirlik, mevzuat. Birincil gerekçe başa konur.
 
-#### D) Apply when (trigger koşulları)
+#### D) Apply when (tetikleme koşulları)
 
-Context'ten 2–4 specific trigger. Her seçenek **somut bir file path veya code pattern** içerir (örn. controller action'lar için `api/Controllers/*.cs`). Trigger'lar üst üste binebiliyorsa multi-select.
+Bağlamdan 2-4 belirgin tetikleyici. Her seçenek **somut bir dosya yolu ya da kod deseni** içerir (örneğin controller eylemleri için `api/Controllers/*.cs`). Tetikleyiciler üst üste binebiliyorsa çoklu seçim olur.
 
-#### E) Don't apply when (istisnalar, opsiyonel)
+#### E) Don't apply when (istisnalar, isteğe bağlı)
 
-Seçenekler: istisna yok / test code muaf / legacy veya generated code muaf / Other. "İstisna yok" seçilirse alan final kuraldan çıkarılır.
+Seçenekler şunlardır: istisna yok / test kodu muaf / eski ya da otomatik üretilen kod muaf / Other. "İstisna yok" seçilirse alan son kuraldan çıkarılır.
 
-#### F) Examples
+#### F) Örnekler
 
-İki soru: ✅ doğru örnek + ❌ yanlış örnek. Her biri 2–3 kısa senaryo sunar; kullanıcı birini seçer veya kendi yazar.
+İki soru: ✅ doğru örnek + ❌ yanlış örnek. Her biri 2-3 kısa senaryo sunar; kullanıcı birini seçer ya da kendi yazar.
 
-#### G) İlgili kurallar (opsiyonel)
+#### G) İlgili kurallar (isteğe bağlı)
 
-Faz 1.1'de bulunan benzer-kural ID'lerini + bir "None" seçeneği listeler.
+1.1'de bulunan benzer kural kimliklerini ve bir "None" seçeneğini listeler.
 
-### Önerilen round'lar
+### Önerilen turlar
 
-- **Round 1 (temeller):** Scope + Rule statement + Motivation — 3 soru
-- **Round 2 (davranış):** Apply when + Exception + ✅ Example — 3 soru
-- **Round 3 (cila):** ❌ Example + Related + (gerekirse) edge case — 2–3 soru
+- **Tur 1 (temeller):** Kapsam + Kural ifadesi + Gerekçe — 3 soru.
+- **Tur 2 (davranış):** Apply when + İstisna + ✅ Örnek — 3 soru.
+- **Tur 3 (cila):** ❌ Örnek + İlgili kurallar + (gerekirse) sınır durumu — 2-3 soru.
 
-Alanlar net türetildiğinde round'lar küçülür; belirsizlik sürdüğünde ekstra sorular eklenir. Kullanıcı bir round'da aynı cevabı iki kez vermek zorunda kalmaz.
+Alanlar açıkça türetildikçe turlar küçülür; belirsizlik sürdükçe ek sorular eklenir. Kullanıcı bir tur içinde aynı yanıtı iki kez vermek zorunda bırakılmaz.
 
-## Faz 3 — dinamik çoklu-kural detection
+## Aşama 3 — devingen çoklu kural algılama
 
-Wizard **tek-kural varsayımıyla başlar.** Ama questioning sırasında şu sinyallerden biri görülürse, hemen kullanıcıya bir distinction sorusu sor:
+Sihirbaz **tek kural varsayımıyla başlar.** Ama sorgulama sırasında şu sinyallerden biri görülürse hemen kullanıcıya bir ayırt etme sorusu sor:
 
 | Sinyal | Önerdiği |
 |---|---|
-| Scope'ta iki farklı uygulama seçildi ve doğaları farklı | Tek görünüp aslında iki kural |
-| Apply-when trigger'ları iki ilgisiz kod katmanına işaret ediyor | İki kural |
-| Rule ifadesi iki bağımsız yasak içeriyor ("X yapılmamalı, Y de yapılmamalı") | İki kural |
-| Örnekler tek bir kuralla açıklanamıyor | İki kural |
-| Motivation multi-select'inde iki bağımsız gerekçe seçildi | İki kural |
+| Kapsamda iki farklı uygulama seçildi ve doğaları farklı. | Tek görünen ama aslında iki kural. |
+| Apply-when tetikleyicileri birbirinden bağımsız iki kod katmanına işaret ediyor. | İki kural. |
+| Kural ifadesi iki bağımsız yasağı içeriyor ("X yapılmamalı, Y de yapılmamalı"). | İki kural. |
+| Örnekler tek bir kuralla açıklanamıyor. | İki kural. |
+| Gerekçe çoklu seçiminde iki bağımsız gerekçe seçildi. | İki kural. |
 
-### Distinction sorusu
+### Ayırt etme sorusu
 
 ```
-"Bu context aslında iki farklı kural gibi görünüyor. Nasıl ilerleyelim?"
+"Bu bağlam aslında iki farklı kural gibi duruyor. Nasıl ilerleyelim?"
 ```
 
 Seçenekler:
 
-- **(Recommended)** İki ayrı kural olarak ekle — her birini ayrı ayrı netleştirelim
-- Tek kural olarak tut — Rule ifadesini iki maddeyi de kapsayacak şekilde genişlet
-- Şimdilik birine odaklan, diğerini sonra ele al
-- Misidentified — bu aslında tek kural
+- **(Recommended)** İki ayrı kural olarak ekle — her birini ayrı ayrı netleştirelim.
+- Tek kural olarak tut — Kural ifadesini iki maddeyi de kapsayacak biçimde genişlet.
+- Şimdilik birine odaklan, ötekini sonra ele al.
+- Yanlış algılandı — bu aslında tek kural.
 
 ### Karar sonrası akış
 
-- **İki ayrı kural** → her biri için Faz 2'yi bağımsız tekrarla. Soru round'larını karıştırma.
-- **Tek kural olarak tut** → Rule ifadesi sorusunu iki maddeyi de birleştiren formülasyonlarla yeniden sor.
-- **Sadece birine odaklan** → Faz 4 sonunda "Diğer kuralı şimdi ele alalım mı?" teklif et.
-- **Misidentified** → normal akışa dön, sinyali yoksay.
+- **İki ayrı kural** → her biri için Aşama 2'yi bağımsız olarak yinele. Soru turlarını karıştırma.
+- **Tek kural olarak tut** → Kural ifadesi sorusunu iki maddeyi birleştiren ifadelerle yeniden sor.
+- **Yalnızca birine odaklan** → Aşama 4 sonunda "Öteki kurala şimdi geçelim mi?" diye sor.
+- **Yanlış algılandı** → olağan akışa dön, sinyali yoksay.
 
-## Faz 4 — konsolidasyon ve final onay
+## Aşama 4 — bütünleştirme ve son onay
 
-### 4.1 Final kural metnini üret
+### 4.1 Son kural metnini üret
 
-Toplanan cevaplardan kullanıcının dilinde **doğal-dil** kural metni oluştur. Bu metin **`/rule` skill için input** olur — `/rule` İngilizce çevirisi + structured-format parsing'i yapar.
+Toplanan yanıtlardan kullanıcının dilinde **doğal dilde** bir kural metni oluştur. Bu metin, **`/rule` becerisi için girdidir** — `/rule` İngilizceye çeviriyi ve yapılandırılmış biçim ayrıştırmasını yapar.
 
-Metin `/rule`'un parse edeceği her şeyi içermeli: Scope, Rule, Why, Apply when, Don't apply when (uygulanabildiyse), Examples (✅ + ❌), Related (uygulanabildiyse).
+Metin, `/rule`'un ayrıştıracağı her şeyi içermelidir: Kapsam, Rule, Why, Apply when, Don't apply when (uygulanabilirse), Examples (✅ + ❌), Related (uygulanabilirse).
 
-Örnek (TR-language wizard, English-final-rule):
+Örnek (TR dilinde sihirbaz, İngilizce sonlu kural):
 
 > "Controller actions in the API project should not write try-catch blocks — error handling must be delegated to the global exception handler at the upper layer. This rule exists to preserve architectural consistency and to keep controllers as thin bridges; try-catch is the responsibility of services or the global handler. Applies to: all controller actions in `.cs` files under `api/Controllers/`. Test code is exempt. Correct example: `[HttpPost] public async Task<IActionResult> Create(CreateProductRequest req) { var result = await _productService.CreateAsync(req); return Ok(result); }` — no try-catch. Wrong example: writing `try { ... } catch (Exception ex) { return BadRequest(ex.Message); }` inside a controller. Related rule: `no-logic-in-bridges`."
 
-### 4.2 Kullanıcıya göster, onay al
+### 4.2 Kullanıcıya göster ve onay al
 
-Final-rule metnini göster ve `AskUserQuestion` ile sor:
+Son kural metnini göster ve `AskUserQuestion` ile sor:
 
 ```
-"Bu metin kuralın final versiyonu mu? Şimdi /rule ile ekleyeyim mi?"
+"Bu metin kuralın son hâli mi? Şimdi /rule ile ekleyeyim mi?"
 ```
 
 Seçenekler:
 
-- **(Recommended)** Evet, `/rule` ile ekle
-- Metnin bir kısmını düzeltmem lazım — hangi kısım söyleyeyim
-- Eksik bir alan var sanırım — başka bir soru round'u yapalım
-- İptal et, şimdilik ekleme
+- **(Recommended)** Evet, `/rule` ile ekle.
+- Metnin bir bölümünü düzeltmem gerekiyor — hangi bölüm söyleyeyim.
+- Eksik bir alan var sanırım — başka bir soru turu yapalım.
+- İptal et, şimdilik ekleme.
 
 ### 4.3 `/rule`'u çağır
 
-Kullanıcı onay verince:
+Kullanıcı onay verdiğinde:
 
-- **Tek kural** → `/rule <final text>` çağır.
-- **Birden fazla kural** → her birini **sırayla** çağır, kısa progress notification ile: "Birinci kural yazıldı (`{id}` → `{file}`). Şimdi ikinci kurala geçiyorum."
+- **Tek kural** → `/rule <son metin>` komutunu çağır.
+- **Birden çok kural** → her birini **sırayla** çağır; kısa ilerleme bildirimi ile: "İlk kural yazıldı (`{id}` → `{file}`). Şimdi ikinci kurala geçiyorum."
 - Her `/rule` çağrısından sonra sonucu özetle.
 
-Kullanıcı düzeltme isterse → ilgili soruyu yeniden sor, final metni güncelle, 4.2'ye dön.
+Kullanıcı düzeltme isterse → ilgili soruyu yeniden sor, son metni güncelle, 4.2'ye dön.
 
-Kullanıcı ek round isterse → eksik alan için bir soru round'u çalıştır, 4.1'e dön.
+Kullanıcı ek bir tur isterse → eksik alan için bir soru turu çalıştır, 4.1'e dön.
 
-Kullanıcı iptal ederse → temiz şekilde sonlandır. Hiçbir dosyaya yazma. Bilgilendir: "Kural yazılmadı. İstediğin zaman `/rule-wizard` ile yeniden başlayabilirsin."
+Kullanıcı iptal ederse → temiz biçimde sonlandır. Hiçbir dosyaya yazma. "Kural yazılmadı. İstediğin zaman `/rule-wizard` ile yeniden başlayabilirsin." diye bildir.
 
-### 4.4 Final özet
+### 4.4 Son özet
 
-Sonda tek mesaj:
+Sonunda tek bir mesaj:
 
-- Kaç kural yazıldı
-- Her kuralın ID + dosyası
-- İlgili olarak işaretlenen mevcut kurallar (varsa)
-- Faz 3'te sonraya bırakılan deferred kural varsa hatırlatma
+- Kaç kural yazıldı.
+- Her kuralın kimliği ve dosyası.
+- İlgili olarak işaretlenen mevcut kurallar (varsa).
+- Aşama 3'te sonraya bırakılan ertelenmiş bir kural varsa anımsatma.
 
 ## Kritik ilkeler
 
-1. **Context zorunlu.** Skill argümansız çalışmaz.
-2. **Her sorunun seçeneği var.** Sadece `AskUserQuestion`.
+1. **Bağlam zorunludur.** Beceri argümansız çalışmaz.
+2. **Her sorunun seçenekleri vardır.** Yalnızca `AskUserQuestion`.
 3. **4 seçenek yetmiyorsa böl.** Asla "en iyi 4" ile sınırlama.
-4. **Mevcut kuralları önce oku.** Zorunlu prerequisite.
-5. **Asla varsayma.** Context'ten net türetilmemiş her alan soru gerektirir.
-6. **Çoklu kuralları dinamik detect et.** Tek başla, divergence sinyalleri görünce sor.
-7. **Final metin kullanıcının dilinde.** `/rule` İngilizce'ye çevirir.
-8. **Onay olmadan `/rule` çağrılmaz.** Kullanıcı final metni görür ve onaylar.
-9. **Eksik alan, var olmayan alandan kötüdür.** Zorunlu alanlar (Rule, Why, Apply when, Examples) tam temsil edilmeli.
-10. **Skill birden fazla kural için tekrar tekrar çalışabilir.** Faz 3'te split mode seçilirse, her kural Faz 2–4 döngüsünden ayrı geçer.
+4. **Mevcut kuralları önce oku.** Zorunlu önkoşul.
+5. **Asla varsayma.** Bağlamdan açıkça türetilemeyen her alan soru ister.
+6. **Çoklu kuralları devingen biçimde algıla.** Tek başla; ayrışma sinyalleri belirdiğinde sor.
+7. **Son metin kullanıcının dilinde olur.** `/rule` İngilizceye çevirir.
+8. **Onay olmadan `/rule` çağrılmaz.** Kullanıcı son metni görür ve onaylar.
+9. **Eksik alan, hiç olmamış alandan kötüdür.** Zorunlu alanlar (Rule, Why, Apply when, Examples) eksiksiz temsil edilmelidir.
+10. **Beceri birden çok kural için yinelemeli çalışabilir.** Aşama 3'te bölme kipi seçildiyse her kural Aşama 2-4 döngüsünden ayrı geçer.
 
 ## İlgili
 
-- [`/rule`](/tr/skills/rule) — Faz 4'te finalize edilen kuralı yazmak için çağrılır
-- [Kavramlar: Rule](/tr/guide/concepts#rule) — rule'lar nedir ve nasıl yüklenir
+- [`/rule`](/tr/skills/rule) — Aşama 4'te sonlandırılan kuralı yazmak için çağrılır.
+- [Kavramlar: Kural](/tr/guide/concepts#rule) — kuralların ne olduğu ve nasıl yüklendiği.
 
 ## Kaynak
 
-- Spec: [rule/skills/rule-wizard/skill.md](https://github.com/agentteamland/rule/blob/main/skills/rule-wizard/skill.md)
+- Belirtim: [rule/skills/rule-wizard/skill.md](https://github.com/agentteamland/rule/blob/main/skills/rule-wizard/skill.md).
