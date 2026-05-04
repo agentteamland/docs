@@ -1,34 +1,34 @@
 # `/create-code-diagram`
 
-Tüm proje kod tabanının kapsamlı bir Mermaid class diagram'ını üretir. Her sınıfı, interface'i, entity'yi, handler'ı, service'i — ve birbirleriyle nasıl ilişkili olduklarını (inheritance, implementation, dependency, composition) gösterir.
+Tüm proje kod tabanının kapsamlı bir Mermaid sınıf çizimini üretir. Her sınıfı, arabirimi, varlığı, handler'ı ve servisi — bunların birbiriyle nasıl ilişkili olduğunu (kalıtım, uygulama, bağımlılık, kompozisyon) gösterir.
 
-Bu **insanlar için** — tüm resmi görmek, sistemi anlamak veya mimarinin zihinsel modelini debug etmek istediğinde.
+Bu çıktı **insanlar içindir** — tüm resmi görmek, sistemi anlamak ya da mimariye dair zihinsel modelini ayıklamak istediğinde.
 
-Global skill olarak [core](https://github.com/agentteamland/core)'da gelir.
+Global beceri olarak [core](https://github.com/agentteamland/core) içinde yayımlanır.
 
 ## Kullanım
 
 ```
-/create-code-diagram                       # .claude/docs/code-diagram.md yazar
-/create-code-diagram path/to/output.md     # belirttiğin path'e yazar
+/create-code-diagram                       # .claude/docs/code-diagram.md dosyasına yazar
+/create-code-diagram path/to/output.md     # belirttiğin yola yazar
 ```
 
-Re-runnable. Her çalıştırma önceki diagram'ın üzerine yazar. Daima taze.
+Yeniden çalıştırılabilir. Her çalıştırma önceki çizimin üzerine yazar. Daima taze.
 
-## Ne keşfedilir
+## Ne keşfedilir?
 
 | Keşfedilen | Nasıl |
 |---|---|
-| Sınıflar, record'lar, interface'ler, enum'lar, abstract sınıflar | `codebase-memory-mcp` varsa onunla, yoksa direkt file scanning |
-| Inheritance | `class extends base` |
-| Interface implementation | `class implements interface` |
-| Dependency'ler | Constructor injection, method parameter'ları |
-| Composition | Sınıf başka bir sınıf tipinde property'ye sahip |
-| Mediator handler'lar | Hangi handler hangi command/query'yi karşılar |
+| Sınıflar, kayıtlar, arabirimler, sayımlar, soyut sınıflar | `codebase-memory-mcp` varsa onunla, yoksa doğrudan dosya tarayarak. |
+| Kalıtım | `class extends base`. |
+| Arabirim uygulaması | `class implements interface`. |
+| Bağımlılıklar | Yapıcı enjeksiyonu, yöntem parametreleri. |
+| Kompozisyon | Sınıfın başka bir sınıf türünde özelliği vardır. |
+| Mediator handler'ları | Hangi handler hangi komut/sorguyu karşılar. |
 
-## Ne organize edilir
+## Ne düzenlenir?
 
-Keşfedilen tipler mimari katmana göre gruplanır:
+Keşfedilen türler mimari katmana göre gruplanır:
 
 ```mermaid
 %% Domain Layer
@@ -38,21 +38,21 @@ Keşfedilen tipler mimari katmana göre gruplanır:
 %% API Layer — Endpoints
 ```
 
-Her katman için skill her tipi key member'larıyla listeler — entity'ler için property'ler, service ve handler'lar için method'lar.
+Her katman için beceri, tür başına anahtar üyeleri listeler — varlıklar için özellikler, servisler ve handler'lar için yöntemler.
 
-## İlişki ok'ları
+## İlişki okları
 
-| İlişki | Mermaid syntax | Ne zaman |
+| İlişki | Mermaid sözdizimi | Ne zaman |
 |---|---|---|
-| Inheritance | `Child --|> Parent` | class extends base class |
-| Implementation | `Impl ..\|> Interface` | class implements interface |
-| Dependency | `ClassA --> ClassB` | constructor injection, method call |
-| Composition | `ClassA *-- ClassB` | type ClassB property var |
-| Association | `ClassA o-- ClassB` | ClassB collection'ı var |
+| Kalıtım | `Child --|> Parent` | Sınıf temel sınıfı genişletiyor. |
+| Uygulama | `Impl ..\|> Interface` | Sınıf arabirimi uyguluyor. |
+| Bağımlılık | `ClassA --> ClassB` | Yapıcı enjeksiyonu, yöntem çağrısı. |
+| Kompozisyon | `ClassA *-- ClassB` | `ClassB` türünde bir özellik içeriyor. |
+| İlişkilendirme | `ClassA o-- ClassB` | `ClassB` koleksiyonu içeriyor. |
 
-## Çıktı formatı
+## Çıktı biçimi
 
-Default location: `.claude/docs/code-diagram.md`
+Varsayılan konum: `.claude/docs/code-diagram.md`.
 
 ```markdown
 # Code Diagram
@@ -65,7 +65,7 @@ Default location: `.claude/docs/code-diagram.md`
 {mermaid classDiagram block}
 
 ## Legend
-{relationship-arrow tablosu}
+{ilişki-okları tablosu}
 
 ## Statistics
 - Total types: {count}
@@ -76,9 +76,9 @@ Default location: `.claude/docs/code-diagram.md`
 - Generated: {timestamp}
 ```
 
-Çıktı saf Mermaid markdown — GitHub'da, VS Code Mermaid preview'da veya Mermaid destekli herhangi bir markdown renderer'da görüntülenebilir (harici tool gerekmez).
+Çıktı saf Mermaid Markdown'dur — GitHub'da, VS Code'un Mermaid önizlemesinde ya da Mermaid'i destekleyen herhangi bir Markdown görüntüleyicide görünür (dış araç gerekmez).
 
-## Örnek diagram parçası
+## Örnek çizim parçası
 
 ```mermaid
 classDiagram
@@ -121,17 +121,17 @@ classDiagram
 
 ## Önemli kurallar
 
-1. **HER ŞEYİ dahil et.** Küçük sınıfları veya "obvious" ilişkileri atlama. Kullanıcı tüm resmi istiyor.
+1. **HER ŞEYİ dahil et.** Küçük sınıfları ya da "apaçık" ilişkileri atlama. Kullanıcı tüm resmi istiyor.
 2. **Katmana göre gruplan.** Domain → Application Interfaces → Application Features → Infrastructure → API/Socket/Worker.
-3. **Key member'ları göster.** Entity'ler için property'ler, service ve handler'lar için method'lar. Her private field'ı listeleme.
-4. **Doğru ok tipleri.** Inheritance vs implementation vs dependency — doğru Mermaid syntax'ını kullan.
-5. **Re-runnable.** Tekrar çalıştırma önceki diagram'ın üzerine yazar.
-6. **Harici tool yok.** Saf Mermaid markdown.
+3. **Anahtar üyeleri göster.** Varlıklar için özellikler, servisler ve handler'lar için yöntemler. Her özel alanı listeleme.
+4. **Doğru ok türleri.** Kalıtım vs uygulama vs bağımlılık — doğru Mermaid sözdizimini kullan.
+5. **Yeniden çalıştırılabilir.** Yeniden çalıştırmak önceki çizimin üzerine yazar.
+6. **Dış araç yok.** Saf Mermaid Markdown.
 
 ## İlgili
 
-- [Kavramlar: Skill](/tr/guide/concepts#skill) — bu skill ekosistemde nereye oturur
+- [Kavramlar: Beceri](/tr/guide/concepts#skill) — bu becerinin beceri ekosisteminde nereye oturduğu.
 
 ## Kaynak
 
-- Spec: [core/skills/create-code-diagram/skill.md](https://github.com/agentteamland/core/blob/main/skills/create-code-diagram/skill.md)
+- Belirtim: [core/skills/create-code-diagram/skill.md](https://github.com/agentteamland/core/blob/main/skills/create-code-diagram/skill.md).

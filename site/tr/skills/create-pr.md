@@ -1,61 +1,61 @@
 # `/create-pr`
 
-Working-tree değişikliklerini al (uncommitted veya yakın zamanda default branch'e commit edilmiş), diff'ten uygun bir branch adı + commit mesajı + PR title türet, [`/save-learnings`](/tr/skills/save-learnings) çalıştır wisdom aynı PR'da yolculuk yapsın diye, AI review chain çalıştır (generic baseline + team-declared specialist'ler), commit + push, PR aç. Opsiyonel olarak GitHub auto-merge'i bounded polling + auto-fix loop ile aç. Daima end-of-work'te kullanıcıyı target branch'e döndür.
+Çalışma ağacı değişikliklerini al (commit edilmemiş ya da yakın zamanda varsayılan dala commit edilmiş), farktan uygun bir dal adı + commit mesajı + PR başlığı türet, [`/save-learnings`](/tr/skills/save-learnings) komutunu çalıştır ki birikmiş deneyim aynı PR'ın içinde yolculuk etsin, AI inceleme zincirini çalıştır (genel temel + takım tarafından bildirilen uzmanlar), commit + push yap, bir PR aç. İsteğe bağlı olarak GitHub auto-merge düzeneğini, sınırlı bir yoklama ve kendiliğinden düzeltme döngüsüyle etkinleştir. İş bitiminde kullanıcıyı daima hedef dala döndür.
 
-Bu skill, deterministik "bir parça işi ship et" akışı — `team-repo-maintenance`, `branch-hygiene`, `learning-capture`, `docs-sync` ve `karpathy-guidelines` ile tanımlı disiplinleri tüketir, kullanıcı her PR'da bunları yeniden türetmek zorunda kalmasın diye.
+Bu beceri, "bir parça işi yayımla" akışının belirlenimci hâlidir — `team-repo-maintenance`, `branch-hygiene`, `learning-capture`, `docs-sync` ve `karpathy-guidelines` ile tanımlı disiplinleri tüketir; kullanıcı bunları her PR'da yeniden üretmek zorunda kalmaz.
 
-Global skill olarak [core](https://github.com/agentteamland/core)'da `core@1.4.0`'dan beri gelir.
+Global beceri olarak [core](https://github.com/agentteamland/core) içinde, `core@1.4.0` sürümünden bu yana yayımlanır.
 
-## Flag'ler
+## Bayraklar
 
-| Flag | Default | Etki |
+| Bayrak | Varsayılan | Etkisi |
 |---|---|---|
-| `--auto-merge` | OFF | GitHub auto-merge'i aç (`gh pr merge --auto --merge`); merge edilene veya terminal failure'a kadar poll + auto-fix |
-| `--no-review` | OFF (review on) | Tüm review chain'i atla (generic + her team reviewer) |
-| `--no-auto-fix` | OFF (fix on) | Polling loop sırasında CI/merge failure'larını fix etmeye çalışma; kullanıcıya yüzeye çıkar |
-| `--no-learning` | OFF (learning on) | `/save-learnings` + doc-impact pipeline'ını atla |
-| `--timeout {min}` | 10 | Polling timeout dakika; 1-dakika interval, hem `--auto-merge` hem manual-merge wait için geçerli |
+| `--auto-merge` | KAPALI | GitHub auto-merge düzeneğini etkinleştirir (`gh pr merge --auto --merge`); birleşene ya da kalıcı bir başarısızlık olana kadar yoklama + kendiliğinden düzeltme yapılır. |
+| `--no-review` | KAPALI (inceleme açık) | Tüm inceleme zincirini atlar (genel + her takım inceleyicisi). |
+| `--no-auto-fix` | KAPALI (düzeltme açık) | Yoklama döngüsü sırasında CI / birleştirme başarısızlıklarını düzeltmeye çalışmaz; bunun yerine kullanıcıya bildirir. |
+| `--no-learning` | KAPALI (öğrenme açık) | `/save-learnings` ve doc-impact hattını atlar. |
+| `--timeout {min}` | 10 | Dakika cinsinden yoklama zaman aşımı; 1 dakikalık aralık; hem `--auto-merge` hem elle birleştirme beklemesi için geçerli. |
 
 ## Akış
 
-Akış sıralı çalışır. Her adımın net bir precondition ve postcondition'ı var; precondition fail olursa, skill yüzeye çıkarır ve durur — devam etmez.
+Akış sıralı çalışır. Her adımın net bir önkoşulu ve ardkoşulu vardır; bir önkoşul karşılanmazsa beceri sorunu yüzeye çıkarır ve devam etmek yerine durur.
 
-### Adım 1 — Pre-check'ler
+### Adım 1 — Ön denetimler
 
-- Mevcut dizin git repo'su içinde
-- Working tree'de değişiklik VAR veya mevcut branch'in unpushed commit'leri var
-- Repo'nun default branch'ini belirle (`main`/`master`)
+- Mevcut dizin bir Git deposunun içindedir.
+- Çalışma ağacında değişiklik VARDIR ya da mevcut dalın push edilmemiş commit'leri vardır.
+- Deponun varsayılan dalı (`main`/`master`) belirlenir.
 
-### Adım 2 — Target branch'i belirle
+### Adım 2 — Hedef dalı belirle
 
-"Target branch" PR'ın merge olacağı VE end-of-work'te kullanıcının döneceği branch.
+"Hedef dal", PR'ın birleşeceği VE iş bitiminde kullanıcının döneceği daldır.
 
-- **Default branch'teyse** → target = default branch.
-- **Non-default branch'teyse** → `AskUserQuestion` üç seçenekle: upper branch (auto-detect), default branch, veya free-text Other.
+- **Varsayılan daldaysan** → hedef = varsayılan dal.
+- **Varsayılan dışı bir daldaysan** → `AskUserQuestion` üç seçenekle: üst dal (kendiliğinden algılanır), varsayılan dal ya da serbest metinli Other.
 
-### Adım 3 — Branch adı + commit mesajı üret
+### Adım 3 — Dal adı ve commit mesajını üret
 
-Staged + unstaged + untracked değişiklikleri analiz et:
+Stage'lenmiş + stage'lenmemiş + izlenmeyen değişiklikleri çözümle:
 
-- **Type** — `feat`, `fix`, `docs`, `chore`, `refactor`, `test`, `perf`, `style` arası (diff'ten heuristic-derived: `skills/agents/rules/` altında yeni dosya → `feat`; bug-fix dili → `fix`; sadece `*.md` → `docs`; vb.)
-- **Scope** — değişikliği kapsayan en spesifik scope (skill adı, rule adı, agent adı, CLI komut, repo alanı)
-- **Slug** — kebab-case, ≤ 50 karakter, ASCII
+- **Tür** — `feat`, `fix`, `docs`, `chore`, `refactor`, `test`, `perf`, `style` arasından (farktan sezgisel olarak çıkarılır: `skills/agents/rules/` altında yeni dosya → `feat`; hata düzeltme dili → `fix`; yalnızca `*.md` → `docs`; vb.).
+- **Kapsam** — değişikliği kapsayan en belirgin kapsam (beceri adı, kural adı, ajan adı, CLI komutu, depo alanı).
+- **Slug** — kebab-case, ≤ 50 karakter, ASCII.
 
 Çıktılar:
 
-- **Branch adı** — `{type}/{slug}` (örn. `feat/create-pr-skill`, `fix/winget-403`, `docs/translate-trk-en`)
-- **Commit subject** — `{type}({scope}): {one-line summary}` 70 karakter altı
-- **Commit body** — değişikliği açıklayan 2–4 bullet. Team-repo context'inde çağrılıyorsa son satır "Discovered via" context'i ([team-repo-maintenance §3](https://github.com/agentteamland/core/blob/main/rules/team-repo-maintenance.md) gereği)
+- **Dal adı** — `{type}/{slug}` (örneğin `feat/create-pr-skill`, `fix/winget-403`, `docs/translate-trk-en`).
+- **Commit konusu** — `{type}({scope}): {tek satırlık özet}`, 70 karakterin altında.
+- **Commit gövdesi** — değişikliği anlatan 2-4 madde. Takım deposu bağlamında çağrılıyorsa son satır bir "Discovered via" bağlamıdır ([team-repo-maintenance §3](https://github.com/agentteamland/core/blob/main/rules/team-repo-maintenance.md) gereği).
 
-Skill kullanıcıya isim onayı için **sormaz** — üretir ve devam eder.
+Beceri kullanıcıya ad onayı için **sormaz** — adları üretir ve devam eder.
 
-### Adım 4 — Save learnings (`--no-learning` yoksa)
+### Adım 4 — Öğrenmeleri kaydet (`--no-learning` verilmedikçe)
 
-[`/save-learnings`](/tr/skills/save-learnings)'i manuel modda çağırır (canlı konuşmayı analiz eder):
+[`/save-learnings`](/tr/skills/save-learnings) komutunu elle kipte çalıştırır (canlı konuşmayı çözümler):
 
-- Wiki / journal / agent children / skill learnings güncellemelerini yazar (project-local)
-- Her `<!-- learning doc-impact: readme/docs/breaking -->` marker'ı için bir doc draft hazırlar
-- Her draft kullanıcıya inline accept / reject / edit için sunulur:
+- Wiki / journal / ajan children / beceri learnings güncellemelerini yazar (proje-yerel).
+- Her `<!-- learning doc-impact: readme/docs/breaking -->` işaretçisi için bir doküman taslağı hazırlar.
+- Her taslak kullanıcıya kabul / reddet / düzenle için satır içi sunulur:
 
 ```
 📝 Doc draft for README.md:
@@ -63,31 +63,31 @@ Skill kullanıcıya isim onayı için **sormaz** — üretir ve devam eder.
 Accept? (y/n/edit)
 ```
 
-Kabul edilen draft'lar staged olur; reddedilen draft'lar atılır.
+Kabul edilen taslaklar stage'lenir; reddedilen taslaklar atılır.
 
-### Adım 5 — Review chain (`--no-review` yoksa)
+### Adım 5 — İnceleme zinciri (`--no-review` verilmedikçe)
 
-İki katman, sıralı çalıştırılır:
+İki katman, sıralı olarak çalıştırılır:
 
-**5a — Generic reviewer (daima)**
+**5a — Genel inceleyici (daima)**
 
-Fresh-context bir sub-agent (`subagent_type: general-purpose`) çağırır Karpathy-grounded review prompt ile:
+Karpathy temelli bir inceleme istemiyle taze bağlamlı bir alt ajan (`subagent_type: general-purpose`) çağırır:
 
-- Think Before Coding (varsayımlar net mi?)
-- Simplicity First (over-engineering var mı?)
-- Surgical Changes (drive-by edit'ler? orphan'lar?)
-- Goal-Driven Execution (hedefe karşı doğrulanıyor mu? success kriterleri?)
+- Kodlamadan Önce Düşün (varsayımlar açık mı?).
+- Önce Sadelik (fazla mühendislik var mı?).
+- Cerrahi Değişiklikler (geçerken yapılan düzenlemeler? yetimler?).
+- Hedef Odaklı Yürütme (hedefe karşı doğrulanıyor mu? başarı ölçütleri?).
 
-Plus genel kod kalitesi (naming, scope creep, security smell'ler, dead code, test coverage). 🔴 Issues / 🟡 Concerns / 🟢 Looks good olarak raporlar.
+Buna ek olarak genel kod kalitesi (adlandırma, kapsam kayması, güvenlik kokuları, ölü kod, test kapsamı). Sonuç 🔴 Sorunlar / 🟡 Endişeler / 🟢 Sorunsuz görünüyor olarak raporlanır.
 
-**5b — Team reviewer'lar (kurulu takım başına)**
+**5b — Takım inceleyicileri (kurulu takım başına)**
 
-Her kurulu takım için skill `team.json`'ı okur ve `capabilities.review`'a bakar:
+Kurulu her takım için beceri `team.json` dosyasını okur ve `capabilities.review` alanına bakar:
 
-- Declared ise (örn. `capabilities.review: "code-reviewer"`), adı verilen team agent aynı diff'e karşı çalışır ve domain-specific review üretir
-- Declared değilse, sessizce atlanır — takım başına fallback yok. Generic reviewer platform-wide baseline.
+- Bildirilmişse (örneğin `capabilities.review: "code-reviewer"`), adı geçen takım ajanı aynı farka karşı çalıştırılır ve alana özgü bir inceleme üretir.
+- Bildirilmemişse sessizce atlanır — takım başına yedek yoktur. Genel inceleyici platform genelinde temeldir.
 
-Konsolide rapor kullanıcıya gösterilir. Continue / abort / edit.
+Bütünleştirilmiş rapor kullanıcıya gösterilir. Devam et / iptal et / düzenle.
 
 ### Adım 6 — Commit + push
 
@@ -112,60 +112,60 @@ gh pr create \
   --body "..."
 ```
 
-Body'de Summary, Discovered via, Version bump (uygulanabildiyse), Test plan var. [team-repo-maintenance §4](https://github.com/agentteamland/core/blob/main/rules/team-repo-maintenance.md) gereği skill `--assignee` veya `--reviewer` **geçirmez**.
+Gövdede Summary, Discovered via, Sürüm artırımı (uygulanabilirse) ve Test plan bulunur. [team-repo-maintenance §4](https://github.com/agentteamland/core/blob/main/rules/team-repo-maintenance.md) gereği beceri `--assignee` ya da `--reviewer` **geçirmez**.
 
-### Adım 8 — `--auto-merge` polling (yalnızca flag set ise)
+### Adım 8 — `--auto-merge` etkinleştirme (yalnızca bayrak verilmişse)
 
 ```bash
 gh pr merge {N} --auto --merge
 ```
 
-Bu, **tüm skill setindeki tek izinli merge invocation.** Hemen merge etmez — GitHub required check'leri bekler sonra otomatik merge eder. Branch protection'ın check gate'i korunur.
+Bu, **tüm beceri kümesindeki tek izin verilen birleştirme çağrısıdır.** Hemen birleştirmez — GitHub zorunlu denetimleri bekler ve sonra kendiliğinden birleştirir. Dal korumasının denetim kapısı korunur.
 
-### Adım 9 — Polling + auto-fix loop (eğer `--auto-merge`)
+### Adım 9 — Yoklama + kendiliğinden düzeltme döngüsü (yalnızca `--auto-merge` verildiyse)
 
-PR state'ini 1-dakika interval'larında, `{timeout}` deneme'ye kadar (default 10) poll eder. State machine:
+PR durumunu 1 dakikalık aralıklarla, en çok `{timeout}` deneme boyunca (varsayılan 10) yoklar. Durum makinesi:
 
-| State | Aksiyon |
+| Durum | Eylem |
 |---|---|
-| `MERGED` | Başarı — end-of-work'e geç |
-| `CLOSED` | Kullanıcı merge etmeden kapattı — temiz çık, end-of-work yok |
-| `*CLEAN` / `*HAS_HOOKS` | Sağlıklı state, sadece check'leri bekliyor — polling'e devam |
-| `*BLOCKED` / `*UNSTABLE` / `*DIRTY` / `*BEHIND` | CI failure veya merge conflict — `handle_failure` |
+| `MERGED` | Başarı — iş bitimine geç. |
+| `CLOSED` | Kullanıcı birleştirmeden kapattı — temiz çık, iş bitimi yok. |
+| `*CLEAN` / `*HAS_HOOKS` | Sağlıklı durum, yalnızca denetimleri bekliyor — yoklamaya devam. |
+| `*BLOCKED` / `*UNSTABLE` / `*DIRTY` / `*BEHIND` | CI başarısızlığı veya birleştirme çakışması — `handle_failure`. |
 
 #### `handle_failure` sınıflandırması
 
-**In-scope (auto-fix denenir):**
+**Kapsam içinde (kendiliğinden düzeltme denenir):**
 
-- Merge conflict'ler — latest target'ı fetch et, 3-way merge dene
-- Lint / format failure'lar — projenin formatter'ını çalıştır (auto-detect: `package.json scripts.lint`, `.prettierrc`, `gofmt`, `cargo fmt`, vb.)
-- Trivial type error / missing import — compiler-suggested fix'leri uygula
+- Birleştirme çakışmaları — en güncel hedefi çek, üç yönlü birleştirme dene.
+- Lint / biçim başarısızlıkları — projenin biçimleyicisini çalıştır (kendiliğinden algılanır: `package.json` içindeki `scripts.lint`, `.prettierrc`, `gofmt`, `cargo fmt` vb.).
+- Önemsiz tür hataları / eksik içe aktarımlar — derleyicinin önerdiği düzeltmeleri uygula.
 
-**Out-of-scope (bilgi ver ve dur):**
+**Kapsam dışı (bildir ve dur):**
 
-- Gerçek test failure'ları (assertion'lar, mevcut testlerde regression)
-- Non-trivial build error'lar
-- Infrastructure / CI config issue'ları
-- Missing required review'lar (insan reviewer'lar blocking)
+- Gerçek test başarısızlıkları (önermeler, mevcut testlerde gerileme).
+- Önemsiz olmayan yapı hataları.
+- Altyapı ya da CI yapılandırma sorunları.
+- Eksik zorunlu incelemeler (insan inceleyiciler engelliyor).
 
-3 in-scope fix denemesinden sonra skill durur ve raporlar.
+Kapsam içi 3 düzeltme denemesinden sonra beceri durur ve raporlar.
 
-### Adım 10 — Manual-merge polling (yalnızca `--auto-merge` SET DEĞİLSE)
+### Adım 10 — Elle birleştirme yoklaması (yalnızca `--auto-merge` VERİLMEDİYSE)
 
-Skill yine de merge için poll eder — kullanıcı `{timeout}` dakika içinde manuel merge edebilir. Aynı MERGED / CLOSED / timeout exit'leri.
+Beceri yine de birleştirme için yoklama yapar — kullanıcı `{timeout}` dakika içinde elle birleştirebilir. Aynı MERGED / CLOSED / zaman aşımı çıkışları geçerlidir.
 
-### Adım 11 — End-of-work (universal)
+### Adım 11 — İş bitimi (evrensel)
 
-Yalnızca PR başarıyla merge edildiyse erişilir:
+Yalnızca PR başarıyla birleştiyse erişilir:
 
 ```bash
 git checkout {target-branch}
 git pull origin {target-branch}
 ```
 
-Kullanıcı skill'i target branch'te bitirir, merge edilmiş değişiklik dahil, sıradaki task için hazır.
+Kullanıcı beceriyi hedef dalda, birleştirilmiş değişiklik dahil edilmiş hâlde, bir sonraki göreve hazır olarak bitirir.
 
-### Adım 12 — Final rapor
+### Adım 12 — Son rapor
 
 ```
 ✅ /create-pr complete
@@ -178,27 +178,27 @@ Kullanıcı skill'i target branch'te bitirir, merge edilmiş değişiklik dahil,
    End-of-work: returned to main, pulled latest
 ```
 
-## Önemli constraint'ler
+## Önemli kısıtlar
 
-1. **Asla doğrudan merge etme.** Bu skill `gh pr merge --auto --merge`'i (auto-merge enable) yalnızca `--auto-merge` flag verildiğinde kullanır. Doğrudan merge (`--merge`/`--squash`/`--rebase` `--auto` olmadan) **daima yasaktır** — bkz. [team-repo-maintenance "PR merge discipline"](https://github.com/agentteamland/core/blob/main/rules/team-repo-maintenance.md). Kullanıcı flag'i yazarak auto-merge'i explicit yetkilendirdi; bu belgelenmiş istisna.
-2. **Discovered-via context.** Shared / team repo'da çağrılırsa, skill team-repo-maintenance disiplinine uyar: PR body'de "Discovered via", versiyon bump, conventional commit. Detection: cwd `~/.claude/repos/agentteamland/` altında veya bilinen shared-repo pattern ile eşleşiyor.
-3. **Idempotent save-learnings.** Burada `/save-learnings`'i tekrar çalıştırmak güvenli — append eder, dedup eder ve sadece taze content'i işler.
-4. **Schema validation.** Staged diff bir `team.json`'a dokunuyorsa, push'tan önce validator çalışır (`~/.claude/repos/agentteamland/core/scripts/validate-team-json.sh`).
-5. **Branch hygiene başlamadan önce.** Yeni branch türetmeden önce skill lokal default branch'in origin ile current olduğunu doğrular. Değilse önce fast-forward.
-6. **Sessiz partial failure yok.** Herhangi bir adım fail olursa skill durur ve raporlar.
+1. **Asla doğrudan birleştirme.** Bu beceri `gh pr merge --auto --merge` (auto-merge etkinleştirme) komutunu yalnızca `--auto-merge` bayrağı verildiğinde kullanır. Doğrudan birleştirme (`--auto` olmadan `--merge`/`--squash`/`--rebase`) **daima yasaktır** — bkz. [team-repo-maintenance "PR merge discipline"](https://github.com/agentteamland/core/blob/main/rules/team-repo-maintenance.md). Kullanıcı bayrağı yazarak auto-merge'i açıkça yetkilendirmiştir; bu belgelenmiş istisnadır.
+2. **Discovered-via bağlamı.** Paylaşılan / takım deposundan çağrıldığında beceri team-repo-maintenance disiplinine uyar: PR gövdesine "Discovered via" eklenir, sürüm artırılır, conventional commit kullanılır. Algılama: çalışma dizini `~/.claude/repos/agentteamland/` altında ya da bilinen bir paylaşılan depo desenine uyuyor.
+3. **İdempotent save-learnings.** Burada `/save-learnings`'i yeniden çalıştırmak güvenlidir — ekler, yinelenenleri ayıklar ve yalnızca yeni içeriği işler.
+4. **Şema doğrulaması.** Stage'lenmiş fark bir `team.json` dosyasına dokunuyorsa, push'tan önce doğrulayıcı çalışır (`~/.claude/repos/agentteamland/core/scripts/validate-team-json.sh`).
+5. **Başlamadan önce dal hijyeni.** Yeni dalı türetmeden önce beceri yerel varsayılan dalın `origin` ile güncel olduğunu doğrular. Değilse önce ileri-sarma yapar.
+6. **Sessiz, kısmi başarısızlık yok.** Herhangi bir adım başarısız olursa beceri durur ve raporlar.
 
 ## İlgili
 
-- [`/save-learnings`](/tr/skills/save-learnings) — Adım 4'te çağrılır
-- [team-repo-maintenance rule](https://github.com/agentteamland/core/blob/main/rules/team-repo-maintenance.md) — shared repo'lar için governance
-- [karpathy-guidelines rule](https://github.com/agentteamland/core/blob/main/rules/karpathy-guidelines.md) — review prompt'unun temeli
+- [`/save-learnings`](/tr/skills/save-learnings) — Adım 4'te çağrılır.
+- [team-repo-maintenance kuralı](https://github.com/agentteamland/core/blob/main/rules/team-repo-maintenance.md) — paylaşılan depolar için yönetişim.
+- [karpathy-guidelines kuralı](https://github.com/agentteamland/core/blob/main/rules/karpathy-guidelines.md) — inceleme isteminin temeli.
 
 ## Gelecek evrim (v2)
 
-- **Domain-aware review routing** — her team agent `domains: ["*.tsx", ...]` glob declare eder; skill diff'in file type'larını eşler ve sadece ilgili agent'ları çağırır
-- **Parallel team review** — team reviewer'ları concurrent çalıştır
-- **Auto-fix scope expansion** — in-scope'u test failure'lara genişlet (testin aynı diff'te eklendiği — Claude testi yanlış yazmış)
+- **Alana duyarlı inceleme yönlendirmesi** — her takım ajanı `domains: ["*.tsx", ...]` glob'u bildirir; beceri farkın dosya türlerini eşler ve yalnızca ilgili ajanları çağırır.
+- **Paralel takım incelemesi** — takım inceleyicileri eş zamanlı çalıştırılır.
+- **Kendiliğinden düzeltme kapsamının genişletilmesi** — kapsam, testin aynı farkta eklendiği test başarısızlıklarına kadar genişletilir.
 
 ## Kaynak
 
-- Spec: [core/skills/create-pr/skill.md](https://github.com/agentteamland/core/blob/main/skills/create-pr/skill.md)
+- Belirtim: [core/skills/create-pr/skill.md](https://github.com/agentteamland/core/blob/main/skills/create-pr/skill.md).

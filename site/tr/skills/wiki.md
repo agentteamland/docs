@@ -1,36 +1,36 @@
 # `/wiki`
 
-Proje bilgi tabanı — yaşayan, çapraz-referanslı, daima güncel. Initialize, yeni bilgi ingest, var olanı sorgu, eskime için lint.
+Proje bilgi tabanı — yaşayan, çapraz başvurulu, daima güncel. Kurma, yeni bilgi alma, var olanı sorgulama, bayatlama denetimi.
 
-Wiki şu soruyu yanıtlar: **"Bu projede X hakkındaki güncel gerçek nedir?"** Journal entry'lerin (append-only tarihsel narrative) ya da settled-decision dokümanlarının (statik kayıtlar) aksine, wiki sayfaları **aktif olarak bakılır** — bilgi değişince eski gerçek değiştirilir, yan yana yığılmaz.
+Wiki şu soruyu yanıtlar: **"Bu projede X hakkında güncel doğru nedir?"** Journal kayıtlarının (yalnızca eklemeli tarihsel anlatı) ya da yerleşmiş karar belgelerinin (durağan kayıtlar) aksine, wiki sayfaları **etkin biçimde bakım görür** — bilgi değiştiğinde eski doğru yan yana yığılmaz, değiştirilir.
 
-Global skill olarak [core](https://github.com/agentteamland/core)'da gelir.
+Global beceri olarak [core](https://github.com/agentteamland/core) içinde yayımlanır.
 
-## Wiki nerede yaşar
+## Wiki nerede yaşar?
 
 ```
 .claude/wiki/
-├── index.md                ← Otomatik bakılan içindekiler tablosu
+├── index.md                ← Kendiliğinden bakım gören içindekiler tablosu
 ├── {topic-1}.md            ← Bilgi sayfaları (kebab-case, sayfa başına tek kavram)
 ├── {topic-2}.md
 └── ...
 ```
 
-Sayfalar projenin kök `CLAUDE.md`'sinde de bir `<!-- wiki:index -->` marker bloğu üzerinden indekslenir — [`/save-learnings`](/tr/skills/save-learnings) tarafından auto-rebuild edilir, böylece her Claude session başlangıçta wiki haritasını yükler.
+Sayfalar projenin kök `CLAUDE.md` dosyasında bir `<!-- wiki:index -->` işaretçi bloğu üzerinden de dizinlenir — [`/save-learnings`](/tr/skills/save-learnings) tarafından kendiliğinden yeniden inşa edilir; böylece her Claude oturumu açılışta wiki haritasını yükler.
 
-## Dört mod
+## Dört kip
 
-### `init` — boş wiki kur
+### `init` — boş wiki iskelesi kur
 
 ```
 /wiki init
 ```
 
-`.claude/wiki/` ve `index.md` template oluşturur. Idempotent — zaten initialize edilmiş wiki üzerinde tekrar çalıştırmak no-op (`wiki: already initialized (N pages)`).
+`.claude/wiki/` dizinini ve bir `index.md` şablonunu oluşturur. İdempotent — zaten kurulmuş bir wiki üzerinde yeniden çalıştırmak işlem yapmaz (`wiki: already initialized (N pages)`).
 
-`init`, bir projenin ilk session'ında `atl setup-hooks` configure edilmiş ama `.claude/wiki/` henüz yoksa otomatik tetiklenir.
+`init`, `atl setup-hooks` yapılandırılmış ama henüz `.claude/wiki/` dizini olmayan bir projenin ilk oturumunda kendiliğinden de tetiklenir.
 
-### `ingest` — proje kaynaklarından bilgiyi wiki sayfalarına çek
+### `ingest` — proje kaynaklarındaki bilgiyi wiki sayfalarına çek
 
 ```
 /wiki ingest
@@ -40,48 +40,48 @@ Her proje bilgi kaynağını tarar ve wiki sayfalarını günceller:
 
 | Kaynak | Önemi |
 |---|---|
-| Mevcut session transkriptindeki `<!-- learning -->` marker'ları | Birincil kaynak — canlı konuşma bilgisi |
-| `.claude/journal/*.md` | Per-agent, per-tarih learning kaydı (post-Q4 single layer) |
-| `.claude/docs/*.md` | Tamamlanmış brainstorm'lardan settled-decision dokümanlar |
-| `.claude/brain-storms/*.md` (yalnızca status: completed) | Karar bağlamı |
-| Yakın konuşma context'i | Az önce ne tartışıldı / inşa edildi |
+| Mevcut oturum transkriptindeki `<!-- learning -->` işaretçileri | Birincil kaynak — canlı konuşma bilgisi. |
+| `.claude/journal/*.md` | Ajan başına ve tarih başına öğrenme kaydı (Q4 sonrası tek katman). |
+| `.claude/docs/*.md` | Tamamlanmış beyin fırtınalarından gelen yerleşmiş karar belgeleri. |
+| `.claude/brain-storms/*.md` (yalnızca `status: completed` olanlar) | Karar bağlamı. |
+| Yakın konuşma bağlamı | Az önce ne tartışıldı / ne inşa edildi. |
 
-Her bilgi parçası için: topic'i belirler, wiki sayfasını bulur veya oluşturur, **çelişkileri çözerek yeni bilgiyi merge eder**, çapraz referansları ve `index.md`'yi günceller.
+Her bilgi parçası için: konuyu belirler, wiki sayfasını bulur ya da oluşturur, **çelişkileri çözerek yeni bilgiyi birleştirir**, çapraz başvuruları ve `index.md` dosyasını günceller.
 
-> Wiki sayfaları **güncel gerçeği** yansıtır. Eski memory "X pattern'i kullanıyoruz" diyorsa ama daha sonraki memory "X sorun çıkardı, Y'ye geçtik" diyorsa, wiki sayfası "Y kullanıyoruz" der — ikisi birden değil.
+> Wiki sayfaları **güncel doğruyu** yansıtır. Eski bir kayıt "X desenini kullanıyoruz" diyor ama daha sonraki bir kayıt "X sorun çıkardı, Y'ye geçtik" diyorsa, wiki sayfası "Y kullanıyoruz" der — ikisi birden değil.
 
-### `query` — bir soru için wiki'de ara
+### `query` — bir soru için wiki'de arama yap
 
 ```
-/wiki query bu projede caching nasıl çalışır?
+/wiki query bu projede önbellekleme nasıl çalışır?
 ```
 
-`index.md`'yi okur ilgili sayfaları bulmak için, o sayfaları okur, kaynak sayfalara atıfla bir cevap sentezler.
+İlgili sayfaları bulmak için `index.md` dosyasını okur, o sayfaları okur ve kaynak sayfalara atıflar yaparak bir yanıt sentezler.
 
-Şu durumlarda yararlı:
+Şu durumlarda yararlıdır:
 
-- Yeni bir geliştirici (veya yeni bir Claude session) tüm repo'yu yeniden okumadan bir konuyu anlamak istiyor
-- Bir şeyin nasıl karara bağlandığını / uygulandığını unuttun
-- Bir değişiklik yapmadan önce hızlı bir özet istiyorsun
+- Yeni bir geliştirici (ya da yeni bir Claude oturumu) bütün depoyu yeniden okumadan bir konuyu anlamak istediğinde.
+- Bir şeyin nasıl karara bağlandığını ya da hayata geçirildiğini unuttuğunda.
+- Bir değişiklik yapmadan önce hızlı bir hatırlatma istediğinde.
 
-### `lint` — tüm wiki'yi sağlık check
+### `lint` — tüm wiki için sağlık denetimi
 
 ```
 /wiki lint
 ```
 
-Yapılan kontroller:
+Yapılan denetimler:
 
-| Kontrol | Aksiyon |
+| Denetim | Eylem |
 |---|---|
-| Eski sayfalar (>30 gün, kaynak dosyalar bu arada değişmiş) | Review için flag |
-| Sayfalar arası çelişki | Çözüm için flag |
-| Orphan sayfalar (gelen link yok) | Bağlantılar öner |
-| Eksik sayfalar (referans var ama dosya yok) | Oluşturma öner; stub oluştur |
-| Duplicate topic'ler | Merge öner |
-| Index sync (`index.md` ↔ asıl dosyalar) | Out-of-sync ise auto-fix |
+| Bayatlamış sayfalar (>30 gün, kaynak dosyalar bu arada değişmişse) | İnceleme için işaretler. |
+| Sayfalar arası çelişkiler | Çözüm için işaretler. |
+| Yetim sayfalar (gelen bağ yok) | Bağlantılar önerir. |
+| Eksik sayfalar (atıf var ama dosya yok) | Oluşturmayı önerir; bir taslak oluşturur. |
+| Yinelenen konular | Birleştirmeyi önerir. |
+| Dizin eşzamanlaması (`index.md` ↔ gerçek dosyalar) | Eşzaman dışıysa kendiliğinden düzeltir. |
 
-Auto-fixable issue'lar sessizce düzeltilir. Çelişkiler ve eski içerik insan review'ı için raporlanır.
+Kendiliğinden düzeltilebilir sorunlar sessizce düzeltilir. Çelişkiler ve bayatlamış içerik insan incelemesi için raporlanır.
 
 Örnek çıktı:
 
@@ -103,9 +103,9 @@ Fixing automatically...
 ⚠️  Review needed: 2 stale pages
 ```
 
-## Sayfa formatı
+## Sayfa biçimi
 
-Wiki sayfaları tutarlı bir yapı izler — hem insanlar hem agent'lar hızlıca okuyabilsin diye:
+Wiki sayfaları tutarlı bir yapı izler; böylece hem insanlar hem ajanlar onları hızlıca okuyabilir:
 
 ```markdown
 # {Topic Title}
@@ -114,63 +114,63 @@ Wiki sayfaları tutarlı bir yapı izler — hem insanlar hem agent'lar hızlıc
 > Sources: [journal](../journal/...), [brainstorm](../brain-storms/...)
 
 ## Summary
-{2-3 cümle özet}
+{2-3 cümlelik genel bakış}
 
 ## Current State
-{ŞU AN doğru olan — tarih değil, plan değil, sadece güncel gerçek}
+{ŞU AN doğru olan — tarih değil, plan değil, yalnızca güncel gerçeklik}
 
 ## Key Decisions
-{Bu konuda alınmış önemli kararlar, kısa gerekçesiyle}
+{Bu konudaki önemli kararlar, kısa gerekçesiyle}
 
 ## Patterns & Rules
-{Bu konu için yerleşik konvansiyonlar}
+{Bu konu için yerleşik sözleşmeler}
 
 ## Known Issues
-{Mevcut problem veya kısıtlar}
+{Mevcut sorunlar ya da kısıtlar}
 
 ## Related
 - [{related-topic-1}]({related-topic-1}.md)
 - [{related-topic-2}]({related-topic-2}.md)
 ```
 
-## Diğer skill'lerle nasıl etkileşir
+## Diğer becerilerle nasıl etkileşir?
 
-Wiki çoğunlukla **otomatik bakılır** — insanlar sayfaları nadiren elle düzenler. `atl setup-hooks` configure edildiğinde normal akış:
+Wiki büyük ölçüde **kendiliğinden bakım görür** — insanlar sayfaları elle nadiren düzenler. `atl setup-hooks` yapılandırıldığında olağan akış:
 
-1. Claude konuşma sırasında inline `<!-- learning topic=... -->` marker'ları düşürür ([learning-capture rule](https://github.com/agentteamland/core/blob/main/rules/learning-capture.md) gereği)
-2. **Bir sonraki session'ın SessionStart'ı** → `atl session-start` çalışır, `atl learning-capture --previous-transcripts` ile marker'ları tarar
-3. Marker bulunursa → Claude [`/save-learnings --from-markers`](/tr/skills/save-learnings)'ı çağırır
-4. `/save-learnings` `journal/`, agent `children/`, skill `learnings/` ve **wiki sayfalarını** günceller (replace / update)
+1. Claude konuşma sırasında satır içi `<!-- learning topic=... -->` işaretçileri düşürür ([learning-capture kuralı](https://github.com/agentteamland/core/blob/main/rules/learning-capture.md) gereği).
+2. **Bir sonraki oturumun `SessionStart` adımında** → `atl session-start` çalışır, `atl learning-capture --previous-transcripts` ile işaretçileri tarar.
+3. İşaretçi bulunursa → Claude [`/save-learnings --from-markers`](/tr/skills/save-learnings) komutunu çağırır.
+4. `/save-learnings`, `journal/`, ajan `children/`, beceri `learnings/` ve **wiki sayfalarını** günceller (yerine yazma / güncelleme).
 
-Örnek marker propagation:
+Örnek işaretçi yayılımı:
 
 ```
 <!-- learning topic: redis-cache; body: TTL 30 dk olmalı, 15 değil -->
-  → journal/{tarih}_{agent}.md: tarih ile birlikte tarihsel not append
-  → wiki/redis-cache.md: UPDATE "TTL 30 dakika" (eski "15 dakika"yı replace)
-  → (domain-specific ise) agents/{agent}/children/redis-cache.md
+  → journal/{date}_{agent}.md: tarihiyle birlikte tarihsel not eklenir
+  → wiki/redis-cache.md: GÜNCELLENİR — "TTL 30 dakika" (eski "15 dakika" yerine)
+  → (alana özgüyse) agents/{agent}/children/redis-cache.md
 ```
 
-[`/brainstorm done`](/tr/skills/brainstorm) benzer şekilde, brainstorm tamamlandığında kararlarını wiki'ye ingest eder.
+[`/brainstorm done`](/tr/skills/brainstorm) benzer biçimde, beyin fırtınası tamamlandığında kararlarını wiki'ye alır.
 
-Marker (veya hook) olmadan, `/wiki ingest` ve `/save-learnings` (manuel mod) hâlâ çalışır — ikisi de doğrudan çağrılabilir.
+İşaretçiler (ya da hook'lar) olmadan da `/wiki ingest` ve `/save-learnings` (elle kip) çalışır — ikisi de doğrudan çağrılabilir.
 
 ## Önemli kurallar
 
-1. **Wiki = güncel gerçek.** Tarih değil, plan değil. ŞU AN doğru olan.
-2. **Update et, append etme.** Bir gerçek değişince eski versiyon değiştirilir.
-3. **Daima cross-reference.** Her sayfa ilgili sayfalara link verir. Orphan'lar `lint` tarafından flag'lenir.
-4. **Auto-maintained.** İnsanlar wiki'yi nadiren elle düzenler — `/save-learnings`, `/brainstorm done`, ve `/wiki ingest` güncel tutar.
-5. **Agent-okunabilir.** Sayfalar hem insan hem AI için yapılandırılmış — net bölümler, belirsizlik yok.
-6. **Topic tabanlı, tarih tabanlı değil.** Journal'ın (tarih tabanlı) aksine wiki topic'e göre düzenlidir. Kavram başına bir sayfa.
-7. **Düzenli lint.** `/wiki lint`'i periyodik çalıştır (aylık veya bir şey eğri gözüktüğünde).
+1. **Wiki = güncel doğru.** Tarih değil, plan değil. ŞU AN doğru olan.
+2. **Yerine yaz, eklemeyle birikme.** Bir bilgi değiştiğinde eski sürüm değiştirilir.
+3. **Daima çapraz başvur.** Her sayfa ilgili sayfalara bağ verir. Yetimler `lint` tarafından işaretlenir.
+4. **Kendiliğinden bakım görür.** İnsanlar wiki'yi elle nadiren düzenler — `/save-learnings`, `/brainstorm done` ve `/wiki ingest` onu güncel tutar.
+5. **Ajan tarafından okunabilir.** Sayfalar hem insan hem yapay zekâ için yapılandırılmıştır — net bölümler, belirsizlik yok.
+6. **Konu tabanlıdır, tarih tabanlı değildir.** Journal'ın (tarih tabanlı) aksine wiki konuya göre düzenlenmiştir. Kavram başına tek sayfa.
+7. **Düzenli denetim.** `/wiki lint` komutunu zaman zaman (aylık ya da bir şey eğri göründüğünde) çalıştır.
 
 ## İlgili
 
-- [`/save-learnings`](/tr/skills/save-learnings) — bu skill'in sorgu/lint ettiği wiki sayfalarını yazar
-- [`/brainstorm`](/tr/skills/brainstorm) — `done` modu kararları wiki'ye ingest eder
-- [Kavramlar: Skill](/tr/guide/concepts#skill) — wiki vs journal vs settled docs
+- [`/save-learnings`](/tr/skills/save-learnings) — bu becerinin sorguladığı ve denetlediği wiki sayfalarını yazar.
+- [`/brainstorm`](/tr/skills/brainstorm) — `done` kipi kararları wiki'ye alır.
+- [Kavramlar: Beceri](/tr/guide/concepts#skill) — wiki ile journal ve yerleşmiş belgelerin karşılaştırması.
 
 ## Kaynak
 
-- Spec: [core/skills/wiki/skill.md](https://github.com/agentteamland/core/blob/main/skills/wiki/skill.md)
+- Belirtim: [core/skills/wiki/skill.md](https://github.com/agentteamland/core/blob/main/skills/wiki/skill.md).
