@@ -4,45 +4,45 @@ AgentTeamLand'i oluşturan parçalar ve nasıl bir araya geldikleri.
 
 ## Takım
 
-**Takım** bir pakettir. Claude Code ile belirli bir tür işi yapmak için gereken her şeyi bir arada sunar:
+Bir **takım** bir pakettir. Claude Code ile belirli bir tür işi yapmak için gereken her şeyi bir araya getirir:
 
-- **Agent'lar** — kendi bağlamı ve sorumluluk alanı olan uzmanlaşmış karakterler.
-- **Skill'ler** — Claude Code'da kullanılabilir (slash) komutlar.
-- **Rule'lar** — her oturumda otomatik yüklenen davranış kuralları ve konvansiyonlar.
+- **Ajanlar** — kendi bağlamı ve sorumluluk alanı olan uzmanlaşmış kişilikler.
+- **Beceriler** — kullanıcı tarafından çağrılabilen, Claude Code'da eğik çizgili komut olarak sunulan araçlar.
+- **Kurallar** — her zaman yüklü olan davranış sınırları ve sözleşmeler.
 
-Bir takım; kök dizininde `team.json` bulunan bir Git reposunda yaşar. Bu dosya takımı tanımlar: adı, versiyonu, içerdikleri, bağımlılıkları, extend ettiği parent.
+Bir takım, kök dizininde `team.json` bulunan bir Git deposunda yaşar. Bu dosya takımı tanımlar: adı, sürümü, neyi kapsadığı, neye bağımlı olduğu, neyi genişlettiği.
 
-Takımı bir projeye kurduğunda içeriği `.claude/` altında kopyalar olarak görünür. Claude Code bunu hemen görür.
+Takımı bir projeye kurarsın; içeriği `.claude/` dizinine kopya olarak düşer. Claude Code onları anında görür.
 
-## Agent
+## Ajan
 
-Agent, bir rolü tanımlayan Markdown dosyasıdır. `api-agent`, `flutter-agent`, `code-reviewer` — her biri, kendine özgü sorumluluk alanı ve bilgi tabanı olan odaklı bir kişilik.
+Bir ajan, bir rolü tanımlayan bir Markdown dosyasıdır. `api-agent`, `flutter-agent`, `code-reviewer` — her biri kendi sorumluluk alanı ve kendi bilgi tabanı olan odaklı bir kişiliktir.
 
-Karmaşık agent'lar için konvansiyon **children pattern**'idir: üst düzey `agent.md` kısa kalır (kimlik, sorumluluk, ilkeler) ve detaylı bilgi `children/` altında konu-başına-dosya olarak yaşar. Bu, üst dosyayı sıkı tutar ve tek bir konuyu güncellerken diğerlerine dokunmama maliyetini düşürür. Her child dosyası bir `knowledge-base-summary` frontmatter satırı taşır; `/save-learnings` bu satırları `agent.md`'nin otomatik yeniden inşa edilen **Knowledge Base** bölümüne taşır — yani üst dosyadaki indeks her zaman child'lardan türetilir, asla elle düzenlenmez.
+Karmaşık ajanlar için sözleşme **çocuklar deseni**dir: üst düzey `agent.md` dosyası kısa kalır (kimlik, kapsam, ilkeler) ve ayrıntılı bilgi `children/` altında konu başına bir dosya olarak yaşar. Bu, üst dosyayı sıkı tutar ve tek bir konuyu, gerisine dokunmadan ucuza güncellemeyi sağlar. Her çocuk dosyası `knowledge-base-summary` adında bir frontmatter satırı taşır; `/save-learnings`, `agent.md` içindeki otomatik yeniden inşa edilen **Knowledge Base** bölümüne bu satırları taşır — yani üst dosyadaki dizin daima çocuklardan türetilir, asla elle düzenlenmez.
 
-## Skill
+## Beceri {#skill}
 
-Skill, kullanıcı tarafından çağrılan bir slash komutudur. `/create-new-project`, `/verify-system`, `/save-learnings`. Skill'ler; kök dizininde `skill.md` dosyası bulunan bir dizin olarak yayılır; bu dosya skill'in ne zaman ve nasıl kullanılacağını açıklar.
+Bir beceri, kullanıcının çağırdığı eğik çizgili bir komuttur. `/create-new-project`, `/verify-system`, `/save-learnings`. Beceriler, kök dizininde `skill.md` bulunan bir dizin olarak gelir; bu dosya, becerinin ne zaman kullanılacağını ve ne yapacağını anlatır.
 
-Skill'ler agent şeklini aynalar: karmaşık skill'ler `learnings/` adında konu-başına-dosya bir alt dizin taşır — edge case'ler ve birikmiş deneyim için — aynı `knowledge-base-summary` frontmatter sözleşmesiyle. `/save-learnings` `skill.md`'nin **Accumulated Learnings** bölümünü o frontmatter satırlarından yeniden kurar — `learnings/`, skill'ler için ne ise `children/` agent'lar için odur.
+Beceriler ajanın biçimini aynalar: karmaşık beceriler, konu başına bir dosya olarak edge case ve birikmiş deneyim taşıyan bir `learnings/` alt dizini barındırır; aynı `knowledge-base-summary` frontmatter sözleşmesiyle. `/save-learnings`, `skill.md` içindeki **Accumulated Learnings** bölümünü o frontmatter satırlarından yeniden kurar — `learnings/`, beceriler için neyse `children/` da ajanlar için odur.
 
-Skill'ler **global** (bootstrap ile gelir) veya **takıma özel** (belirli bir takımla gelir, sadece o takım kurulduğunda görünür) olabilir. `/create-new-project`, `/verify-system` ve `/design-screen` takıma özeldir çünkü yaptıkları iş her zaman stack'e özgüdür. `/brainstorm`, `/rule`, `/save-learnings`, `/wiki`, `/create-pr`, `/create-code-diagram` globaldir çünkü her yerde geçerlidir.
+Beceriler **global** (bootstrap ile yayımlanır) ya da **takım kapsamlı** (belirli bir takımla yayımlanır ve yalnızca o takım kurulduktan sonra görünür) olabilir. `/create-new-project`, `/verify-system` ve `/design-screen` takım kapsamlıdır çünkü yaptıkları iş her zaman yığına özgüdür. `/brainstorm`, `/rule`, `/save-learnings`, `/wiki`, `/create-pr`, `/create-code-diagram` ise globaldir çünkü her yerde geçerlidir.
 
-## Rule
+## Kural {#rule}
 
-Rule, her Claude Code oturumuna otomatik yüklenen Markdown dosyasıdır. Skill'ten (çağrılmayı bekler) farklı olarak rule daima aktiftir — daha sen soru sormadan Claude'un projeyi nasıl düşüneceğini şekillendirir.
+Bir kural, her Claude Code oturumuna yüklenen bir Markdown dosyasıdır. Bir beceriden farklı olarak (beceri çağrılmayı bekler), bir kural daima etkindir — daha sen bir şey sormadan Claude'un projeyi nasıl düşüneceğini biçimlendirir.
 
-Global rule'lar `~/.claude/rules/` altında yaşar. Takımın sağladığı rule'lar, takım kurulduğunda projenin `.claude/rules/` dizinine kopya ile yerleşir.
+Global kurallar `~/.claude/rules/` dizininde yaşar. Takımın sağladığı kurallar, takım kurulduğunda projenin `.claude/rules/` dizinine kopyalanır.
 
-## Registry
+## Kayıt defteri
 
-**Registry**; [`agentteamland/registry`](https://github.com/agentteamland/registry) adresindeki tek bir JSON dosyasıdır; takımların kısa adlarını Git URL'lerine eşler. `atl install software-project-team` çalıştırdığında, ad aranır, URL bulunur, kurulum oradan yapılır.
+**Kayıt defteri**, [`agentteamland/registry`](https://github.com/agentteamland/registry) adresindeki tek bir JSON dosyasıdır; kısa takım adlarını Git URL'lerine eşler. `atl install software-project-team` komutu adı arar, URL'yi bulur ve kurulumu oradan yapar.
 
-Registry'ye başvurular PR ile olur. CI her kaydı JSON schema'ya karşı doğrular, URL erişilebilirliğini denetler ve ad çakışmalarını işaretler.
+Kayıt defterine eklemeler PR ile olur. CI her kaydı JSON şemasına göre doğrular, URL'nin erişilebilirliğini denetler ve yinelenenleri işaretler.
 
-## Miras (inheritance)
+## Kalıtım
 
-Bir takım başka bir takımı **extend edebilir**. Child, parent'ın agent, skill ve rule'larını miras alır; ad bazında **override** edebilir ve istemediklerini **exclude** edebilir.
+Bir takım başka bir takımı **genişletebilir**. Alt takım, üst takımın ajanlarını, becerilerini ve kurallarını miras alır; herhangi birini ad bazında **bastırabilir** ve istemediklerini **dışarıda bırakabilir**.
 
 ```json
 {
@@ -50,40 +50,40 @@ Bir takım başka bir takımı **extend edebilir**. Child, parent'ın agent, ski
   "extends": "software-project-team@^1.0.0",
   "excludes": ["ux-agent"],
   "agents": [
-    { "name": "api-agent", "description": "API konvansiyonlarımızı yansıtan özel agent." }
+    { "name": "api-agent", "description": "API desenlerimize özel bastırmalar." }
   ]
 }
 ```
 
 Kısıtlar:
 
-- **Tek parent** — multiple inheritance yok.
-- **Derinlik sınırsız** — zincirler istediği kadar uzun olabilir.
-- **Circular detection** — `A extends B extends A` tam zincirle hata vererek fail eder.
-- **Load order** — en derin ancestor önce, mevcut takım en sonda. Sana en yakın kazanır.
+- **Tek üst takım** — çoklu kalıtım yoktur.
+- **Sınırsız derinlik** — zincirler istendiği kadar uzun olabilir.
+- **Döngü algılama** — `A extends B extends A` tam zinciri hata mesajına koyarak hızla başarısız olur.
+- **Yükleme sırası** — en derin atadan başlanır, mevcut takım en sona kalır. Sana en yakın olan kazanır.
 
-Tamamı: [Miras](/tr/authoring/inheritance).
+Tüm ayrıntılar: [Kalıtım](/tr/authoring/inheritance).
 
 ## CLI
 
-`atl`; kullanıcının yüzleştiği araçtır. Beş iş yapar:
+`atl` kullanıcının kullandığı araçtır. Beş iş yapar:
 
-- `atl install [team]` — mevcut projeye takım kur (registry adı veya Git URL ile).
-- `atl list` — burada ne kurulu göster.
-- `atl remove [team]` — kaldır.
-- `atl update [team]` — bir veya tüm takımların son sürümünü çek.
-- `atl search [query]` — registry'de ara.
+- `atl install [team]` — bir takımı (kayıt defteri adı veya Git URL'si ile) mevcut projeye kurar.
+- `atl list` — burada neyin kurulu olduğunu gösterir.
+- `atl remove [team]` — kaldırır.
+- `atl update [team]` — bir takımın ya da kurulu tüm takımların son sürümünü çeker.
+- `atl search [query]` — kayıt defterinde arama yapar.
 
-Bakınız: [CLI genel bakış](/tr/cli/overview).
+Bakınız: [CLI genel bakışı](/tr/cli/overview).
 
-## Dizinler
+## Çalışma alanları
 
-**Proje**; `atl`'yi çalıştırdığın bir dizindir. İçine kurulan takımlara ait kopyalarle dolu bir `.claude/` alt dizini edinir.
+Bir **proje**, `atl`'yi çalıştırdığın bir dizindir. İçine takım içeriğinin kopyalandığı bir `.claude/` alt dizini kazanır.
 
-**Önbellek** (`~/.claude/repos/agentteamland/`); gerçek takım repo'larını tutar — bir kez klonlanır, aynı takımı kuran her projede yeniden kullanılır. Önbelleği silmek güvenlidir; `atl update` onu yeniden doldurur.
+**Önbellek** (`~/.claude/repos/agentteamland/`) gerçek takım depolarını barındırır — yalnızca bir kez klonlanır, aynı takımı kuran her projede yeniden kullanılır. Önbelleği silmek güvenlidir; `atl update` onu yeniden doldurur.
 
-## Claude Code ile ilişki
+## Claude Code ile birlikte nasıl çalışır?
 
-Claude Code, her oturum başında `.claude/` dizinini okur. Takımın buraya katkısı ne ise o an görünür hale gelir: delege edilebilir agent'lar, slash komut olarak skill'ler, her prompt'a yüklenen rule'lar.
+Claude Code her oturumun başında `.claude/` dizinini okur. Bir takımın bu dizine getirdiği her şey anında ortaya çıkar: yetki devri için hazır ajanlar, eğik çizgili komut olarak hazır beceriler, her isteme yüklenmiş kurallar.
 
-AgentTeamLand, Claude Code'u ne değiştirir ne genişletir. O; Claude Code'un zaten okuduğu dosyalar için bir dağıtım katmanıdır, paket yönetimi katmanıdır.
+AgentTeamLand, Claude Code'un yerine geçmez ve onu genişletmez. O bir teslim katmanıdır: Claude Code'un zaten okuduğu dosyalar için paket yönetimi.
