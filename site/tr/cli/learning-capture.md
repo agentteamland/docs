@@ -1,37 +1,37 @@
 # `atl learning-capture`
 
-Önceki sohbetlerde Claude'un bıraktığı inline `<!-- learning ... -->` marker'larını Claude Code transkriptlerinde tarar ve bir sonraki session'ın ilk turunda işlenebilecek kısa bir rapor yazdırır.
+Claude Code transkriptlerini, Claude'un önceki konuşmalarda düşürdüğü satır içi `<!-- learning ... -->` işaretçileri için tara ve bir sonraki oturumun ilk turunda harekete geçilebilecek kısa bir rapor yazdır.
 
-[`atl setup-hooks`](/tr/cli/setup-hooks) tarafından kurulan `SessionStart` hook'u tarafından sürülür — `atl session-start` composite komutunun içine sarılmıştır. Test veya ad-hoc tarama için manuel de çağrılabilir.
+[`atl setup-hooks`](/tr/cli/setup-hooks) komutunun kurduğu `SessionStart` hook'u tarafından sürülür — `atl session-start` birleşik komutunun içine sarılmıştır. Test ya da anlık tarama için elle de çağrılabilir.
 
-`atl` ≥ 1.1.0 gerekir.
+`atl` ≥ 1.1.0 gerektirir.
 
-## Bu neden var
+## Bu neden var?
 
-Otomatik bir capture adımı olmadan iki tür bilgi her zaman kaçar:
+Otomatik bir yakalama adımı olmadan iki tür bilgi her zaman elden kayıp gider:
 
-1. **Öğrenmeler kaydedilmez.** Kullanıcılar `/save-learnings` çalıştırmayı unutur, agent da her zaman kendi önermez. Kararlar, bug fix'ler, keşifler konuşma ile birlikte kaybolur.
-2. **Dokümanlar bayatlar.** Bir özellik shiplendiğinde veya bir davranış değiştiğinde, README / doc site günler haftalarca geri kalır — veya sonsuza kadar.
+1. **Öğrenmeler kaydedilmez.** Kullanıcılar `/save-learnings` çalıştırmayı unutur, ajan da her zaman kendiliğinden teklif etmez. Kararlar, hata düzeltmeleri ve keşifler konuşmayla birlikte kaybolur.
+2. **Belgeler bayatlar.** Bir özellik yayımlandığında ya da bir davranış değiştiğinde README ve dokümantasyon sitesi günler hatta haftalar geride kalır — ya da sonsuza dek.
 
-`atl learning-capture` + iki eşli core rule ([learning-capture](https://github.com/agentteamland/core/blob/main/rules/learning-capture.md) + [docs-sync](https://github.com/agentteamland/core/blob/main/rules/docs-sync.md)) bu boşlukları kapatır:
+`atl learning-capture` ile birlikte iki eşli core kuralı ([learning-capture](https://github.com/agentteamland/core/blob/main/rules/learning-capture.md) + [docs-sync](https://github.com/agentteamland/core/blob/main/rules/docs-sync.md)) bu boşlukların ikisini de kapatır:
 
-- Claude, sohbette gerçek bir öğrenme anı olduğunda inline `<!-- learning -->` marker'ı bırakır. Marker'lar ~50 token, HTML-commented (render edilmiş çıktıda görünmez), ve bir session'da ilginç bir şey yoksa ücretsiz görmezden gelinir.
-- *Bir sonraki* session'ın başlangıcında harness `atl session-start` çalıştırır; o da `atl learning-capture --previous-transcripts`'i çağırır. Son başarılı `/save-learnings` koşusundan beri modifiye edilmiş her proje transkriptini tarar, marker'ları bulur ve stdout'a kısa bir rapor basar — `SessionStart` bu çıktıyı doğru şekilde Claude'un `additionalContext`'ine teslim eder.
-- Claude'un ilk turu `/save-learnings --from-markers --transcripts <paths>` çağırır; bu marker'ları journal + wiki + agent children + skill learnings'e işler — VE `doc-impact` set olan her marker için README / doc-site draft değişiklikleri hazırlar.
+- Claude, konuşma sırasında gerçek bir öğrenme anı geçtiğinde satır içi bir `<!-- learning -->` işaretçisi düşürür. İşaretçiler ~50 jeton, HTML yorumu olarak biçimlenmiş (görüntülenmiş çıktıda görünmez) ve oturumda ilginç hiçbir şey yoksa bedavaya görmezden gelinir.
+- *Bir sonraki* oturumun başında çalıştırma ortamı `atl session-start` komutunu çağırır; o da `atl learning-capture --previous-transcripts` komutunu çağırır. Son başarılı `/save-learnings` çalıştırmasından bu yana değiştirilmiş her proje transkriptini tarar, işaretçileri bulur ve stdout üzerine kısa bir rapor yazdırır — `SessionStart` bu çıktıyı Claude'un `additionalContext` alanına doğru biçimde ulaştırır.
+- Claude'un ilk turu `/save-learnings --from-markers --transcripts <paths>` komutunu çağırır; bu, işaretçileri journal + wiki + ajan children'ı + beceri learnings'ine işler — ARTI `doc-impact` alanı belirlenmiş her işaretçi için README / dokümantasyon sitesi taslakları hazırlar.
 
-Hiçbir şey otomatik olarak public repo'lara push'lanmaz. Draft'ları sen veya Claude review eder.
+Hiçbir şey herkese açık depolara kendiliğinden push'lanmaz. Taslakları sen ya da Claude inceler.
 
-## Modlar
+## Kipler
 
-| Mod | Çağrım | Ne zaman |
+| Kip | Çağrı | Ne zaman |
 |---|---|---|
-| **Previous-transcripts** (önerilen) | `atl learning-capture --previous-transcripts` | `SessionStart` hook tetiklendiğinde `atl session-start` tarafından kullanılır. Multi-transcript tarama, state-file-driven cutoff. |
-| **Single-transcript** (legacy) | `atl learning-capture --transcript-path <path>` | Belirli bir transkript dosyasının manuel taraması. |
-| **Stdin payload** (legacy) | `atl learning-capture < hook-stdin.json` | `transcript_path`'i Claude Code hook'unun stdin JSON payload'undan okur. v0.2.0 SessionEnd / PreCompact kayıtları ile uyumluluk için tutuluyor (bu event'ler hiç stdout'u Claude'a teslim etmedi — bkz. [setup-hooks history](/tr/cli/setup-hooks#tarihce-dort-hook-tan-iki-hook-a) — ama binary çağrıyı hâlâ kabul ediyor). |
+| **Önceki transkriptler** (önerilen) | `atl learning-capture --previous-transcripts` | `SessionStart` hook'u tetiklendiğinde `atl session-start` tarafından kullanılır. Çoklu transkript taraması, durum dosyası güdümlü kesim noktası. |
+| **Tek transkript** (eski kullanım) | `atl learning-capture --transcript-path <path>` | Belirli bir transkript dosyasının elle taranması. |
+| **Stdin yükü** (eski kullanım) | `atl learning-capture < hook-stdin.json` | `transcript_path`'i, bir Claude Code hook'unun stdin JSON yükünden okur. v0.2.0 `SessionEnd` / `PreCompact` kayıtlarıyla geriye dönük uyum için tutuluyor (o olaylar stdout çıktısını Claude'a hiç teslim etmedi — bkz. [setup-hooks tarihçesi](/tr/cli/setup-hooks#history-from-four-hooks-to-two) — ama ikili çağrıyı yine de kabul ediyor). |
 
-## Previous-transcripts modu
+## Önceki transkriptler kipi
 
-`atl session-start`'ın çağırdığı budur. State `~/.claude/state/learning-capture-state.json`'da tutulur:
+`atl session-start`'ın çağırdığı kiptir. Durum `~/.claude/state/learning-capture-state.json` dosyasında tutulur:
 
 ```json
 {
@@ -43,18 +43,18 @@ Hiçbir şey otomatik olarak public repo'lara push'lanmaz. Draft'ları sen veya 
 }
 ```
 
-Slug; cwd path'inin `/` karakterlerinin `-` ile değiştirilmiş halidir. Her koşuda komut:
+Slug, geçerli çalışma dizini yolundaki `/` karakterlerinin `-` ile değiştirilmiş hâlidir. Her çalıştırmada komut:
 
-1. State file'dan slug'ın `lastProcessedAt`'ini okur (ilk kullanımda "7 gün önce"e default olur).
-2. `~/.claude/projects/{slug}/*.jsonl` altında o cutoff'tan sonra modifiye edilmiş her transkript dosyasını listeler.
-3. Her birini `<!-- learning -->` blokları için tarar (v1.1.1 noise filter ile — aşağı bak).
-4. Marker bulunduğunda stdout'a tek bir konsolide rapor basar; bulunamadığında sessizdir.
+1. Durum dosyasından slug'ın `lastProcessedAt` değerini okur (ilk kullanımda "7 gün öncesine" varsayılan olur).
+2. `~/.claude/projects/{slug}/*.jsonl` altındaki, o kesim noktasından sonra değişen her transkript dosyasını sıralar.
+3. Her birinde `<!-- learning -->` blokları için tarama yapar (v1.1.1 gürültü filtresi ile — aşağıya bak).
+4. İşaretçi bulunduğunda stdout üzerine tek birleşik bir rapor yazdırır; bulunmadığında sessizdir.
 
-State file başarılı bir `/save-learnings` koşusundan sonra yazılır. CLI doğrudan asla yazmaz — bu, çakılmış bir tarama'nın partial-write corruption'ından kaçınır.
+Durum dosyasını başarılı bir `/save-learnings` çalıştırmasından sonra `/save-learnings` yazar. CLI dosyaya doğrudan asla yazmaz — bu, çöken bir taramadan doğacak yarım yazma bozulmasını önler.
 
-## Marker formatı
+## İşaretçi biçimi
 
-Marker'lar loose YAML alanları içeren inline HTML yorumlarıdır:
+İşaretçiler, gevşek YAML alanları içeren satır içi HTML yorumlarıdır:
 
 ```
 <!-- learning
@@ -67,25 +67,25 @@ body: 7-day JWT refresh chosen because we want long sessions; user logs in once 
 
 | Alan | Zorunlu | İzin verilen değerler | Amacı |
 |---|---|---|---|
-| `topic` | evet | kebab-case (küçük harf / rakam, ayraç olarak hyphen veya nokta) | Wiki / children / learnings sayfa adı olur |
-| `kind` | evet | `bug-fix`, `decision`, `pattern`, `anti-pattern`, `discovery`, `convention` | Öğrenmeyi kategorize eder |
-| `doc-impact` | hayır | `none`, `readme`, `docs`, `both`, `breaking` | `none` olmadığında doc-sync draft'larını tetikler |
-| `body` | evet | bir veya daha fazla cümle | Asıl öğrenme içeriği — HER ZAMAN SEBEBİ (WHY) koy |
+| `topic` | evet | kebab-case (küçük harfler / rakamlar; ayraç olarak tire ya da nokta) | Wiki / children / learnings sayfasının adı olur. |
+| `kind` | evet | `bug-fix`, `decision`, `pattern`, `anti-pattern`, `discovery`, `convention` | Öğrenmeyi sınıflandırır. |
+| `doc-impact` | hayır | `none`, `readme`, `docs`, `both`, `breaking` | `none` dışında olduğunda doc-sync taslaklarını tetikler. |
+| `body` | evet | bir ya da daha çok cümle | Asıl öğrenme içeriği — DAİMA NEDEN'i içer. |
 
-HTML yorumları render edilmiş markdown çıktısında görünmez, bu yüzden marker'lar sohbet UI'sını kirletmez; sadece scanner'ın gördüğü transkriptte yaşar.
+HTML yorumları görüntülenmiş Markdown çıktısında görünmez; bu nedenle işaretçiler konuşma arayüzünü kirletmez; yalnızca tarayıcının gördüğü transkriptte yaşar.
 
-## v1.1.1 noise filter
+## v1.1.1 gürültü filtresi
 
-Önceki scanner versiyonları transkriptin herhangi bir yerindeki çıplak `<!-- learning` substring'ini eşleştiriyordu. Marker formatını *tartışan* session'lar — rule yeniden yazımları, skill yeniden yazımları, learning capture hakkındaki brainstorm'lar — bir sonraki session'ın sayısını 10-25× şişiriyordu çünkü tool-output text'leri okudukları her marker fragment'ını tekrarlıyordu. v1.1.1 filter şunları reddeder:
+Tarayıcının önceki sürümleri, transkriptin herhangi bir yerindeki `<!-- learning` çıplak alt-dizesini eşleştiriyordu. İşaretçi biçimini *tartışan* oturumlar — kural yeniden yazımları, beceri yeniden yazımları, öğrenme yakalama üzerine beyin fırtınaları — bir sonraki oturumun sayısını 10-25× şişiriyordu çünkü araç çıktısı metinleri okudukları her işaretçi parçasını yansıtıyordu. v1.1.1 filtresi şunları reddeder:
 
-- Non-assistant turn'leri (tool-use input, tool-result output, kullanıcı mesajları, summary event'leri). Yalnızca `message.role == "assistant"` text content taranır.
-- Kebab-case topic'i olmayan marker'lar. Regex `^[a-z0-9]+([-.][a-z0-9]+)*$` — uppercase, boşluk, ellipsis placeholder'larını (`topic: ... doc-impact ...`) ve literal field-spec string'i `bug-fix | decision | pattern | ...`'i reddeder.
+- Assistant olmayan turlar (araç kullanımı girdisi, araç sonucu çıktısı, kullanıcı mesajları, özet olayları). Yalnızca `message.role == "assistant"` metin içeriği taranır.
+- Kebab-case bir konu içermeyen işaretçiler. Düzenli ifade `^[a-z0-9]+([-.][a-z0-9]+)*$` biçimindedir — büyük harfleri, boşlukları, üç nokta yer tutucularını (`topic: ... doc-impact ...`) ve `bug-fix | decision | pattern | ...` gibi düz alan-belirtim metnini reddeder.
 
-Validation sweep'i: 5 workspace transkripti boyunca 149 raw substring hit → filtre sonrası 16 gerçek marker. Kalan 133'ü format dokümantasyonu, prose mention'ları ve tool quoting idi.
+Doğrulama taraması: 5 çalışma alanı transkriptinde 149 ham alt-dize eşleşmesi → filtre sonrası 16 gerçek işaretçi. Geriye kalan 133 tanesi biçim belgelendirmesi, düz metin anmaları ve araç alıntılamasıydı.
 
 ## Çıktı
 
-### Boş (modifiye edilmiş transkript yok veya marker bulunamadı)
+### Boş (değişen transkript yok ya da işaretçi bulunamadı)
 
 ```
 (--silent-if-empty geçildiğinde sessiz — SessionStart hook yolu bunu kullanır)
@@ -97,7 +97,7 @@ Validation sweep'i: 5 workspace transkripti boyunca 149 raw substring hit → fi
 📝 learning-capture: scanned 3 transcripts, no markers found
 ```
 
-### Marker bulundu
+### İşaretçi bulundu
 
 ```
 🧠 learning-capture: 7 unprocessed markers across 2 transcripts
@@ -107,40 +107,40 @@ Validation sweep'i: 5 workspace transkripti boyunca 149 raw substring hit → fi
 → Run: /save-learnings --from-markers --transcripts <path1>,<path2>
 ```
 
-`SessionStart` bunu stdout üzerinden Claude'un `additionalContext`'ine enjekte eder. `learning-capture` core rule'u, Claude'a ilk turda belirtilen `/save-learnings` komutunu çağırmasını söyler; bu komut da marker'ları şunlara işler:
+`SessionStart` bu metni stdout üzerinden Claude'un `additionalContext` alanına enjekte eder. `learning-capture` core kuralı, Claude'a ilk turda adı geçen `/save-learnings` komutunu çağırmasını söyler; bu komut da işaretçileri şunlara işler:
 
-- **journal/{date}\_{agent}.md** entry'leri (kronolojik per-agent kayıt)
-- **wiki/{topic}.md** güncellemeleri (current truth, replace-style)
-- **agents/{agent}/children/{topic}.md** otomatik büyüyen içerik (`knowledge-base-summary` frontmatter ile; agent.md Knowledge Base section'ı otomatik rebuild edilir)
-- **skills/{skill}/learnings/{topic}.md** otomatik büyüyen içerik (skill.md Accumulated Learnings section'ı otomatik rebuild edilir)
-- `doc-impact` marker'ları için **doc draft'ları** (review için sunulur, otomatik push'lanmaz)
+- **journal/{date}_{agent}.md** kayıtları (kronolojik, ajan başına kayıt).
+- **wiki/{topic}.md** güncellemeleri (güncel doğru, yerine yazma biçimli).
+- **agents/{agent}/children/{topic}.md** kendiliğinden büyüyen içerik (`knowledge-base-summary` frontmatter alanıyla; `agent.md` Knowledge Base bölümü kendiliğinden yeniden inşa edilir).
+- **skills/{skill}/learnings/{topic}.md** kendiliğinden büyüyen içerik (`skill.md` Accumulated Learnings bölümü kendiliğinden yeniden inşa edilir).
+- `doc-impact` taşıyan işaretçiler için **doküman taslakları** (incelenmek üzere sunulur, kendiliğinden push'lanmaz).
 
-Başarılı işleme sonrası `/save-learnings` state file'ın `lastProcessedAt`'ini ilerletir, böylece aynı marker'lar bir sonraki `SessionStart`'ta tekrar raporlanmaz.
+Başarılı işlemenin ardından `/save-learnings`, durum dosyasındaki `lastProcessedAt` değerini ilerletir; böylece aynı işaretçiler bir sonraki `SessionStart`'ta yeniden raporlanmaz.
 
 ## Bayraklar
 
-| Bayrak | Default | Amacı |
+| Bayrak | Varsayılan | Amaç |
 |---|---|---|
-| `--previous-transcripts` | (off) | State file tarafından sürülen multi-transcript tarama (`atl session-start` tarafından kullanılır) |
-| `--silent-if-empty` | `false` | Marker bulunmadığında hiç çıktı verme (hook'lar için) |
-| `--transcript-path <path>` | (stdin JSON'dan) | Açık single-file tarama; hem state file'ı hem de stdin payload'unu bypass eder |
-| `--help` | — | Komut yardımı |
+| `--previous-transcripts` | (kapalı) | Durum dosyasının sürdüğü çoklu transkript taraması (`atl session-start` tarafından kullanılır). |
+| `--silent-if-empty` | `false` | İşaretçi bulunmadığında çıktı vermez (hook'lar için). |
+| `--transcript-path <path>` | (stdin JSON'dan) | Açık tek dosyalık tarama; hem durum dosyasını hem stdin yükünü atlar. |
+| `--help` | — | Komut yardımını gösterir. |
 
 ## Maliyet modeli
 
-| Senaryo | Claude'a token maliyeti | Zaman maliyeti |
+| Senaryo | Claude'a jeton maliyeti | Zaman maliyeti |
 |---|---|---|
-| `--previous-transcripts` ve modifiye edilmiş transkript yok | 0 | <1ms (tek stat çağrısı) |
-| `--previous-transcripts` ve N transkript, marker yok | 0 (silent-if-empty) | transkript MB başına ~10ms |
-| `--previous-transcripts` ve N marker | rapor için ~80 token | transkript MB başına ~10ms |
-| `/save-learnings --from-markers` (processing) | marker sayısına orantılı, transkript boyutuna değil | saniyeler |
+| `--previous-transcripts` ile değişen transkript yok | 0 | <1 ms (tek dosya bilgisi çağrısı). |
+| `--previous-transcripts` ile N transkript, işaretçi yok | 0 (silent-if-empty ile) | Transkript MB'si başına ~10 ms. |
+| `--previous-transcripts` ile N işaretçi | Rapor için ~80 jeton. | Transkript MB'si başına ~10 ms. |
+| `/save-learnings --from-markers` (işleme) | Maliyet işaretçi sayısıyla orantılı, transkript boyutuyla değil. | Saniyeler. |
 
-Tasarım bilinçli olarak boş session'ları ücretsiz kılıyor. Sadece gerçek öğrenmelerin maliyeti var ve maliyet gerçekten öğrenilenle orantılı — asla konuşma uzunluğuyla değil.
+Tasarım bilinçli olarak sıkıcı oturumları bedava kılar. Yalnızca gerçek öğrenmeler maliyet üretir ve maliyet, gerçekten öğrenilenle orantılı ölçeklenir — asla konuşma uzunluğuyla değil.
 
-## Manuel test
+## Elle test
 
 ```bash
-# Bir assistant marker'lı synthetic transkript oluştur (role+content shape'ine dikkat)
+# Tek bir assistant işaretçisi içeren bir sentetik transkript oluştur (rol+içerik biçimine dikkat et)
 cat > /tmp/test.jsonl <<'EOF'
 {"message":{"role":"assistant","content":[{"type":"text","text":"<!-- learning\ntopic: my-topic\nkind: decision\ndoc-impact: none\nbody: test.\n-->"}]}}
 EOF
@@ -160,16 +160,16 @@ Beklenen çıktı:
 
 ## Tarihçe
 
-`atl v0.2.0` (2026-04-24) marker protokolünü `SessionEnd` ve `PreCompact` hook'ları ile tanıttı. Claude Code v2.1.x'e göre, o hook'lar stdout'u Claude'un `additionalContext`'ine teslim ETMEZ. v0.2.0 sonrası bir ay boyunca 9 maintainer-workspace session'ında 324 marker'ın **sıfırı** otomatik işlendi — her gerçek `/save-learnings` koşusu manuel çağrımdan geldi. Capture binary çalışıyordu; trigger yolu yanlıştı.
+`atl v0.2.0` (2026-04-24) işaretçi protokolünü `SessionEnd` ve `PreCompact` hook'larıyla tanıttı. Claude Code v2.1.x'e göre o hook'lar stdout çıktısını Claude'un `additionalContext` alanına teslim ETMEZ. v0.2.0 sonrasındaki ay boyunca bakımcı çalışma alanında 9 oturumda biriken 324 işaretçi **sıfır** otomatik işleme üretti — her gerçek `/save-learnings` çalıştırması elle yapılan çağrıdan geldi. Yakalama ikilisi çalışıyordu; tetikleme yolu yanlıştı.
 
-`atl v1.1.0` (2026-05-02) `--previous-transcripts` modunu, `~/.claude/state/learning-capture-state.json` state file'ını ve bu komutu `SessionStart` hook'undan çağıran `atl session-start` composite wrapper'ı tanıttı (stdout'u Claude'a güvenilir şekilde teslim eden *tek* hook event'i). Marker protokolü değişmedi.
+`atl v1.1.0` (2026-05-02) `--previous-transcripts` kipini, `~/.claude/state/learning-capture-state.json` durum dosyasını ve bu komutu `SessionStart` hook'undan çağıran `atl session-start` birleşik sarmalayıcısını tanıttı (stdout'u Claude'a güvenilir biçimde teslim eden *tek* hook olayı). İşaretçi protokolü değişmedi.
 
-`atl v1.1.1` (2026-05-02) noise filter'ı ekledi (assistant-role + kebab-case topic).
+`atl v1.1.1` (2026-05-02) gürültü filtresini ekledi (assistant rolü + kebab-case konu).
 
 ## İlgili
 
-- [`atl setup-hooks`](/tr/cli/setup-hooks) — bu komutu `atl session-start` üzerinden süren `SessionStart` hook'unu kurar
-- [`atl update`](/tr/cli/update) — `atl session-start` tarafından çağrılan diğer parça
-- [learning-capture rule](https://github.com/agentteamland/core/blob/main/rules/learning-capture.md) — Claude'un ne zaman marker bırakacağına dair davranış spesifikasyonu
-- [docs-sync rule](https://github.com/agentteamland/core/blob/main/rules/docs-sync.md) — proaktif doc güncellemeleri için eşli kural (`doc-impact` alanını kullanır)
-- [`/save-learnings` skill](https://github.com/agentteamland/core/blob/main/skills/save-learnings/skill.md) — sistemin processing yarısı
+- [`atl setup-hooks`](/tr/cli/setup-hooks) — bu komutu `atl session-start` üzerinden süren `SessionStart` hook'unu kurar.
+- [`atl update`](/tr/cli/update) — `atl session-start` tarafından çağrılan diğer parça.
+- [learning-capture kuralı](https://github.com/agentteamland/core/blob/main/rules/learning-capture.md) — Claude'un ne zaman işaretçi düşürmesi gerektiğine dair davranış belirtimi.
+- [docs-sync kuralı](https://github.com/agentteamland/core/blob/main/rules/docs-sync.md) — öngörülü doküman güncellemeleri için eşli kural (`doc-impact` alanını kullanır).
+- [`/save-learnings` becerisi](https://github.com/agentteamland/core/blob/main/skills/save-learnings/skill.md) — sistemin işleme yarısı.
