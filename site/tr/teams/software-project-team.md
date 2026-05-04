@@ -1,68 +1,68 @@
 # software-project-team
 
-> Production-grade full-stack yazılım projeleri için 13 uzmanlaşmış agent.
+> Üretim seviyesinde tam yığın yazılım projeleri için 13 uzmanlaşmış ajan.
 
-**Son sürüm:** `1.2.1`
-**Status:** Onaylı
-**Repository:** [github.com/agentteamland/software-project-team](https://github.com/agentteamland/software-project-team)
+**En son sürüm:** `1.2.1`
+**Durum:** Doğrulanmış
+**Depo:** [github.com/agentteamland/software-project-team](https://github.com/agentteamland/software-project-team)
 
-## Yükle
+## Kur
 
 ```bash
 cd your-project
 atl install software-project-team
 ```
 
-## Stack
+## Yığın
 
-- **API**: .NET 9, Minimal API, [martinothamar/Mediator](https://github.com/martinothamar/Mediator) (source generator), FluentValidation
-- **Veritabanı**: PostgreSQL 17, EF Core 9
-- **Mesajlaşma**: RabbitMQ 3 (fanout exchange'ler)
-- **Cache**: Redis 7
-- **Loglama**: Serilog → RMQ → Elasticsearch 8 + Kibana
-- **E-posta**: MailSender consumer → Mailpit (dev)
-- **Auth**: JWT HS256, BCrypt, X-Internal-Token
-- **Depolama**: MinIO (dev) / S3 (prod)
-- **Mobil**: Flutter (Riverpod, go_router)
-- **Web**: React + TypeScript + Vite (veya Next.js)
-- **Altyapı**: Docker Compose, dotnet watch
+- **API**: .NET 9, Minimal API, [martinothamar/Mediator](https://github.com/martinothamar/Mediator) (kaynak üreteç), FluentValidation.
+- **Veritabanı**: PostgreSQL 17, EF Core 9.
+- **Mesajlaşma**: RabbitMQ 3 (fanout exchange'ler).
+- **Önbellek**: Redis 7.
+- **Günlükleme**: Serilog → RMQ → Elasticsearch 8 + Kibana.
+- **E-posta**: MailSender tüketicisi → Mailpit (geliştirme).
+- **Kimlik doğrulama**: JWT HS256, BCrypt, X-Internal-Token.
+- **Depolama**: MinIO (geliştirme) / S3 (üretim).
+- **Mobil**: Flutter (Riverpod, go_router).
+- **Web**: React + TypeScript + Vite (ya da Next.js).
+- **Altyapı**: Docker Compose, dotnet watch.
 
-## Agent'lar (13)
+## Ajanlar (13)
 
-| Agent | Rol |
-|-------|-----|
-| `api-agent` | .NET Minimal API uzmanı (Vertical Slice + Clean Arch + Mediator) |
-| `socket-agent` | SignalR köprüsü (real-time WebSocket + JWT) |
-| `worker-agent` | Cronos-driven background job'lar |
-| `flutter-agent` | Mobil/tablet uzmanı (Riverpod + go_router + dio + i18n) |
-| `react-agent` | Web UI uzmanı (Tailwind + Zustand + React Query + i18next) |
-| `infra-agent` | Docker Compose topolojisi, healthcheck'ler, env wiring |
-| `database-agent` | PostgreSQL + EF Core 9 uzmanı |
-| `redis-agent` | Refresh token, cache, idempotency, dynamic settings |
-| `rmq-agent` | Fanout exchange'ler, DLX topolojisi, consumer pattern'leri |
-| `code-reviewer` | Pre-merge code review |
-| `project-reviewer` | Cross-cutting project review |
-| `design-system-agent` | Design token'ları, component kütüphanesi, theming |
-| `ux-agent` | Kullanıcı deneyimi, akışlar, accessibility, microcopy |
+| Ajan | Rol |
+|---|---|
+| `api-agent` | .NET Minimal API uzmanı (Vertical Slice + Clean Arch + Mediator). |
+| `socket-agent` | SignalR köprüsü (gerçek zamanlı WebSocket + JWT). |
+| `worker-agent` | Cronos güdümlü arka plan işleri. |
+| `flutter-agent` | Mobil / tablet uzmanı (Riverpod + go_router + dio + i18n). |
+| `react-agent` | Web UI uzmanı (Tailwind + Zustand + React Query + i18next). |
+| `infra-agent` | Docker Compose topolojisi, sağlık denetimleri, ortam değişkeni bağlama. |
+| `database-agent` | PostgreSQL + EF Core 9 uzmanı. |
+| `redis-agent` | Yenileme jetonları, önbellek, idempotenlik, devingen ayarlar. |
+| `rmq-agent` | Fanout exchange'ler, DLX topolojisi, tüketici desenleri. |
+| `code-reviewer` | Birleştirme öncesi kod incelemesi. |
+| `project-reviewer` | Çapraz kesen proje incelemesi. |
+| `design-system-agent` | Tasarım jetonları, bileşen kütüphanesi, tema. |
+| `ux-agent` | Kullanıcı deneyimi, akışlar, erişilebilirlik, mikro metin. |
 
-## Skill'ler
+## Beceriler
 
-- `/create-new-project [Name]` — 5 fazlı scaffolder (bilgi topla → yapıyı oluştur → build → `/verify-system` → git init)
-- `/verify-system` — 4 seviyeli end-to-end sağlık kontrolü (container'lar, port'lar, app health, pipeline'lar)
-- `/design-screen` — Claude Design loop orkestratörü (akış spec'i ile kod arasında görsel-prototype fazı)
+- `/create-new-project [Name]` — 5 aşamalı iskele (bilgi toplama → yapı oluşturma → derleme → `/verify-system` → `git init`).
+- `/verify-system` — 4 düzeyli uçtan uca sağlık denetimi (konteynerler, portlar, uygulama sağlığı, boru hatları).
+- `/design-screen` — Claude Design döngüsü orkestratörü (akış belirtimi ile kod arasındaki görsel-prototip aşaması).
 
-## Yerleşik mimari pattern'leri
+## Yerleşmiş mimari desenler
 
-Takım, ürettiği tüm kodda şu sistemik kabiliyetleri uygular:
+Takım, ürettiği tüm kodda şu sistemli yetenekleri zorunlu kılar:
 
-- **UI-only i18n** (1.0.3+) — Backend sadece İngilizce. UI uygulamaları `messageKey + placeholders + fallback` zarfı üzerinden yerelleştirir. Email + push notification, MailSender'daki per-locale template'lerle yerelleştirilir.
-- **Claude Design entegrasyonu** (1.1.0+) — `/design-screen` üzerinden opsiyonel görsel-prototype fazı. Per-agent handoff playbook'ları flutter / react / design-system / ux için.
-- **DST handoff bilgisi** (1.1.3+) — `flutter-agent` ve `react-agent`, design-system-team bundle yapısını ve prototype'ları kaynak koda entegre etmeden önceki zorunlu theme-sync adımını biliyor.
-- **Cold-build scaffold disiplini** (1.1.4+) — `/create-new-project` Phase 2.2, fresh build'lerin manuel csproj düzeltmesi olmadan ilk denemede `/verify-system`'i yeşil geçmesini sağlamak için dört zorunlu csproj/migration gereksinimi (Infrastructure `<FrameworkReference Include="Microsoft.AspNetCore.App"/>`, Api `Microsoft.EntityFrameworkCore.Design`, Worker / LogIngest / MailSender `Microsoft.Extensions.Hosting`, initial EF migration) uygular. Tam discovery context: `agents/api-agent/children/known-issues.md`.
-- **Self-updating learning loop hizalaması** (1.2.0+) — Her agent'ın `agent.md` Knowledge Base section'ı `/save-learnings` tarafından her `children/{topic}.md` dosyasının `knowledge-base-summary` frontmatter'ından otomatik rebuild edilir. 169 children dosyası platform-wide Phase 2.C migration script'i üzerinden yeni contract'a migrate edildi (lossless, summary'ler mevcut hand-curated KB section'larından verbatim lift'lendi). Her skill `learnings/` subdir + `## Accumulated Learnings` section ile gelir, `/save-learnings`'in populate etmesine hazır.
+- **Yalnızca UI'da i18n** (1.0.3+) — Backend yalnızca İngilizcedir. UI uygulamaları `messageKey + placeholders + fallback` zarfı üzerinden yerelleştirir. E-postalar ve push bildirimleri MailSender içindeki yerel başına şablonlarla yerelleştirilir.
+- **Claude Design tümleştirmesi** (1.1.0+) — `/design-screen` üzerinden isteğe bağlı görsel prototip aşaması. Flutter, React, design-system ve UX için ajan başına aktarım kılavuzları.
+- **DST aktarım bilgisi** (1.1.3+) — `flutter-agent` ve `react-agent`, design-system-team paketinin biçimini ve prototipleri kaynak kodla bütünleştirmeden önceki zorunlu tema eşzamanlama adımını bilir.
+- **Soğuk derleme iskele disiplini** (1.1.4+) — `/create-new-project` Aşama 2.2, soğuk derlemelerin elle yapılan csproj düzeltmesi olmadan ilk denemede `/verify-system`'i yeşil geçmesini sağlamak için dört zorunlu csproj / migration gereksinimini (Infrastructure `<FrameworkReference Include="Microsoft.AspNetCore.App"/>`, Api `Microsoft.EntityFrameworkCore.Design`, Worker / LogIngest / MailSender `Microsoft.Extensions.Hosting`, başlangıç EF migration'ı) zorunlu kılar. Tam keşif bağlamı: `agents/api-agent/children/known-issues.md`.
+- **Kendini güncelleyen öğrenme döngüsüyle hizalama** (1.2.0+) — Her ajanın `agent.md` Knowledge Base bölümü `/save-learnings` tarafından her `children/{topic}.md` dosyasının `knowledge-base-summary` frontmatter alanından kendiliğinden yeniden inşa edilir. Platform genelindeki Phase 2.C migration betiğiyle 169 çocuk dosyası yeni sözleşmeye taşındı (kayıpsız; özetler mevcut elle hazırlanmış KB bölümlerinden olduğu gibi alındı). Her beceri, `/save-learnings`'in doldurmasına hazır boş bir `learnings/` alt dizini ve `## Accumulated Learnings` bölümüyle birlikte yayımlanır.
 
-Tam detaylar için [takımın README'sine](https://github.com/agentteamland/software-project-team) ve `agent.md` dosyalarına bak.
+Tüm ayrıntılar için [takımın README dosyasına](https://github.com/agentteamland/software-project-team) ve `agent.md` dosyalarına bak.
 
-## Kullanıldığı yer
+## Nerede kullanılır?
 
-- Bir referans test projesi — her sürümden önce uçtan uca doğrulama (`/create-new-project` + `/verify-system` all-pass) için kullanılır.
+- Bir referans test projesi — her sürümden önce uçtan uca (`/create-new-project` + `/verify-system` tamamı yeşil) doğrulanır.

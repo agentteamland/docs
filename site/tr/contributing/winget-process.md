@@ -1,54 +1,54 @@
-# winget upstream-PR süreci
+# winget üst akış-PR süreci
 
-AgentTeamLand yeni `atl` versiyonlarını [`microsoft/winget-pkgs`](https://github.com/microsoft/winget-pkgs)'taki resmi Windows Package Manager catalog'una nasıl publish ediyor.
+AgentTeamLand'in yeni `atl` sürümlerini [`microsoft/winget-pkgs`](https://github.com/microsoft/winget-pkgs) deposundaki resmi Windows Package Manager kataloğuna nasıl yayımladığı.
 
-Bu sayfa **maintainer'lar için**. Son kullanıcılar release upstream catalog'a indikten sonra `winget install AgentTeamLand.atl` ile kurar.
+Bu sayfa **bakımcılar içindir**. Son kullanıcılar bir sürüm üst akış kataloğuna indikten sonra `winget install AgentTeamLand.atl` ile kurulum yapar.
 
-## Neden manuel
+## Bu neden elle yapılır?
 
-Diğer iki distribution kanalı (Homebrew + Scoop) goreleaser tarafından tam otomatize — [`agentteamland/cli`](https://github.com/agentteamland/cli)'daki her git tag, org'umuzun tap + bucket repo'larındaki formula / manifest'i ~5 dakika içinde auto-bump'lar.
+Diğer iki dağıtım kanalı (Homebrew + Scoop) goreleaser tarafından tümüyle otomatikleştirilmiştir — [`agentteamland/cli`](https://github.com/agentteamland/cli) deposundaki her Git etiketi, organizasyonumuzun tap ve bucket depolarındaki formula / manifestoyu ~5 dakika içinde kendiliğinden artırır.
 
-winget farklı. Microsoft'un resmi catalog'u winget'in okuduğu **tek** yer — Scoop'taki gibi "custom bucket ekle" mekanizması yok. Catalog'a publish için fork'undan `microsoft/winget-pkgs:master`'a PR açarsın, Microsoft'un validation pipeline'ı koşar, Microsoft reviewer merge eder. **Bu gate'i bypass eden otomasyon yok.**
+winget farklıdır. Microsoft'un resmi kataloğu winget'in okuduğu **tek** yerdir — Scoop'taki gibi "özel paket kovası ekle" düzeneği yoktur. Kataloğa yayım yapmak için kendi çatalından `microsoft/winget-pkgs:master` dalına bir PR açarsın, Microsoft'un doğrulama hattı çalışır, bir Microsoft inceleyicisi birleştirir. **Bu kapıyı atlatan bir otomasyon yoktur.**
 
-Yani pipeline'ımızın iki fazı var:
+Bu yüzden hattımızın iki aşaması vardır:
 
-1. **Auto** — goreleaser yeni manifest'leri FORK'umuza [`agentteamland/winget-pkgs`](https://github.com/agentteamland/winget-pkgs) push eder
-2. **Manuel** — fork'umuzdan `microsoft/winget-pkgs:master`'a PR aç
+1. **Otomatik** — goreleaser yeni manifestoları [`agentteamland/winget-pkgs`](https://github.com/agentteamland/winget-pkgs) çatalımıza push'lar.
+2. **Elle** — çatalımızdan `microsoft/winget-pkgs:master` dalına bir PR aç.
 
-Bu sayfa faz 2'yi kapsar.
+Bu sayfa 2. aşamayı kapsar.
 
-## Goreleaser fork'umuza ne koyar
+## Goreleaser çatalımıza ne koyar?
 
-Tag'lenmiş her `atl` release için goreleaser fork'umuzun master branch'ine `manifests/a/AgentTeamLand/atl/<version>/` altında bir dizin ekler. Dizin winget manifest schema'sına göre üç YAML dosya içerir:
+Etiketlenmiş her `atl` sürümü için goreleaser, çatalımızın `master` dalında `manifests/a/AgentTeamLand/atl/<version>/` altında bir dizin ekler. Dizin, winget manifesto şemasına göre üç YAML dosyası içerir:
 
 ```
 manifests/a/AgentTeamLand/atl/1.1.4/
-├── AgentTeamLand.atl.yaml              # version manifest
-├── AgentTeamLand.atl.installer.yaml    # installer metadata + URL'ler + SHA-256
-└── AgentTeamLand.atl.locale.en-US.yaml # description, license, package name (en-US)
+├── AgentTeamLand.atl.yaml              # sürüm manifestosu
+├── AgentTeamLand.atl.installer.yaml    # kurulumcunun üst bilgisi + URL'leri + SHA-256
+└── AgentTeamLand.atl.locale.en-US.yaml # açıklama, lisans, paket adı (en-US)
 ```
 
-Bu dosyalar şunları açıklar: hangi version, installer'ı nereden indir (cli GitHub Release artifact'lerini işaret eder), SHA-256 nedir, license info, package name.
+Bu dosyalar şunları açıklar: hangi sürüm, kurulumcuyu nereden indireceğiz (cli GitHub Release yapıtlarını gösterir), SHA-256 ne, lisans bilgisi, paket adı.
 
-Goreleaser bu dosyaları her tag'de fork'umuzun master branch'ine otomatik commit + force-push eder. **Bu noktada upstream catalog hâlâ versiyondan haberdar değil.**
+Goreleaser bu dosyaları her etiketde çatalımızın `master` dalına kendiliğinden commit'ler ve zorla push'lar. **Bu noktada üst akış kataloğu sürümden hâlâ habersizdir.**
 
-## Upstream PR'ı açma
+## Üst akış PR'ını açma
 
 ```bash
-cd repos/winget-pkgs   # workspace'in FORK'umuza clone'u
+cd repos/winget-pkgs   # workspace'in ÇATALIMIZA olan klonu
 
-# Fork'umuzun master'ının goreleaser'ın push ettiğiyle current olduğundan emin ol:
+# Çatalımızın master'ının goreleaser'ın push'ladığı içerikle güncel olduğunu garanti et:
 git checkout master
 git pull origin master
 
-# PR branch oluştur:
+# Bir PR dalı oluştur:
 git checkout -b atl-<version>
-# (edit gerekmez — goreleaser zaten master'a manifest'leri commit etti)
+# (düzenleme gerekmez — goreleaser zaten manifestoları master'a commit'ledi)
 
-# Branch'i push et:
+# Dalı push'la:
 git push -u origin atl-<version>
 
-# Upstream microsoft/winget-pkgs'a PR aç:
+# Üst akış microsoft/winget-pkgs'a PR aç:
 gh pr create \
   --repo microsoft/winget-pkgs \
   --base master \
@@ -57,54 +57,54 @@ gh pr create \
   --body "Adds manifests for AgentTeamLand.atl <X.Y.Z>"
 ```
 
-Microsoft'un validation pipeline'ı hemen devreye girer. Yaygın check'ler:
+Microsoft'un doğrulama hattı hemen devreye girer. Yaygın denetimler:
 
-- Manifest schema validation
-- Hash verification (installer URL'sini yeniden indirir, SHA-256 hesaplar, karşılaştırır)
-- Installer format check (MSIX, MSI, APPX, MSIXBundle, APPXBundle veya .exe olmalı)
-- Tüm URL'lerin reachability'si
-- License compatibility
-- Package metadata sanity
+- Manifesto şema doğrulaması.
+- Hash doğrulaması (kurulumcu URL'sini yeniden indirir, SHA-256 hesaplar, karşılaştırır).
+- Kurulumcu biçim denetimi (MSIX, MSI, APPX, MSIXBundle, APPXBundle ya da .exe olmalı).
+- Tüm URL'lerin erişilebilirliği.
+- Lisans uyumluluğu.
+- Paket üst bilgisinin akıl sağlığı.
 
-Validation geçerse Microsoft reviewer bakar (tipik olarak 24-72h içinde). Merge eder → version Microsoft'un CDN'i propagate ettiğinde (genellikle merge'den sonraki dakikalar içinde) `winget install AgentTeamLand.atl` ile available olur.
+Doğrulama geçerse bir Microsoft inceleyicisi göz atar (tipik olarak 24-72 saat içinde). Birleştirir → sürüm, Microsoft'un CDN'i yayıldığında (genellikle birleşmenin ardından dakikalar içinde) `winget install AgentTeamLand.atl` ile erişilebilir hâle gelir.
 
-## Validation fail olursa ne olur
+## Doğrulama başarısız olursa ne olur?
 
-Validation bot fail sebebiyle PR'a comment bırakır. Yaygın olanlar:
+Doğrulama botu PR'a başarısızlık nedenini içeren bir yorum bırakır. Yaygın olanları:
 
-- **Hash mismatch** — installer manifest'indeki SHA-256'nın goreleaser'ın hesapladığıyla eşleştiğini re-check et. Genellikle goreleaser'ın fork'umuzun manifest'i commit edildikten sonra yüklediği anlamına gelir; fork'umuzun master'ını taze pull et, re-PR.
-- **Unreachable URL** — cli GitHub Release'in beklenen filename ile var olduğunu check et. Bazen goreleaser tüm artifact'ler upload bitmeden manifest'i upload eder.
-- **MSIX/EXE rejection** — `.exe` desteklenir ama installer [winget'in installer requirement'larını](https://github.com/microsoft/winget-pkgs/blob/master/doc/manifest/schema/1.6.0/singleton.md) karşılamalı. `atl` için temiz validation'dan geçen portable `.exe` ship ediyoruz; gelecekte installer format değişirse validation yakalar.
+- **Hash uyuşmazlığı** — kurulumcu manifestosundaki SHA-256'nın goreleaser'ın hesapladığıyla eşleştiğini yeniden denetle. Genelde, çatalımızın manifestosu commit'lendikten sonra goreleaser'ın yapıtı yüklediği anlamına gelir; çatalımızın `master` dalını taze çek ve PR'ı yeniden aç.
+- **Erişilemeyen URL** — cli GitHub Release'inin beklenen dosya adıyla var olduğunu denetle. Bazen goreleaser, tüm yapıtların yüklenmesi tamamlanmadan manifestoyu yükler.
+- **MSIX/EXE reddi** — `.exe` desteklenir ama kurulumcu [winget'in kurulumcu gereksinimlerini](https://github.com/microsoft/winget-pkgs/blob/master/doc/manifest/schema/1.6.0/singleton.md) karşılamalıdır. `atl` için doğrulamadan temiz geçen taşınabilir bir `.exe` yayımlıyoruz; ileride kurulumcu biçimi değişirse doğrulama yakalar.
 
-Fix gerekirse fork'umuzun branch'indeki manifest'leri edit et, push et, bot otomatik re-validate eder.
+Düzeltme gerekirse çatalımızın dalındaki manifestoları düzenle, push'la, bot kendiliğinden yeniden doğrular.
 
-## cli release ile winget availability arası lag
+## cli sürümü ile winget erişilebilirliği arasındaki gecikme
 
-Tipik: cli tag'inden winget catalog görünürlüğüne 1-3 gün.
+Tipik: cli etiketinden winget kataloğunda görünürlüğe 1-3 gün.
 
-Detaylı timeline:
+Ayrıntılı zaman çizelgesi:
 
-1. **t = 0**: cli repo'ya tag push edildi
-2. **t + 5dk**: goreleaser tamamladı; manifest'ler fork'umuzun master branch'inde; brew + scoop zaten güncellendi
-3. **t + 10dk**: maintainer upstream PR açar (manuel adım)
-4. **t + 10dk - 24h**: Microsoft validation pipeline koşar
-5. **t + 24h - 72h**: Microsoft reviewer merge eder (queue'ya bağlı bazen daha hızlı, bazen daha yavaş)
-6. **t + ~72h**: `winget upgrade atl` yeni versiyonu çeker
+1. **t = 0**: cli deposuna etiket push'landı.
+2. **t + 5 dk**: goreleaser bitti; manifestolar çatalımızın `master` dalında; brew + scoop zaten güncellendi.
+3. **t + 10 dk**: bakımcı üst akış PR'ını açar (elle adım).
+4. **t + 10 dk - 24 saat**: Microsoft doğrulama hattı çalışır.
+5. **t + 24 saat - 72 saat**: Microsoft inceleyicisi birleştirir (kuyruğa bağlı olarak bazen daha hızlı, bazen daha yavaş).
+6. **t + ~72 saat**: `winget upgrade atl` yeni sürümü çeker.
 
-Bu lag **beklenen ve dokümante** [Install sayfasında](../guide/install) — docs explicit olarak "winget bir-iki `v*` tag gerisinde olabilir" der. Mutlak en son'a ihtiyacı olan kullanıcılar PowerShell one-liner veya scoop'a yönlendirilir.
+Bu gecikme [Kurulum sayfasında](../guide/install) **beklenir ve belgelenmiştir** — belgeler açıkça "winget bir-iki `v*` etiketin gerisinde olabilir" der. Mutlak en son sürüme ihtiyacı olan kullanıcılar PowerShell tek-satırlığına ya da scoop'a yönlendirilir.
 
-## Tarihçe — geçmiş upstream PR'lar
+## Tarihçe — geçmiş üst akış PR'ları
 
-| atl version | PR | Status | Notlar |
+| atl sürümü | PR | Durum | Notlar |
 |---|---|---|---|
-| v0.1.1 | [#361975](https://github.com/microsoft/winget-pkgs/pull/361975) | 2026-04-24'te merged | Catalog'daki ilk release |
-| v0.2.0 | [#364841](https://github.com/microsoft/winget-pkgs/pull/364841) | 2026-04-25'te merged | İkinci release |
-| v0.3.0 / v1.0.0 / v1.1.0 / v1.1.1 / v1.1.2 / v1.1.3 | _(ayrı back-PR yapılmadı)_ | fork'ta korundu | winget convention gereği intermediate version'lar fork'un branch'lerinde tutulur ama ayrı upstream'e PR yapılmaz — sıradaki "real" upstream PR onları örtük taşır |
-| v1.1.4 | [#367931](https://github.com/microsoft/winget-pkgs/pull/367931) | review bekliyor | Upstream catalog'u current shipping version'a yetiştirir |
+| v0.1.1 | [#361975](https://github.com/microsoft/winget-pkgs/pull/361975) | 2026-04-24'te birleştirildi | Katalogdaki ilk sürüm. |
+| v0.2.0 | [#364841](https://github.com/microsoft/winget-pkgs/pull/364841) | 2026-04-25'te birleştirildi | İkinci sürüm. |
+| v0.3.0 / v1.0.0 / v1.1.0 / v1.1.1 / v1.1.2 / v1.1.3 | _(ayrı geri PR yapılmadı)_ | çatalda korundu | winget sözleşmesi gereği ara sürümler çatalın dallarında tutulur ama ayrı bir üst akış PR'ı yapılmaz — bir sonraki "gerçek" üst akış PR'ı onları üstü kapalı taşır. |
+| v1.1.4 | [#367931](https://github.com/microsoft/winget-pkgs/pull/367931) | inceleme bekliyor | Üst akış kataloğunu mevcut yayımlanan sürüme yetiştirir. |
 
 ## İlgili
 
-- [Release pipeline](release-pipeline) — full goreleaser akışı (brew + scoop + winget)
-- [`atl`'yi kur](../guide/install) — kullanıcıya yönelik talimatlar, "winget gerisinde olabilir" notu dahil
-- [Microsoft'un winget-pkgs README'si](https://github.com/microsoft/winget-pkgs) — upstream kuralları ve format
-- [winget-cli releases](https://github.com/microsoft/winget-cli/releases) — catalog'tan pull eden client tarafı
+- [Sürüm yayım hattı](release-pipeline) — tam goreleaser akışı (brew + scoop + winget).
+- [`atl`'yi kur](../guide/install) — kullanıcıya yönelik yönergeler, "winget gerisinde kalabilir" notu dâhil.
+- [Microsoft'un winget-pkgs README'si](https://github.com/microsoft/winget-pkgs) — üst akış kuralları ve biçimi.
+- [winget-cli sürümleri](https://github.com/microsoft/winget-cli/releases) — kataloğdan çekim yapan istemci tarafı.

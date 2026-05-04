@@ -1,10 +1,10 @@
-# Registry başvurusu
+# Kayıt defteri başvurusu
 
-Takımını herkese açık registry'de listelemek, ona kısa ad verir (`atl install takim-adin` — URL ile değil). Registry, PR ile bakılan tek bir JSON dosyasıdır.
+Takımını herkese açık kayıt defterinde listelemek ona kısa bir ad kazandırır (`atl install your-team` yerine `atl install https://github.com/…`). Kayıt defteri, PR ile bakım gören tek bir JSON dosyasıdır.
 
-## Registry nedir?
+## Kayıt defteri nedir?
 
-[`agentteamland/registry`](https://github.com/agentteamland/registry) tek bir dosya tutar: `teams.json`. Her kayıt; kısa adı bir Git URL'i ve metadata'ya eşler:
+[`agentteamland/registry`](https://github.com/agentteamland/registry) tek bir dosya barındırır: `teams.json`. Her giriş, kısa bir adı bir Git URL'sine ve üst bilgisine eşler:
 
 ```json
 {
@@ -13,7 +13,7 @@ Takımını herkese açık registry'de listelemek, ona kısa ad verir (`atl inst
       "name": "software-project-team",
       "url": "https://github.com/agentteamland/software-project-team",
       "status": "verified",
-      "description": ".NET 9 API + Flutter + React + tam Docker stack",
+      "description": ".NET 9 API + Flutter + React + full Docker stack",
       "keywords": ["dotnet", "flutter", "react", "docker"]
     }
   ]
@@ -22,77 +22,77 @@ Takımını herkese açık registry'de listelemek, ona kısa ad verir (`atl inst
 
 ## Başvurmadan önce
 
-Takımın şunlar olmalı:
+Takımın şu özelliklere sahip olmalı:
 
-1. **Git URL'den kurulabilir** — `atl install https://github.com/sen/takimin.git` uçtan uca çalışıyor.
-2. **Schema geçerli** — `team.json` validation'dan geçiyor. [Takım oluşturma](./creating-a-team)'yı izlediysen her repo bu kontrolü CI'da zaten alıyor.
-3. **Belgeli** — repo'nun `README.md`'si kullanıcıya takımın ne için olduğunu ve nasıl kullanılacağını anlatıyor.
-4. **Tag'li** — en az bir SemVer tag (`v0.1.0` veya üstü).
+1. **Git URL'sinden kurulabilir** — `atl install https://github.com/you/your-team.git` uçtan uca çalışıyor.
+2. **Şema bakımından geçerli** — `team.json` doğrulamayı geçiyor. [Bir takım yazma](./creating-a-team) sayfasını izlediysen her depo bu denetimi CI'de zaten alır.
+3. **Belgeli** — deponun `README.md` dosyası kullanıcıya takımın ne için olduğunu ve nasıl kullanılacağını anlatıyor.
+4. **Etiketli** — en az bir SemVer etiketi (`v0.1.0` ya da üstü).
 
 ## Adımlar
 
-1. `agentteamland/registry` repo'sunu **fork et**.
+1. `agentteamland/registry` deposunu **çatalla**.
 
-2. `teams.json` içindeki `teams` dizisine kaydını **ekle**. Dizi `name` alanına göre alfabetik olsun.
+2. Kaydını `teams.json` içindeki `teams` dizisine **ekle**. Diziyi `name` alanına göre alfabetik tut.
 
    ```json
    {
-     "name": "takimin",
-     "url": "https://github.com/sen/takimin",
+     "name": "your-team",
+     "url": "https://github.com/you/your-team",
      "status": "community",
-     "description": "Tek cümlelik tanıtım. atl search'te görünür.",
-     "keywords": ["ne", "hakkinda"]
+     "description": "One-sentence pitch. Shows up in atl search.",
+     "keywords": ["what", "your", "team", "covers"]
    }
    ```
 
    Alanlar:
-   - `name` — `team.json`'daki `name` ile uyuşmalı.
-   - `url` — Git HTTPS URL'i (`.git` son eki şart değil).
-   - `status` — yeni başvurular `"community"` ile başlar. Bakımcılar inceleme sonrası `"verified"`'a yükseltir.
-   - `description` — kullanıcı-yüzlü tek cümle. **10–200 karakter** (schema'da `description.maxLength = 200`). `team.json` `description` ile aynı değer. 200'ü aşmak, registry PR'larının CI'da fail olmasının en yaygın sebebidir.
+   - `name` — `team.json` içindeki `name` ile aynı olmalı.
+   - `url` — Git HTTPS URL'si (sondaki `.git` zorunlu değil).
+   - `status` — yeni başvurular `"community"` ile başlar. Bakımcılar inceleme sonrasında `"verified"` durumuna yükseltir.
+   - `description` — kullanıcıya görünen tek satırlık tanıtım. **10-200 karakter** (şemada `description.maxLength = 200`). `team.json` içindeki `description` ile aynı değer. 200'ü aşmak, kayıt defteri PR'larının CI'de en sık başarısız olma sebebidir.
    - `keywords` — `atl search` eşleşmesi için.
 
-3. **Push'tan önce lokalde doğrula.** Registry repo'su, CI'nin koştuğu offline kontrolleri lokalde koşturan bir script ile gelir:
+3. **Push'tan önce yerelde doğrula.** Kayıt defteri deposu, CI'nin yaptığı çevrimdışı denetimleri yerelde çalıştıran bir betikle birlikte gelir:
 
    ```bash
-   npm install -g ajv-cli ajv-formats   # tek seferlik; ajv yoksa
+   npm install -g ajv-cli ajv-formats   # tek seferlik; eğer ajv yüklü değilse
    ./scripts/validate.sh
    ```
 
-   ::: tip git push'a bağla; geçersiz registry asla push edemezsin
+   ::: tip git push'a bağla; geçersiz bir kayıt defterini asla push'layamayasın
    ```bash
-   git config core.hooksPath .githooks   # her clone başına tek seferlik
+   git config core.hooksPath .githooks   # klon başına bir kez
    ```
-   Bundan sonra `teams.json` veya `schemas/`'a dokunan her `git push`, `./scripts/validate.sh`'i otomatik koşturur ve doğrulama başarısız olursa push'u iptal eder. 200-karakter `description` taşmasını fail olmuş bir PR check'i yerine lokalde yakalar.
+   Bundan sonra `teams.json` ya da `schemas/` dizinine dokunan her `git push`, `./scripts/validate.sh` betiğini kendiliğinden çalıştırır ve doğrulama başarısız olursa push'u iptal eder. 200 karakterlik `description` taşmasını başarısız bir PR denetimine bırakmak yerine yerelde yakalar.
    :::
 
-4. **PR aç.** CI doğrulayacaklar:
-   - JSON schema uyumu (`description`'ın 10–200 karakter aralığı dahil)
-   - `url`'nin `team.json`'u 200 ile getirdiği
-   - Getirilen `team.json`'un takım schema'sına uygun olduğu
-   - `name` benzersizliği (registry'de çift yok)
+4. **PR aç.** CI şunları doğrulayacak:
+   - JSON şema uyumluluğu (`description` için 10-200 karakter aralığı dâhil).
+   - `url`, `team.json` getirildiğinde 200 dönüyor mu.
+   - Getirilen `team.json` takım şemasına göre geçerli mi.
+   - `name` benzersizliği (kayıt defterinde yinelenme yok).
 
-5. **İncelemeyi bekle.** Bakımcılar, takımın var olduğunu, kurulduğunu ve söylediğini yaptığını kontrol eder. Verified statüsü inceleme sonrası verilir.
+5. **İncelemeyi bekle.** Bakımcılar takımın var olduğunu, kurulduğunu ve söylediğini yaptığını denetler. Doğrulanmış durumu inceleme sonrasında verilir.
 
-## Statü yaşam döngüsü
+## Durum yaşam döngüsü
 
 - **`community`** — listeli ve kurulabilir, henüz incelenmemiş. Her başvuru buradan başlar.
-- **`verified`** — AgentTeamLand bakımcıları tarafından incelendi; temiz kurulması ve konvansiyonlara uyması beklenir. Bakımcılar takip eden bir PR ile yükseltir.
-- **`deprecated`** — artık bakılmıyor. Hâlâ kurulabilir, ama kullanıcılar uyarı görür. Tipik olarak takım yazarı repo'yu arşivlediğinde veya takım yeniden yazımla değiştirildiğinde.
+- **`verified`** — AgentTeamLand bakımcılarının incelediği durum; temiz kurulup sözleşmelere uyması beklenir. Bakımcılar bunu izleyen bir PR ile yükseltir.
+- **`deprecated`** — artık bakım görmüyor. Hâlâ kurulabilir ama kullanıcılar bir uyarı görür. Tipik olarak yazar depoyu arşivlediğinde ya da takım bir yeniden yazımla değiştirildiğinde verilir.
 
-## Takımı kaldırma
+## Bir takımı kaldırma
 
-Takımının registry'den çıkarılmasını istiyorsan, kaydını silen bir PR aç. Zaten kurmuş olanlar Git URL'i ile devam edebilir.
+Takımının kayıt defterinden kaldırılmasını istiyorsan kaydını silen bir PR aç. Zaten kurmuş olan kullanıcılar Git URL'sini doğrudan kullanmayı sürdürebilir.
 
-## Kaydı güncelleme
+## Bir kaydı güncelleme
 
-Registry PR'larına yalnızca metadata değişiklikleri girer — **versiyon değil**. Versiyon çözümü dinamiktir: `atl`, kurulum/güncelleme anında takımın kendi tag'lerini okur. Registry PR'ı yalnızca description, keywords, URL veya status değiştiğinde gerekir.
+Kayıt defteri PR'larına yalnızca üst bilgi değişiklikleri girer — **sürüm değil**. Sürüm çözümü devingendir: `atl` kurulum / güncelleme anında takımın kendi etiketlerini okur. Yalnızca açıklaman, anahtar sözcüklerin, URL'n ya da durumun değiştiğinde bir kayıt defteri PR'ı gerekir.
 
 ## Sorular?
 
-[`agentteamland/registry` issues](https://github.com/agentteamland/registry/issues) açılır.
+[`agentteamland/registry` üzerinde bir issue aç](https://github.com/agentteamland/registry/issues).
 
 ## İlgili
 
-- **[Takım oluşturma](./creating-a-team)** — registry öncesi checklist.
-- **[team.json](./team-json)** — registry'nin karşı-doğrulama yaptığı schema.
+- **[Bir takım yazma](./creating-a-team)** — kayıt defterinden önceki kontrol listesi.
+- **[team.json](./team-json)** — kayıt defterinin karşı doğruladığı şema.

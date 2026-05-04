@@ -1,32 +1,32 @@
-# Worked example: `starter-extended`
+# Uygulamalı örnek: `starter-extended`
 
-[`agentteamland/starter-extended`](https://github.com/agentteamland/starter-extended) [inheritance](inheritance) mekanizmasını uçtan uca demonstrate eden minimal bir örnek takım. Kendi extension takımını author etmek üzereysen ve en küçük geçerli örneğin nasıl göründüğünü görmek istiyorsan bu sayfayı oku.
+[`agentteamland/starter-extended`](https://github.com/agentteamland/starter-extended), [kalıtım](inheritance) düzeneğini uçtan uca gösteren küçük bir örnek takımdır. Kendi uzantı takımını yazmak üzereysen ve geçerli en küçük örneğin nasıl göründüğünü görmek istiyorsan bu sayfayı oku.
 
-Inheritance mekanizmasının kendisi (extends, excludes, override semantiği, load order) için önce [Inheritance](inheritance) sayfasına bak.
+Kalıtım düzeneğinin kendisi (extends, excludes, bastırma anlamı, yükleme sırası) için önce [Kalıtım](inheritance) sayfasına bak.
 
-## `starter-extended` ne gösterir
+## `starter-extended` neyi gösterir?
 
-~50 satırlık bir repo'da:
+Yaklaşık 50 satırlık bir depo içinde:
 
-- **`extends`** — `team.json`'da parent takım declare etme (`extends: software-project-team@^1.0.0`)
-- **`excludes`** — miras alınan üyeyi ada göre çıkarma (`excludes: ["ux-agent"]`)
-- **Ekleme** — parent'ın üzerine kendi yeni agent'ını ekleme (`stripe-agent`)
-- Kanonik agent layout'u ([`agent-structure.md`](https://github.com/agentteamland/core/blob/main/rules/agent-structure.md) gereği) — Identity / Area of Responsibility / Core Principles / Knowledge Base, her topic `children/` altında ayrı dosya + `knowledge-base-summary` frontmatter
+- **`extends`** — `team.json` içinde bir üst takımı bildirme (`extends: software-project-team@^1.0.0`).
+- **`excludes`** — miras alınmış bir üyeyi adına göre dışarıda bırakma (`excludes: ["ux-agent"]`).
+- Üst takımın üzerine yeni bir ajan **ekleme** (`stripe-agent`).
+- Kanonik ajan düzeni ([`agent-structure.md`](https://github.com/agentteamland/core/blob/main/rules/agent-structure.md) gereği) — Identity / Area of Responsibility / Core Principles / Knowledge Base; konu başına bir dosya olarak `children/` altında, `knowledge-base-summary` frontmatter alanıyla.
 
-Toplam: 1 `team.json` + 1 agent (`stripe-agent`, 1 child dosya ile).
+Toplam: 1 `team.json` + 1 ajan (`stripe-agent`, 1 çocuk dosyasıyla).
 
-## Repo layout
+## Depo düzeni
 
 ```
 starter-extended/
-├── README.md                                # stub — bu docs sayfasına işaret eder
+├── README.md                                # taslak — bu belge sayfasına işaret eder
 ├── LICENSE                                  # MIT
-├── team.json                                # declare eder: extends + excludes + yeni agent
+├── team.json                                # bildirir: extends + excludes + yeni ajan
 └── agents/
     └── stripe-agent/
         ├── agent.md                         # Identity, Responsibility, Core Principles, Knowledge Base
         └── children/
-            └── webhook-topology.md          # knowledge-base-summary frontmatter ile
+            └── webhook-topology.md          # knowledge-base-summary frontmatter'ı ile
 ```
 
 ## `team.json`
@@ -35,7 +35,7 @@ starter-extended/
 {
   "name": "starter-extended",
   "version": "0.2.0",
-  "description": "Minimal example team — software-project-team'i extend etmeyi, ux-agent'ı exclude etmeyi ve stripe-agent eklemeyi demonstrate eder.",
+  "description": "Minimal example team — demonstrates extending software-project-team, excluding ux-agent, and adding stripe-agent.",
   "author": "agentteamland",
   "license": "MIT",
   "extends": "software-project-team@^1.0.0",
@@ -50,116 +50,114 @@ starter-extended/
 }
 ```
 
-Birisi `atl install starter-extended` çalıştırdığında:
+Biri `atl install starter-extended` çalıştırdığında:
 
-1. `atl` parent'ı (`software-project-team@^1.0.0`) registry'den resolve eder → 13 agent + 3 skill kurar
-2. `excludes: ["ux-agent"]` kuralı `ux-agent`'ı kurulmuş set'ten çıkarır → 12 agent + 3 skill kalır
-3. Child takımın kendi agent'ı (`stripe-agent`) üzerine kurulur → toplam 13 agent + 3 skill
+1. `atl` üst takımı (`software-project-team@^1.0.0`) kayıt defterinden çözer → 13 ajan + 3 beceri kurar.
+2. `excludes: ["ux-agent"]` kuralı `ux-agent`'ı kurulu kümeden çıkarır → 12 ajan + 3 beceri kalır.
+3. Alt takımın kendi ajanı (`stripe-agent`) üstüne kurulur → toplam 13 ajan + 3 beceri.
 
-Kullanıcı, parent'ın full stack'i eksi ux-agent + custom Stripe-focused agent ile biter. Bu en yaygın "software-project-team'in çoğunu istiyorum ama kendi twist'imle" pattern'i.
+Kullanıcı, üst takımın tam yığını eksi `ux-agent` artı özel bir Stripe odaklı ajanla son bulur. Bu en yaygın "software-project-team'in çoğunu istiyorum ama kendi dokunuşumla" desenidir.
 
-## Agent (`stripe-agent`)
+## Ajan (`stripe-agent`)
 
-`agents/stripe-agent/agent.md` kanonik yapıyı izler ([`agent-structure.md`](https://github.com/agentteamland/core/blob/main/rules/agent-structure.md) gereği):
+`agents/stripe-agent/agent.md` dosyası kanonik yapıyı izler ([`agent-structure.md`](https://github.com/agentteamland/core/blob/main/rules/agent-structure.md) gereği):
 
 ```markdown
 # Stripe Agent
 
 ## Identity
-Stripe billing integration uzmanı. Webhook event'leri, idempotency,
-refund'lar, dispute akışları ve Stripe-specific error semantiklerini
-ele alır.
+Stripe billing integration specialist. Handles webhook events,
+idempotency, refunds, dispute flows, and Stripe-specific error semantics.
 
 ## Area of Responsibility
 - Stripe webhook endpoint design + signature verification
 - Webhook idempotency (event ID dedup, replay protection)
-- Refund + partial-refund akışları
+- Refund + partial-refund flows
 - Dispute handling
-- Stripe-specific error'ları internal exception'lara mapping
+- Stripe-specific error mapping to internal exceptions
 
 ## Core Principles
-- Webhook payload'larına signature verification olmadan asla güvenme
-- Daima idempotent — Stripe agresif retry yapar
-- Refund logic API'da yaşar; Stripe SDK call'ları dedicated bir service üzerinden geçer
+- Never trust webhook payloads without signature verification
+- Always idempotent — Stripe retries aggressively
+- Refund logic lives in API; Stripe SDK calls go through a dedicated service
 
 ## Knowledge Base
 
-(/save-learnings tarafından children/*.md frontmatter'ından auto-rebuilt.)
+(Auto-rebuilt by /save-learnings from children/*.md frontmatter.)
 
 ### Webhook Topology
-Stripe'ın webhook event taxonomy'si + event'leri consumer'lara fan
-out etmek için kullandığımız exchange/queue topology. Idempotency
-event-ID seviyesinde Redis SETNX ile 7-günlük TTL üzerinden enforce
-edilir.
+Stripe's webhook event taxonomy + the exchange/queue topology we
+use to fan out events to consumers. Idempotency is enforced at
+event-ID level via Redis SETNX with 7-day TTL.
 → [Details](children/webhook-topology.md)
 ```
 
-`children/webhook-topology.md` dosyası kanonik `knowledge-base-summary` frontmatter taşır:
+`children/webhook-topology.md` dosyası kanonik `knowledge-base-summary` frontmatter alanını taşır:
 
 ```markdown
 ---
-knowledge-base-summary: "Stripe'ın webhook event taxonomy'si + event'leri consumer'lara fan out etmek için kullandığımız exchange/queue topology. Idempotency event-ID seviyesinde Redis SETNX ile 7-günlük TTL üzerinden enforce edilir."
+knowledge-base-summary: "Stripe's webhook event taxonomy + the exchange/queue topology we use to fan out events to consumers. Idempotency is enforced at event-ID level via Redis SETNX with 7-day TTL."
 ---
 
 # Webhook Topology
 
-(Detaylı içerik: full schema'lar, naming convention'ları, retry behavior, ...)
+(Detaylı içerik: tüm şemalar, adlandırma sözleşmeleri, yeniden deneme davranışı, ...)
 ```
 
-Bu [Children + learnings](../guide/children-and-learnings) pattern'inin uygulamada görünüşü — parent `agent.md`'nin Knowledge Base bölümü her child dosyasının frontmatter'ından auto-rebuild edilir.
+Bu, [Children + learnings](../guide/children-and-learnings) deseninin uygulamada görünüşüdür — üst `agent.md` dosyasının Knowledge Base bölümü her çocuk dosyanın frontmatter alanından kendiliğinden yeniden inşa edilir.
 
-## Template olarak kullan
+## Şablon olarak kullan
 
-Repo GitHub Template olarak kuruldu. Kendi extension takımını bootstrap'la:
+Depo bir GitHub Şablonu olarak ayarlanmıştır. Kendi uzantı takımını başlat:
 
 ```bash
 gh repo create your-org/your-extension-team --template agentteamland/starter-extended
 ```
 
-Sonra `team.json`'u edit et:
+Ardından `team.json` dosyasını düzenle:
 
-- Farklı parent seç (`extends: design-system-team@^0.8.0`, vb.)
-- İstemediğin üyeleri çıkarmak için `excludes`'i ayarla
-- `agents/`, skills under `skills/`, rules under `rules/` altına kendi agent'larını ekle
+- Farklı bir üst takım seç (`extends: design-system-team@^0.8.0` gibi).
+- İstemediğin üyeleri kaldırmak için `excludes` listesini ayarla.
+- Kendi ajanlarını `agents/` altına, becerileri `skills/` altına, kuralları `rules/` altına ekle.
 
-Push etmeden önce lokalde validate et:
+Push'tan önce yerelde doğrula:
 
 ```bash
 ~/.claude/repos/agentteamland/core/scripts/validate-team-json.sh team.json
 ```
 
-Veya validator'ı git push'a bağla (önerilen):
+Ya da doğrulayıcıyı `git push` üzerine bağla (önerilir):
 
 ```bash
-git config core.hooksPath .githooks    # her clone başına tek seferlik (.githooks'u da kopyaladıysan)
+git config core.hooksPath .githooks    # klon başına bir kez (.githooks'u da kopyaladıysan)
 ```
 
-Validation geçtikten sonra push, tag, ve eğer short-name install istiyorsan [registry](registry-submission)'ye submit et.
+Doğrulama geçtikten sonra push'la, bir etiket aç ve kısa adla kurulum istiyorsan [kayıt defterine](registry-submission) başvur.
 
-## Ne zaman extend, ne zaman sıfırdan author
+## Genişletmek mi yoksa sıfırdan yazmak mı?
 
-Şunlarda extend et:
+Şu durumlarda genişlet:
 
-- Parent takımın mimari seçimleriyle (i18n, Mediator, Docker-first, vb.) hemfikirsen ve sadece üzerine specialty agent'lar eklemek istiyorsan
-- Update'lerin parent'tan akmasını istiyorsan — `software-project-team` v1.3.0 ship ettiğinde, extension'ın `^1.0.0` constraint gereği parent update'lerini otomatik alır
-- Küçük, odaklı codebase istiyorsan (takımının repo'su sadece delta'ları içerir)
+- Üst takımın mimari seçimleriyle (i18n, Mediator, önce Docker vb.) hemfikirsen ve sadece üstüne uzman ajanlar eklemek istiyorsan.
+- Güncellemelerin üst takımdan akmasını istiyorsan — `software-project-team` v1.3.0 sürümünü yayımladığında uzantın `^1.0.0` kısıtı gereği üst güncellemeleri kendiliğinden alır.
+- Küçük ve odaklı bir kod tabanı istiyorsan (takımının deposu yalnızca farkları içerir).
 
-Şunlarda sıfırdan author et:
+Şu durumlarda sıfırdan yaz:
 
-- Stack'in fundamental olarak farklıysa (farklı dil, farklı pattern'ler, farklı infrastructure)
-- Hiçbir miras yüzey olmadan tam kontrol istiyorsan
-- Farklı bir platform hedefliyorsan (örn. Rust service'leri için AgentTeamLand-style takım)
+- Yığının temelden farklıysa (farklı dil, farklı desenler, farklı altyapı).
+- Miras alınmış bir yüzey olmadan tam denetim istiyorsan.
+- Farklı bir platformu hedefliyorsan (örneğin Rust servisleri için AgentTeamLand tarzı bir takım).
 
-"Küçük specialty addition" case için extension dramatik şekilde daha az iş. `starter-extended` kendisi toplam ~50 satır repo — bu ".NET stack ama stripe-agent eklenmiş"in tüm maliyeti.
+"Küçük uzmanlık eklemesi" durumu için genişletmek çok daha az iştir. `starter-extended` deposu toplamda ~50 satırdır — bu, ".NET yığını ama stripe-agent eklenmiş" durumunun tüm maliyetidir.
 
 ## İlgili
 
-- [Inheritance](inheritance) — bu örneğin demonstrate ettiği mekanizma
-- [Takım oluşturma](creating-a-team) — sıfırdan path
-- [Children + learnings](../guide/children-and-learnings) — burada kullanılan agent.md / children/ layout'u
-- [Registry submission](registry-submission) — takımının kısa adını catalog'a sokma
+- [Kalıtım](inheritance) — bu örneğin gösterdiği düzenek.
+- [Bir takım yazma](creating-a-team) — sıfırdan yazma yolu.
+- [Children + learnings](../guide/children-and-learnings) — burada kullanılan `agent.md` / `children/` düzeni.
+- [Kayıt defteri başvurusu](registry-submission) — takımının kısa adını katalog'a koyma.
 
 ## Tarihçe
 
-- `v0.1.0` (2026-04-17) — inheritance demonstrate eden ilk örnek
-- `v0.2.0` (2026-05-02) — platform-wide review sırasında rescued (Phase 2.B/2.C migration uygulandı: agent.md sections kanonik schema'ya rename edildi + Knowledge Base bölümü eklendi; children dosyalarına `knowledge-base-summary` frontmatter eklendi; LICENSE + README eklendi)
+- `v0.1.0` (2026-04-17) — kalıtımı gösteren ilk örnek.
+- `v0.2.0` (2026-05-02) — platform genelindeki inceleme sırasında kurtarıldı (Phase 2.B/2.C migrasyonu uygulandı: `agent.md` bölümleri kanonik şemaya yeniden adlandırıldı + Knowledge Base bölümü eklendi; çocuk dosyalarına `knowledge-base-summary` frontmatter eklendi; LICENSE + README eklendi).

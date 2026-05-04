@@ -1,35 +1,35 @@
 # Şema
 
-`team.json` schema'sı şurada yayımlanır:
+`team.json` şeması şu konumda yayımlanır:
 
 **[`agentteamland/core/schemas/team.schema.json`](https://github.com/agentteamland/core/blob/main/schemas/team.schema.json)**
 
-**JSON Schema Draft 2020-12** izlenir.
+**JSON Schema Draft 2020-12** standardını izler.
 
-## Hızlı referans
+## Hızlı başvuru
 
-| Alan | Tip | Zorunlu | Default | Not |
+| Alan | Tür | Zorunlu | Varsayılan | Not |
 |---|---|---|---|---|
-| `schemaVersion` | integer | ✅ | — | Şu an `1`. |
-| `name` | string | ✅ | — | Küçük harf kebab-case. Registry'de benzersiz olmalı. |
-| `version` | string | ✅ | — | SemVer 2.0.0. |
-| `description` | string | ✅ | — | Tek cümlelik özet. |
-| `author` | string | — | — | `"Ad <email>"` formatı önerilir. |
-| `license` | string | — | `"MIT"` | SPDX tanımlayıcısı. |
-| `keywords` | string[] | — | `[]` | `atl search` için. |
-| `repository` | string | — | — | Git URL. |
-| `homepage` | string | — | — | Dokümantasyon / landing. |
-| `agents` | object[] | — | `[]` | Her biri: `{ name: string, description: string }`. |
-| `skills` | object[] | — | `[]` | `agents` ile aynı şekil. |
-| `rules` | object[] | — | `[]` | `agents` ile aynı şekil. |
-| `extends` | string | — | — | `"takım-adı"` veya `"takım-adı@constraint"`. |
-| `excludes` | string[] | — | `[]` | Parent item adları (düşürülecek). |
-| `dependencies` | object | — | `{}` | `"takım-adı"` → `"version-constraint"` haritası. |
-| `requires` | object | — | `{}` | `{ atl: string }` — minimum CLI versiyonu. |
+| `schemaVersion` | tam sayı | ✅ | — | Şu an `1`. |
+| `name` | dize | ✅ | — | Küçük harf kebab-case. Kayıt defterinde benzersiz olmalıdır. |
+| `version` | dize | ✅ | — | SemVer 2.0.0. |
+| `description` | dize | ✅ | — | Tek cümlelik özet. |
+| `author` | dize | — | — | `"Name <email>"` biçimi önerilir. |
+| `license` | dize | — | `"MIT"` | SPDX tanımlayıcısı. |
+| `keywords` | dize[] | — | `[]` | `atl search` için kullanılır. |
+| `repository` | dize | — | — | Git URL'si. |
+| `homepage` | dize | — | — | Belge / açılış URL'si. |
+| `agents` | nesne[] | — | `[]` | Her biri: `{ name: string, description: string }`. |
+| `skills` | nesne[] | — | `[]` | `agents` ile aynı biçim. |
+| `rules` | nesne[] | — | `[]` | `agents` ile aynı biçim. |
+| `extends` | dize | — | — | `"team-name"` ya da `"team-name@constraint"`. |
+| `excludes` | dize[] | — | `[]` | Üst takımdan düşürülecek öğe adları. |
+| `dependencies` | nesne | — | `{}` | `"team-name"` → `"version-constraint"` eşlemesi. |
+| `requires` | nesne | — | `{}` | `{ atl: string }` — en düşük CLI sürümü. |
 
-## CI'da schema kullanımı
+## CI'de şemayı kullanma
 
-Herhangi bir JSON Schema validator çalışır. [Takım oluşturma](/tr/authoring/creating-a-team) sayfasındaki `ajv-cli` GitHub Actions workflow'u tam örnek. Kısa sürüm:
+Herhangi bir JSON Şema doğrulayıcısı işe yarar. [Bir takım yazma](/tr/authoring/creating-a-team) sayfası tam bir `ajv-cli` GitHub Actions iş akışı gösterir. Kısa sürüm:
 
 ```bash
 npm install -g ajv-cli
@@ -37,9 +37,9 @@ curl -sSfL https://raw.githubusercontent.com/agentteamland/core/main/schemas/tea
 ajv -s team.schema.json -d team.json --strict=false
 ```
 
-## Editor entegrasyonu
+## Düzenleyici tümleştirmesi
 
-Editor'ün `$schema` üzerinden JSON Schema'yı destekliyorsa `team.json`'un en üstüne şunu ekle:
+Düzenleyicin `$schema` üzerinden JSON Şemasını destekliyorsa `team.json` dosyasının üstüne şunu ekle:
 
 ```json
 {
@@ -49,16 +49,16 @@ Editor'ün `$schema` üzerinden JSON Schema'yı destekliyorsa `team.json`'un en 
 }
 ```
 
-VS Code, JetBrains ve çoğu JSON editor otomatik tamamlama ve inline validation verir.
+VS Code, JetBrains ve çoğu JSON düzenleyicisi otomatik tamamlama ile satır içi doğrulama sağlar.
 
-## Schema versiyonlama
+## Şema sürümleme
 
-- **Additive değişiklikler** (yeni opsiyonel alan) → bump yok.
-- **Breaking değişiklikler** (alan sil, tip değiştir, required set sıkılaştır) → `schemaVersion` `2`'ye çıkar. CLI eski `schemaVersion` değerlerini en az iki minor CLI versiyonu boyunca kabul etmeye devam eder.
+- **Eklemeli değişiklikler** (yeni isteğe bağlı alan) → sürüm artırımı yok.
+- **Geriye uyumsuz değişiklikler** (alan silme, tür değiştirme, zorunlu kümeyi sıkılaştırma) → `schemaVersion` `2`'ye çıkar. CLI, eski `schemaVersion` değerlerini bir kullanımdan kaldırma penceresi boyunca kabul etmeye devam eder (en az iki küçük CLI sürümü).
 
-Mevcut schema `schemaVersion: 1`.
+Mevcut şema `schemaVersion: 1` durumundadır.
 
 ## İlgili
 
-- **[team.json](/tr/authoring/team-json)** — insan-odaklı, örnekli referans.
-- **[Sözlük](./glossary)** — schema terimleri.
+- **[team.json](/tr/authoring/team-json)** — örneklerle insan odaklı başvuru.
+- **[Sözlük](./glossary)** — şema boyunca kullanılan terimler.
