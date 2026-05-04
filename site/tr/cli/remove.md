@@ -5,11 +5,11 @@ Mevcut projeden bir takımı kaldır.
 ## Kullanım
 
 ```bash
-atl remove <takım>             # interactive — lokal değişiklikleri silmeden önce sorar (atl ≥ 1.0.0)
-atl remove <takım> --force     # non-interactive — onay sormayı atlar
+atl remove <team>             # etkileşimli — yerel değişiklikleri yok etmeden önce sorar (atl ≥ 1.0.0)
+atl remove <team> --force     # etkileşimsiz — onay sorusunu atlar
 ```
 
-`<takım>` takımın registry adıdır (URL değil). Yüklü adları `atl list` ile görebilirsin.
+`<team>` takımın kayıt defteri adıdır (URL değil). Kurulu adları `atl list` ile görebilirsin.
 
 ## Örnek
 
@@ -17,41 +17,41 @@ atl remove <takım> --force     # non-interactive — onay sormayı atlar
 atl remove starter-extended
 ```
 
-## Ne olur
+## Ne olur?
 
-1. Takım `.claude/.team-installs.json`'da bulunur.
-2. `.claude/agents/`, `.claude/skills/`, `.claude/rules/` altında bu takımın yüklediği her project-local copy, manifest'in per-resource SHA-256 baseline'larına bakılarak tespit edilir.
-3. **Modification check**: her resource'un mevcut SHA-256'sı install-time baseline ile karşılaştırılır. Bir resource lokal olarak modifiye edilmişse CLI `⚠ N kaynakta lokal değişiklik var` özetini basar ve onay ister. `--force` prompt'u atlar.
-4. **Manifest-driven allowlist**: yalnızca bu takımın register ettiği dosyalar silinir. `.claude/` altındaki kullanıcı-yazımı dosyalar (otomatik büyüyen `children/`, `learnings/`, custom skill'ler, journal entry'leri, wiki sayfaları dahil) **korunur** — atl ile register edilmedikleri için uninstall'dan sağ çıkarlar.
-5. `.claude/.team-installs.json` atomik (tmp + rename) olarak güncellenir.
-6. Shared cache'e **dokunulmaz**. Takımın Git clone'u tekrar kullanım için `~/.claude/repos/agentteamland/` altında kalır. Disk geri kazanmak için cache klasörünü manuel sil.
+1. Takım `.claude/.team-installs.json` içinde bulunur.
+2. Bu takımın `.claude/agents/`, `.claude/skills/`, `.claude/rules/` dizinlerine kurduğu her proje-yerel kopya, manifesto dosyasının kaynak başına SHA-256 referans hat'larına bakılarak belirlenir.
+3. **Değişiklik denetimi**: her kaynağın güncel SHA-256'sı kurulum zamanındaki referans hat ile karşılaştırılır. Herhangi bir kaynak yerel olarak değiştirilmişse CLI `⚠ N kaynakta yerel değişiklik var` özetini yazdırır ve onay ister. `--force` bu soruyu atlar.
+4. **Manifesto güdümlü izinli liste**: yalnızca bu takımın kaydettiği dosyalar silinir. `.claude/` altındaki kullanıcı tarafından yazılmış dosyalar (kendiliğinden büyüyen `children/` ve `learnings/`, özel beceriler, journal kayıtları, wiki sayfaları dahil) **korunur** — `atl` ile kaydedilmemiş oldukları için kaldırma işleminden sağ çıkarlar.
+5. `.claude/.team-installs.json` atomik biçimde (geçici dosya + yeniden adlandırma) güncellenir.
+6. Paylaşılan önbelleğe **dokunulmaz**. Takımın Git klonu yeniden kullanım için `~/.claude/repos/agentteamland/` altında kalır. Disk alanı geri kazanmak için önbellek dizinini elle sil.
 
-::: warning Inheritance kaldırma sırasında zorlanmaz
-`atl remove`, başka bir yüklü takımın `extends` yoluyla referans verdiği bir takımı kaldırmayı **reddetmez**. Bir child takım hâlâ parent'ı referans ederken parent'ı kaldırırsan, child'ın effective resource set'i bir sonraki `atl update` veya `atl list`'te tutarsız hale gelir. Önce `atl list` çalıştırıp inheritance chain'i gör — child'ları parent'lardan önce kaldır.
+::: warning Kaldırma sırasında kalıtım zorunlu kılınmaz
+`atl remove`, kurulu başka bir takımın `extends` ile başvurduğu bir takımı kaldırmayı reddetmez. Bir alt takım hâlâ üst takıma başvuruyorken üst takımı kaldırırsan, alt takımın etkin kaynak kümesi bir sonraki `atl update` ya da `atl list`'te tutarsız hâle gelir. Önce `atl list` ile kalıtım zincirine bak — alt takımları üst takımlardan önce kaldır.
 :::
 
 ## Bayraklar
 
-| Bayrak | Etki |
+| Bayrak | Etkisi |
 |---|---|
-| `--force` | Lokal modifikasyonu olan projeler için modification-check onay prompt'unu atla. CI / scripted teardown için kullanışlı. |
+| `--force` | Yerel değişiklikleri olan projeler için değişiklik-denetimi onay sorusunu atlar. CI ya da betikli sökme işleri için kullanışlıdır. |
 
-## Örnek — CI'da zorla kaldırma
+## Örnek — CI'da zorlu kaldırma
 
 ```bash
 atl remove software-project-team --force
 ```
 
-`--force`'u non-interactive bağlamlar (CI, scripted teardown) için kullan. Interactive kullanımda default'u tercih et — prompt seni saatlerce `/save-learnings`'le büyümüş içeriği veya elle düzenlemeleri yanlışlıkla silmekten korur.
+`--force`'u etkileşimsiz bağlamlarda (CI, betikle sökme) kullan. Etkileşimli kullanımda varsayılanı tercih et — soru seni, `/save-learnings` ile saatlerce büyütülmüş içeriği ya da elle yapılmış düzenlemeleri kazara atmaktan korur.
 
-## v1.0.0-öncesinden davranış değişiklikleri
+## v1.0.0 öncesinden bu yana davranış değişiklikleri
 
-`atl v1.0.0`'dan önce `atl remove` heuristik kullanırdı ve takımın resource'larıyla birlikte kullanıcı-yazımı dosyaları yanlışlıkla silebilirdi. v1.0.0 manifest-driven allowlist o latent bug'ı kapattı — silinen her dosya takımın açıkça yüklediği bir dosya.
+`atl v1.0.0` öncesinde `atl remove` bir sezgisel yöntem kullanırdı ve takımın kaynaklarıyla birlikte kullanıcı tarafından yazılmış dosyaları kazara silebiliyordu. v1.0.0'daki manifesto güdümlü izinli liste, bu örtük hatayı kapattı — silinen her dosya, takımın açıkça kurduğu bir dosyadır.
 
-Interactive onay prompt'u + `--force` bayrağı da v1.0.0'da geldi (öncesinde koşulsuz destructive idi).
+Etkileşimli onay sorusu ve `--force` bayrağı da v1.0.0 ile geldi (öncesinde koşulsuz biçimde yıkıcıydı).
 
 ## İlgili
 
-- [`atl list`](/tr/cli/list) — neyi kaldırabilirsin gör.
-- [`atl install`](/tr/cli/install) — fikir değişirse yeniden yükle.
-- [`atl update`](/tr/cli/update) — modifiye edilmemiş kopyaları otomatik refresh eder; `--force` remove olup olmayacağına karar verirken alaka.
+- [`atl list`](/tr/cli/list) — neyi kaldırabileceğini gör.
+- [`atl install`](/tr/cli/install) — fikrini değiştirirsen yeniden kur.
+- [`atl update`](/tr/cli/update) — değiştirilmemiş kopyaları kendiliğinden yeniler; `--force` ile kaldırıp kaldırmamaya karar verirken bilmen gereken bir şey (bir süredir dokunmadığın bir kopyanın değiştirilmemiş olduğunu fark etmeyebilirsin).

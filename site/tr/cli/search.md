@@ -1,14 +1,14 @@
 # `atl search`
 
-Herkese açık registry'de arama yapar.
+Herkese açık kayıt defterinde arama yapar.
 
 ## Kullanım
 
 ```bash
-atl search <sorgu>
+atl search <query>
 ```
 
-`<sorgu>`; takımın adı, açıklaması ve anahtar kelimeleriyle eşleşir. Büyük/küçük duyarlılığı yok, substring bazlı; regex değil.
+`<query>`, takım adlarına, açıklamalara ve anahtar sözcüklere karşı eşleşir. Büyük-küçük harf duyarsızdır ve alt-dize tabanlıdır; düzenli ifade değildir.
 
 ## Örnek
 
@@ -20,34 +20,34 @@ atl search dotnet
 Found 1 team(s) matching "dotnet":
 
   software-project-team@1.2.1 [verified]
-    .NET 9 API + Flutter + React + tam Docker stack
+    .NET 9 API + Flutter + React + full Docker stack
     https://github.com/agentteamland/software-project-team
     keywords: dotnet, csharp, flutter, react
 ```
 
-Durum etiketleri (`name@version` sonrası köşeli parantezde):
+Durum rozetleri (`name@version` sonrasındaki köşeli parantez içinde):
 
-- **`[verified]`** — AgentTeamLand bakımcıları tarafından incelendi. Temiz kurulması ve konvansiyonlara uyması beklenir.
-- **`[community]`** — registry'de listeli, henüz incelenmemiş. Çalışır, ama riski sana ait.
-- **`[deprecated]`** — hâlâ kurulabilir ama artık bakılmıyor. Uygun zamanda göç et.
+- **`[verified]`** — AgentTeamLand bakımcıları tarafından incelenmiştir. Temiz kurulup sözleşmelere uyması beklenir.
+- **`[community]`** — kayıt defterinde listelidir, henüz incelenmemiştir. Çalışır, ama kullanım riski sana aittir.
+- **`[deprecated]`** — hâlâ kurulabilir ama artık bakım görmemektedir. Uygun olduğunda başkasına geç.
 
-## Sorgu zorunlu
+## Sorgu zorunludur
 
-`atl search` tam olarak bir positional argüman ister. Sorgu vermeden çalıştırmak usage hatası ile çıkar — tüm katalog için [GitHub'daki registry'ye](https://github.com/agentteamland/registry/blob/main/teams.json) bak veya `atl search team` gibi geniş bir keyword kullan.
+`atl search` tam olarak bir konumsal argüman ister. Sorgu vermeden çalıştırmak kullanım hatasıyla çıkar — kataloğun tamamına göz atmak için [GitHub'daki kayıt defterine](https://github.com/agentteamland/registry/blob/main/teams.json) bak ya da `atl search team` gibi geniş bir anahtar sözcük kullan.
 
 ## Çevrimdışı davranış
 
-İlk çekimden sonra registry yerel olarak önbelleğe alınır. `atl search` çevrimdışı da çalışır; sonuçların bayat olabileceğini açıkça yazar.
+Kayıt defteri ilk çekimden sonra yerelde önbelleklenir. `atl search` önbelleklenmiş kopyayı kullanarak çevrimdışı çalışır; sonuçların bayat olabileceğini sana belirten bir not yazdırır.
 
 ## Sonuç yok mu?
 
-Registry PR ile yönetilen genç bir yapı — domain'in henüz kapsanmamış olabilir. Seçenekler:
+Kayıt defteri PR güdümlü ve gençtir — alanın henüz kapsanmıyorsa büyük olasılıkla bu yalnızca "henüz değil" demektir. Seçenekler:
 
-- Git URL'yi doğrudan kullan: `atl install https://github.com/sen/takimin.git`
-- Kendi takımını yayınla: [Takım oluşturma](/tr/authoring/creating-a-team)
-- Registry'ye gönder: [Registry başvurusu](/tr/authoring/registry-submission)
+- Bir Git URL'sini doğrudan kullan: `atl install https://github.com/you/your-team.git`.
+- Kendi takımını yayımla: [Bir takım yazma](/tr/authoring/creating-a-team).
+- Kayıt defterine gönder: [Kayıt defteri başvurusu](/tr/authoring/registry-submission).
 
 ## İlgili
 
-- [`atl install`](/tr/cli/install) — bulduğun takımı kur.
-- [Registry başvurusu](/tr/authoring/registry-submission) — takımını listele.
+- [`atl install`](/tr/cli/install) — bulduğunu kur.
+- [Kayıt defteri başvurusu](/tr/authoring/registry-submission) — takımını listele.
