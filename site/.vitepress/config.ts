@@ -70,6 +70,12 @@ export default defineConfig({
               ]
             },
             {
+              text: 'Configuration',
+              items: [
+                { text: 'atl config', link: '/guide/configuration' }
+              ]
+            },
+            {
               text: 'Operations',
               items: [
                 { text: 'Governance', link: '/guide/governance' }
@@ -194,6 +200,12 @@ export default defineConfig({
                 { text: 'Children + learnings', link: '/tr/guide/children-and-learnings' },
                 { text: 'Learning marker lifecycle', link: '/tr/guide/learning-marker-lifecycle' },
                 { text: 'Claude Code conventions', link: '/tr/guide/claude-code-conventions' }
+              ]
+            },
+            {
+              text: 'Yapılandırma',
+              items: [
+                { text: 'atl config', link: '/tr/guide/configuration' }
               ]
             },
             {
