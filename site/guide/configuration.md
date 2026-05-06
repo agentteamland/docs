@@ -135,4 +135,4 @@ The on-disk file format is versioned via the required `schemaVersion` field (cur
 
 ## Decision context
 
-The two-surface split, the keystone test that defines what counts as config (vs rule, vs hardcode), and the migration mechanics were settled in the [`atl-config-system`](https://github.com/agentteamland/workspace/blob/main/.claude/docs/atl-config-system.md) brainstorm. The keystone test in one sentence: *if two users configured this differently, would they still be using the same atl?* — yes for config, no for rule.
+The two-surface split, the keystone test that defines what counts as config (vs rule, vs hardcode), and the migration mechanics were settled in the [`atl-config-system`](https://github.com/agentteamland/workspace/blob/main/.atl/docs/atl-config-system.md) brainstorm. The keystone test in one sentence: *if two users configured this differently, would they still be using the same atl?* — yes for config, no for rule.

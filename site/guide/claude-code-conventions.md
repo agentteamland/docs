@@ -8,7 +8,7 @@ You can use the same pattern in your own `CLAUDE.md` files. The blocks are just 
 
 | Block | Written by | Purpose |
 |---|---|---|
-| `<!-- wiki:index -->` | [`/save-learnings`](/skills/save-learnings) | Auto-rebuilt table of contents for `.claude/wiki/` pages. Loads with project context, gives Claude the knowledge map at zero cost. |
+| `<!-- wiki:index -->` | [`/save-learnings`](/skills/save-learnings) | Auto-rebuilt table of contents for `.atl/wiki/` pages. Loads with project context, gives Claude the knowledge map at zero cost. |
 | `<!-- brainstorm:active -->` | [`/brainstorm start`](/skills/brainstorm) and [`/brainstorm done`](/skills/brainstorm) | Pins active brainstorm topics into project context so the next session cannot miss them. |
 | `<!-- pending-implementation -->` | Brainstorm `done` flow | Reminds the next session that a brainstorm decided X but the implementation hasn't shipped yet. |
 
@@ -16,25 +16,25 @@ All three use the same `<!-- block:start --> ... <!-- block:end -->` delimiter p
 
 ## `<!-- wiki:index -->` — knowledge map
 
-Auto-rebuilt by `/save-learnings` after every change to `.claude/wiki/`. Lives near the top of `CLAUDE.md`, after the H1 + intro:
+Auto-rebuilt by `/save-learnings` after every change to `.atl/wiki/`. Lives near the top of `CLAUDE.md`, after the H1 + intro:
 
 ```markdown
 <!-- wiki:index:start -->
 ## 📚 Knowledge map
 
-Knowledge lives in `.claude/wiki/` (current truth, topic-organized) and `.claude/journal/` (historical record, date-based). Before working on a topic, scan this list — if a page looks relevant, read it before deciding.
+Knowledge lives in `.atl/wiki/` (current truth, topic-organized) and `.atl/journal/` (historical record, date-based). Before working on a topic, scan this list — if a page looks relevant, read it before deciding.
 
 **Wiki topics:**
-- [docs-audit-false-positive-rate](.claude/wiki/docs-audit-false-positive-rate.md) — ~40% of multi-agent docs-drift audit reports include hallucinated findings
-- [pr-merge-discipline](.claude/wiki/pr-merge-discipline.md) — never `gh pr merge` from Claude; surface URL and stop
-- [save-learnings-timing](.claude/wiki/save-learnings-timing.md) — run before PR creation as feature branch's last commit
+- [docs-audit-false-positive-rate](.atl/wiki/docs-audit-false-positive-rate.md) — ~40% of multi-agent docs-drift audit reports include hallucinated findings
+- [pr-merge-discipline](.atl/wiki/pr-merge-discipline.md) — never `gh pr merge` from Claude; surface URL and stop
+- [save-learnings-timing](.atl/wiki/save-learnings-timing.md) — run before PR creation as feature branch's last commit
 - ...
 
 **Discipline:** Before working on a topic, scan this list. If a topic looks relevant, read the page.
 <!-- wiki:index:end -->
 ```
 
-Each entry is one line: `- [topic](.claude/wiki/topic.md) — one-line summary` (sorted alphabetically by filename). The summary comes from the first non-frontmatter, non-heading line of each wiki page.
+Each entry is one line: `- [topic](.atl/wiki/topic.md) — one-line summary` (sorted alphabetically by filename). The summary comes from the first non-frontmatter, non-heading line of each wiki page.
 
 **Why it's a marker block, not just a normal section:** the block is rebuilt programmatically. Hand-edits inside the markers are overwritten on the next `/save-learnings` run. To add a topic: don't edit `CLAUDE.md` directly — create the wiki page with the topic title, then `/save-learnings` rebuilds the index.
 
@@ -48,13 +48,13 @@ Written by `/brainstorm start`, removed by `/brainstorm done`. Lives near the to
 
 These topics have an in-progress brainstorm — read the file before making any decision on them.
 
-- **[docs-sync-automation](.claude/brain-storms/docs-sync-automation.md)** (project, 2026-05-03) — closing the README + docs-site drift gap; save-learnings extension vs. /docs-sync skill vs. doc-agent
+- **[docs-sync-automation](.atl/brain-storms/docs-sync-automation.md)** (project, 2026-05-03) — closing the README + docs-site drift gap; save-learnings extension vs. /docs-sync skill vs. doc-agent
 <!-- brainstorm:active:end -->
 ```
 
 Multiple active brainstorms coexist as bullets in the same block. The `done` flow removes only the bullet for the brainstorm being completed; if the bullet list becomes empty, the entire block is removed (no stale "Active brainstorms" heading lingers).
 
-**Why this convention exists:** the brainstorm rule's "scan `.claude/brain-storms/` for `status: active` files" step depended on Claude remembering to do it on every session start. Pinning the active brainstorm into `CLAUDE.md` makes it auto-load — impossible to miss. The directory scan is now a redundancy mechanism, not the primary signal.
+**Why this convention exists:** the brainstorm rule's "scan `.atl/brain-storms/` for `status: active` files" step depended on Claude remembering to do it on every session start. Pinning the active brainstorm into `CLAUDE.md` makes it auto-load — impossible to miss. The directory scan is now a redundancy mechanism, not the primary signal.
 
 Shipped in `brainstorm@1.1.0`.
 
@@ -68,13 +68,13 @@ Written when a brainstorm's `done` flow decides on a change that hasn't been imp
 
 Brainstorms have decided these but the work hasn't shipped yet:
 
-- **[install-mechanism-redesign](.claude/docs/install-mechanism-redesign.md)** — symlink → project-local copy migration. Atomic write helper + auto-refresh logic queued for `atl v1.0.0`.
+- **[install-mechanism-redesign](.atl/docs/install-mechanism-redesign.md)** — symlink → project-local copy migration. Atomic write helper + auto-refresh logic queued for `atl v1.0.0`.
 <!-- pending-implementation:end -->
 ```
 
 Removed when the implementation lands (typically by the PR that ships the change).
 
-**Why this matters:** without the reminder, completed brainstorms can sit in `.claude/docs/` for weeks while the implementation gets queued behind other work. The pin keeps the queue visible.
+**Why this matters:** without the reminder, completed brainstorms can sit in `.atl/docs/` for weeks while the implementation gets queued behind other work. The pin keeps the queue visible.
 
 ## Where the blocks live
 

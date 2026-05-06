@@ -33,7 +33,7 @@ Same as [`/rule`](/skills/rule#three-scopes): project (default), `--global`, `--
 **Before** asking anything, read:
 
 - `.claude/rules/coding-common.md`
-- All `.md` files under `.claude/docs/coding-standards/` (dynamically listed)
+- All `.md` files under `.atl/docs/coding-standards/` (dynamically listed)
 
 Purpose:
 
@@ -81,7 +81,7 @@ For each rule, clarify (via Q&A):
 
 (Skipped if `--global` or `--team` is set.)
 
-Sub-question if project scope is selected: which application? (dynamically lists existing `.claude/docs/coding-standards/{app}.md` files + a "common" option).
+Sub-question if project scope is selected: which application? (dynamically lists existing `.atl/docs/coding-standards/{app}.md` files + a "common" option).
 
 Sub-question if team scope is selected: which agent's knowledge base? (lists installed-team agents + "team-wide rule" option).
 

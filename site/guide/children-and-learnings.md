@@ -155,4 +155,4 @@ Without a blueprint, the agent guesses how to create new units. With a blueprint
 ## History
 
 - `core@1.0.0`: agent children pattern introduced. Knowledge Base section was hand-maintained.
-- `core@1.8.0`: Q3 of [self-updating-learning-loop](https://github.com/agentteamland/workspace/blob/main/.claude/docs/self-updating-learning-loop.md) extends children pattern to skills (`learnings/` mirror of `children/`). Knowledge Base + Accumulated Learnings sections become auto-rebuild from frontmatter. C-layer onay gate for identity / core changes formalized as part of the rule. Renamed from "Agent Configuration Rules" to "Agent + skill structure rules" to reflect the broader scope.
+- `core@1.8.0`: Q3 of [self-updating-learning-loop](https://github.com/agentteamland/workspace/blob/main/.atl/docs/self-updating-learning-loop.md) extends children pattern to skills (`learnings/` mirror of `children/`). Knowledge Base + Accumulated Learnings sections become auto-rebuild from frontmatter. C-layer onay gate for identity / core changes formalized as part of the rule. Renamed from "Agent Configuration Rules" to "Agent + skill structure rules" to reflect the broader scope.

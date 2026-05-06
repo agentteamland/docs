@@ -9,7 +9,7 @@ Global beceri olarak [core](https://github.com/agentteamland/core) içinde yayı
 ## Wiki nerede yaşar?
 
 ```
-.claude/wiki/
+.atl/wiki/
 ├── index.md                ← Kendiliğinden bakım gören içindekiler tablosu
 ├── {topic-1}.md            ← Bilgi sayfaları (kebab-case, sayfa başına tek kavram)
 ├── {topic-2}.md
@@ -26,9 +26,9 @@ Sayfalar projenin kök `CLAUDE.md` dosyasında bir `<!-- wiki:index -->` işaret
 /wiki init
 ```
 
-`.claude/wiki/` dizinini ve bir `index.md` şablonunu oluşturur. İdempotent — zaten kurulmuş bir wiki üzerinde yeniden çalıştırmak işlem yapmaz (`wiki: already initialized (N pages)`).
+`.atl/wiki/` dizinini ve bir `index.md` şablonunu oluşturur. İdempotent — zaten kurulmuş bir wiki üzerinde yeniden çalıştırmak işlem yapmaz (`wiki: already initialized (N pages)`).
 
-`init`, `atl setup-hooks` yapılandırılmış ama henüz `.claude/wiki/` dizini olmayan bir projenin ilk oturumunda kendiliğinden de tetiklenir.
+`init`, `atl setup-hooks` yapılandırılmış ama henüz `.atl/wiki/` dizini olmayan bir projenin ilk oturumunda kendiliğinden de tetiklenir.
 
 ### `ingest` — proje kaynaklarındaki bilgiyi wiki sayfalarına çek
 
@@ -41,9 +41,9 @@ Her proje bilgi kaynağını tarar ve wiki sayfalarını günceller:
 | Kaynak | Önemi |
 |---|---|
 | Mevcut oturum transkriptindeki `<!-- learning -->` işaretçileri | Birincil kaynak — canlı konuşma bilgisi. |
-| `.claude/journal/*.md` | Ajan başına ve tarih başına öğrenme kaydı (Q4 sonrası tek katman). |
-| `.claude/docs/*.md` | Tamamlanmış beyin fırtınalarından gelen yerleşmiş karar belgeleri. |
-| `.claude/brain-storms/*.md` (yalnızca `status: completed` olanlar) | Karar bağlamı. |
+| `.atl/journal/*.md` | Ajan başına ve tarih başına öğrenme kaydı (Q4 sonrası tek katman). |
+| `.atl/docs/*.md` | Tamamlanmış beyin fırtınalarından gelen yerleşmiş karar belgeleri. |
+| `.atl/brain-storms/*.md` (yalnızca `status: completed` olanlar) | Karar bağlamı. |
 | Yakın konuşma bağlamı | Az önce ne tartışıldı / ne inşa edildi. |
 
 Her bilgi parçası için: konuyu belirler, wiki sayfasını bulur ya da oluşturur, **çelişkileri çözerek yeni bilgiyi birleştirir**, çapraz başvuruları ve `index.md` dosyasını günceller.

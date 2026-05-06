@@ -56,8 +56,8 @@ Each learning's *shape* determines where it lands. The categorization happens au
 
 | Surface | What changes | Format |
 |---|---|---|
-| `.claude/journal/{YYYY-MM-DD}_{agent}.md` | One entry per agent per date. Append-on-existing, dedup by hash. | Frontmatter (`date`, `agent`, `tags`) + `## Summary` + `## Learnings` + `## Auto-Created` + `## User-Approved Structural Changes` + `## Notes for Other Agents`. |
-| `.claude/wiki/{topic}.md` | Replace-style update for current truth. New page from template if topic is fresh. | Standard wiki page format (Last updated / Current state / Sources). |
+| `.atl/journal/{YYYY-MM-DD}_{agent}.md` | One entry per agent per date. Append-on-existing, dedup by hash. | Frontmatter (`date`, `agent`, `tags`) + `## Summary` + `## Learnings` + `## Auto-Created` + `## User-Approved Structural Changes` + `## Notes for Other Agents`. |
+| `.atl/wiki/{topic}.md` | Replace-style update for current truth. New page from template if topic is fresh. | Standard wiki page format (Last updated / Current state / Sources). |
 | `CLAUDE.md` | Rebuilds the `<!-- wiki:index -->` marker block from the current set of wiki pages. | Sorted by filename; one-line summary per page. |
 | Agent `children/{topic}.md` | Append-or-create with required `knowledge-base-summary` frontmatter. | Frontmatter + body. |
 | Agent `agent.md` Knowledge Base section | Auto-rebuilt from each child file's `knowledge-base-summary` frontmatter. Hand-edits to this section are overwritten. | Same shape as the auto-rebuilt block — see [agent-structure rule](https://github.com/agentteamland/core/blob/main/rules/agent-structure.md). |

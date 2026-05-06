@@ -12,8 +12,8 @@ A brainstorm lives at one of three levels — pick the scope that matches *who* 
 
 | Flag | Target directory | When |
 |---|---|---|
-| *(none)* | `.claude/brain-storms/` | Project-specific topics (default) |
-| `--global` | `~/.claude/brain-storms/` | Cross-project, personal topics |
+| *(none)* | `.atl/brain-storms/` | Project-specific topics (default) |
+| `--global` | `~/.atl/brain-storms/` | Cross-project, personal topics |
 | `--team` | `~/.claude/repos/agentteamland/{team}/brain-storms/` | Topics related to the team repo (agent rules, team strategy, contributor governance) |
 
 For `--team`, the active team is detected from installed `.claude/agents/` symlinks. Single team → used automatically; multiple teams → the skill asks via `AskUserQuestion`; no team installed → error with a `/team install` hint.
@@ -43,7 +43,7 @@ Every active brainstorm pins itself into the scope's `CLAUDE.md` (or team `READM
 
 These topics have an in-progress brainstorm — read the file before making any decision on them.
 
-- **[docs-sync-automation](.claude/brain-storms/docs-sync-automation.md)** (project, 2026-05-03) — closing the README + docs-site drift gap
+- **[docs-sync-automation](.atl/brain-storms/docs-sync-automation.md)** (project, 2026-05-03) — closing the README + docs-site drift gap
 <!-- brainstorm:active:end -->
 ```
 
@@ -66,11 +66,11 @@ The file must be **detailed enough** that a Claude reading it in a new context c
 
 Flow:
 
-1. **Find the active brainstorm.** Searches all three scopes (`.claude/brain-storms/`, `~/.claude/brain-storms/`, `~/.claude/repos/agentteamland/*/brain-storms/`). If multiple, lists them with their scope and asks which to complete.
+1. **Find the active brainstorm.** Searches all three scopes (`.atl/brain-storms/`, `~/.atl/brain-storms/`, `~/.claude/repos/agentteamland/*/brain-storms/`). If multiple, lists them with their scope and asks which to complete.
 2. **Complete the brainstorm file.** `status: active` → `status: completed`. Append final notes. Update Open Items (unresolved ones remain). Add a Final Decisions section.
 3. **Create or update the docs file.** Settled decisions go to:
-   - **Project brainstorm** → `.claude/docs/`
-   - **Global brainstorm** → `~/.claude/docs/`
+   - **Project brainstorm** → `.atl/docs/`
+   - **Global brainstorm** → `~/.atl/docs/`
    - **Team brainstorm** → `~/.claude/repos/agentteamland/{team}/docs/`
 4. **Update CLAUDE.md / README.** Two things happen:
    - Append the completed-brainstorm summary to the appropriate section
@@ -93,7 +93,7 @@ brain-storms/ (process) → docs/ (outcome) → CLAUDE.md (summary)
 
 ## Backlog discipline
 
-Every item marked "not doing now, later" during a brainstorm is reflected in `.claude/backlog.md`:
+Every item marked "not doing now, later" during a brainstorm is reflected in `.atl/backlog.md`:
 
 - **Prepend** (newest on top)
 - For each item: date + category heading + context link + detailed topic description + "when does this come up" note + related resources

@@ -78,7 +78,7 @@ After `/dst-init`, your project gets:
 | `/dst-delete-prototype <name>` | Remove a prototype |
 | `/dst-open` | Open `.dst/index.html` in default browser |
 | `/dst-handoff <prototype> [--target …]` | Bundle prototype + DS + assets, brief flutter-agent / react-agent to integrate into source code |
-| `/dst-questions [init\|sync\|add\|resolve\|list]` | Maintain `.claude/wiki/open-questions.md` (questions blocking screen work); auto-pin active list into `CLAUDE.md` |
+| `/dst-questions [init\|sync\|add\|resolve\|list]` | Maintain `.atl/wiki/open-questions.md` (questions blocking screen work); auto-pin active list into `CLAUDE.md` |
 
 ## Why it exists
 

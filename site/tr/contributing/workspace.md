@@ -80,8 +80,8 @@ Claude Code burada başladığında kendiliğinden şunları görür:
 - **`./repos/` altındaki her eş depo** doğrudan düzenleme için — ayrı `cd` gerekmez.
 - **Tüm etkin beyin fırtınaları** ([brainstorm kuralı](https://github.com/agentteamland/brainstorm/blob/main/rules/brainstorm.md) gereği `CLAUDE.md`'ye kendiliğinden sabitlenmiş).
 - **Çalışma alanının `CLAUDE.md` dosyası** — platform düzeyinde yönlendirme belgesi.
-- **Yerleşmiş kararlar** `.claude/docs/` altında (tamamlanmış beyin fırtınalarından türeyen mimari kararlar).
-- **Wiki + journal** — `.claude/wiki/` ve `.claude/journal/` içinde ([bilgi sistemi](../guide/knowledge-system) gereği).
+- **Yerleşmiş kararlar** `.atl/docs/` altında (tamamlanmış beyin fırtınalarından türeyen mimari kararlar).
+- **Wiki + journal** — `.atl/wiki/` ve `.atl/journal/` içinde ([bilgi sistemi](../guide/knowledge-system) gereği).
 
 Bu, depolar arası iş için doğal kurulumdur: Claude'un çalışma kümesi tüm organizasyondur.
 
@@ -89,7 +89,7 @@ Bu, depolar arası iş için doğal kurulumdur: Claude'un çalışma kümesi tü
 
 Çalışma alanının `CLAUDE.md` dosyası, her wiki sayfasının başlığını ve özetini Claude'un bağlamına kendiliğinden yükleyen bir `<!-- wiki:index -->` işaretçi bloğu taşır. İşaretçi bloğunun nasıl çalıştığı ve neden var olduğu için bkz. [Claude Code sözleşmeleri](../guide/claude-code-conventions).
 
-Wiki'nin kendisi (`.claude/wiki/*.md`), bakımcının depolar arası endişeler üzerinde çalışırken elinin altında bulundurması gereken platform genelindeki desenler, sözleşmeler, keşifler ve kötü desenlerin kanonik kaydıdır. Sayfalar güncel tutulur — [bilgi sistemi](../guide/knowledge-system), güncel doğru için yerine yazma biçimli, geçmiş için yalnızca eklemeli journal kullanır.
+Wiki'nin kendisi (`.atl/wiki/*.md`), bakımcının depolar arası endişeler üzerinde çalışırken elinin altında bulundurması gereken platform genelindeki desenler, sözleşmeler, keşifler ve kötü desenlerin kanonik kaydıdır. Sayfalar güncel tutulur — [bilgi sistemi](../guide/knowledge-system), güncel doğru için yerine yazma biçimli, geçmiş için yalnızca eklemeli journal kullanır.
 
 ## Oturum sonu
 

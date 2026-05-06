@@ -56,8 +56,8 @@ Her öğrenmenin *biçimi* nereye ineceğini belirler. Sınıflandırma, işaret
 
 | Yüzey | Ne değişir | Biçim |
 |---|---|---|
-| `.claude/journal/{YYYY-MM-DD}_{agent}.md` | Ajan ve tarih başına bir kayıt. Mevcuda eklenir, hash ile yinelenenler ayıklanır. | Frontmatter (`date`, `agent`, `tags`) + `## Summary` + `## Learnings` + `## Auto-Created` + `## User-Approved Structural Changes` + `## Notes for Other Agents`. |
-| `.claude/wiki/{topic}.md` | Güncel doğru için yerine yazma biçimli güncelleme. Konu yepyeniyse şablondan yeni sayfa. | Standart wiki sayfa biçimi (Last updated / Current state / Sources). |
+| `.atl/journal/{YYYY-MM-DD}_{agent}.md` | Ajan ve tarih başına bir kayıt. Mevcuda eklenir, hash ile yinelenenler ayıklanır. | Frontmatter (`date`, `agent`, `tags`) + `## Summary` + `## Learnings` + `## Auto-Created` + `## User-Approved Structural Changes` + `## Notes for Other Agents`. |
+| `.atl/wiki/{topic}.md` | Güncel doğru için yerine yazma biçimli güncelleme. Konu yepyeniyse şablondan yeni sayfa. | Standart wiki sayfa biçimi (Last updated / Current state / Sources). |
 | `CLAUDE.md` | `<!-- wiki:index -->` işaretçi bloğunu mevcut wiki sayfa kümesinden yeniden inşa eder. | Dosya adına göre sıralı; sayfa başına tek satırlık özet. |
 | Ajan `children/{topic}.md` | Zorunlu `knowledge-base-summary` frontmatter alanıyla ekleme veya oluşturma. | Frontmatter + gövde. |
 | Ajan `agent.md` Knowledge Base bölümü | Her çocuk dosyanın `knowledge-base-summary` frontmatter alanından kendiliğinden yeniden inşa. Bu bölüme yapılan elle düzenlemeler üzerine yazılır. | Yeniden inşa edilen blokla aynı şekil — bkz. [agent-structure kuralı](https://github.com/agentteamland/core/blob/main/rules/agent-structure.md). |

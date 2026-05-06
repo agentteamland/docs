@@ -33,7 +33,7 @@ From the user's natural-language statement, extract:
 | Applicability | File |
 |---|---|
 | Common to all applications | `.claude/rules/coding-common.md` |
-| A specific application | `.claude/docs/coding-standards/{app}.md` (selected from existing files) |
+| A specific application | `.atl/docs/coding-standards/{app}.md` (selected from existing files) |
 
 **Global scope (`--global`):**
 

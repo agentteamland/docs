@@ -4,14 +4,14 @@ How knowledge is organized in an `atl`-using project. Two layers: **journal** (d
 
 The canonical rule lives at [`core/rules/knowledge-system.md`](https://github.com/agentteamland/core/blob/main/rules/knowledge-system.md). This page is the user-facing summary.
 
-(Renamed from `memory-system` in `core@1.8.0` to reflect the post-Q4 reality: there is no separate "memory" layer anymore. The two date-based layers — agent memory + journal — were merged into a single `journal/` layer in [self-updating-learning-loop](https://github.com/agentteamland/workspace/blob/main/.claude/docs/self-updating-learning-loop.md) Q4. The previous file name was misleading.)
+(Renamed from `memory-system` in `core@1.8.0` to reflect the post-Q4 reality: there is no separate "memory" layer anymore. The two date-based layers — agent memory + journal — were merged into a single `journal/` layer in [self-updating-learning-loop](https://github.com/agentteamland/workspace/blob/main/.atl/docs/self-updating-learning-loop.md) Q4. The previous file name was misleading.)
 
 ## The two layers at a glance
 
 | Layer | Location | Purpose | Update style |
 |---|---|---|---|
-| **Journal** | `.claude/journal/{YYYY-MM-DD}_{agent}.md` | Date-based historical record. Per-agent learning history AND inter-agent signals (the two layers were merged in Q4 — they were redundant in practice). | Append-only |
-| **Wiki** | `.claude/wiki/{topic}.md` | Topic-based current truth. Reflects what is true NOW; old facts are replaced, not appended. | Replace / update |
+| **Journal** | `.atl/journal/{YYYY-MM-DD}_{agent}.md` | Date-based historical record. Per-agent learning history AND inter-agent signals (the two layers were merged in Q4 — they were redundant in practice). | Append-only |
+| **Wiki** | `.atl/wiki/{topic}.md` | Topic-based current truth. Reflects what is true NOW; old facts are replaced, not appended. | Replace / update |
 
 Different paradigms, different purposes:
 
@@ -34,11 +34,11 @@ What goes here:
 Rules:
 
 - **Append-only.** Existing entries are not edited; new entries go at the end.
-- **Idempotency:** when [`/save-learnings`](/skills/save-learnings) writes a journal bullet, it hashes `(kind + topic + body)` and skips duplicates already in this file or any same-date `.claude/journal/*.md`.
+- **Idempotency:** when [`/save-learnings`](/skills/save-learnings) writes a journal bullet, it hashes `(kind + topic + body)` and skips duplicates already in this file or any same-date `.atl/journal/*.md`.
 - **Never deleted** (historical record).
 - **`*.local.md` filename pattern is gitignored** — use it for genuinely private content (uncommon).
 
-The journal layer is what `.claude/agent-memory/` USED to be (per-agent history) PLUS what the original journal layer was (cross-agent signals). Q4 of self-updating-learning-loop merged them because in practice the two layers had identical format (date + agent + narrative) and frequently cited each other anyway.
+The journal layer is what `.atl/agent-memory/` USED to be (per-agent history) PLUS what the original journal layer was (cross-agent signals). Q4 of self-updating-learning-loop merged them because in practice the two layers had identical format (date + agent + narrative) and frequently cited each other anyway.
 
 ## Wiki — replace, current truth only
 
@@ -53,8 +53,8 @@ Rules:
 - **Pages reflect what is true NOW** — old info is replaced, not appended
 - **Cross-referenced:** related pages link to each other
 - **`index.md` auto-maintained** as table of contents
-- **A `<!-- wiki:index -->` marker block** at the top of `CLAUDE.md` auto-aggregates the topic list (per [self-updating-learning-loop Q5](https://github.com/agentteamland/workspace/blob/main/.claude/docs/self-updating-learning-loop.md))
-- **Bootstrap:** run [`/wiki init`](/skills/wiki) in a project without `.claude/wiki/` to scaffold it
+- **A `<!-- wiki:index -->` marker block** at the top of `CLAUDE.md` auto-aggregates the topic list (per [self-updating-learning-loop Q5](https://github.com/agentteamland/workspace/blob/main/.atl/docs/self-updating-learning-loop.md))
+- **Bootstrap:** run [`/wiki init`](/skills/wiki) in a project without `.atl/wiki/` to scaffold it
 - **Lint** with [`/wiki lint`](/skills/wiki) periodically
 
 ## Agent startup routine
@@ -62,9 +62,9 @@ Rules:
 At the start of every conversation, the agent reads (when applicable):
 
 1. **Its own agent file** — from team, via project-local copy. The `agent.md` ships with a Knowledge Base section auto-aggregated from `children/*.md` frontmatter (per [Children + learnings](/guide/children-and-learnings)).
-2. **`CLAUDE.md` `<!-- wiki:index -->` block** — auto-loaded; gives the knowledge map at zero cost. Agents discover relevant wiki pages from this list rather than scanning `.claude/wiki/` directly.
-3. **Recent journal entries** when the task overlaps with prior work — `.claude/journal/` (last few entries are usually enough).
-4. **Project-specific rules** at `.claude/docs/coding-standards/{app}.md` if present.
+2. **`CLAUDE.md` `<!-- wiki:index -->` block** — auto-loaded; gives the knowledge map at zero cost. Agents discover relevant wiki pages from this list rather than scanning `.atl/wiki/` directly.
+3. **Recent journal entries** when the task overlaps with prior work — `.atl/journal/` (last few entries are usually enough).
+4. **Project-specific rules** at `.atl/docs/coding-standards/{app}.md` if present.
 
 The agent does NOT read all wiki pages. It reads the index (auto-loaded), and only follows links to detail pages when the task touches that domain. This keeps context tight while preserving discoverability.
 
@@ -95,7 +95,7 @@ The merged layer is just `journal/`. Wiki stays separate because its paradigm (t
 
 ## Per-team / per-project mirrors
 
-The same two-layer system applies inside the user's project (`.claude/journal/`, `.claude/wiki/`) AND on the team-repo side for cross-project knowledge:
+The same two-layer system applies inside the user's project (`.atl/journal/`, `.atl/wiki/`) AND on the team-repo side for cross-project knowledge:
 
 - **Agent children files** (`children/{topic}.md` in the team repo's agent directory) are the team-side equivalent of wiki — topic-based, replace/update, cross-project domain knowledge for the agent.
 - **Skill learnings files** (`learnings/{topic}.md` in the team repo's skill directory) are the per-skill equivalent — same shape, scoped to the skill.

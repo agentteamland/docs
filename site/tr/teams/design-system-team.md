@@ -78,7 +78,7 @@ atl install design-system-team
 | `/dst-delete-prototype <name>` | Bir prototipi kaldırır. |
 | `/dst-open` | `.dst/index.html` dosyasını varsayılan tarayıcıda açar. |
 | `/dst-handoff <prototype> [--target …]` | Prototip + DS + varlıkları paketler; `flutter-agent` / `react-agent` ajanını kaynak koda bütünleştirme için brifler. |
-| `/dst-questions [init\|sync\|add\|resolve\|list]` | `.claude/wiki/open-questions.md` dosyasını yönetir (ekran çalışmasını engelleyen sorular); etkin listeyi `CLAUDE.md` dosyasına kendiliğinden sabitler. |
+| `/dst-questions [init\|sync\|add\|resolve\|list]` | `.atl/wiki/open-questions.md` dosyasını yönetir (ekran çalışmasını engelleyen sorular); etkin listeyi `CLAUDE.md` dosyasına kendiliğinden sabitler. |
 
 ## Neden var?
 

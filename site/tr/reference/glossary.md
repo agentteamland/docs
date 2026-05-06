@@ -38,7 +38,7 @@
 
 **Çalışma alanı (workspace)** — `agentteamland/workspace`, tüm eş depoların geliştirme için bir araya getirildiği bakımcı merkezi. AgentTeamLand'i kullanmak için gerekmez; yalnızca platforma katkı veriyorsan ilgilenir.
 
-**Journal** — `.claude/journal/{date}_{agent}.md` altındaki kronolojik, ajan başına öğrenme kaydı. Emekli edilmiş `agent-memory/` katmanının yerini alır. `/save-learnings` tarafından yazılır; ajan açılışında Claude tarafından [knowledge-system kuralı](https://github.com/agentteamland/core/blob/main/rules/knowledge-system.md) gereği okunur.
+**Journal** — `.atl/journal/{date}_{agent}.md` altındaki kronolojik, ajan başına öğrenme kaydı. Emekli edilmiş `agent-memory/` katmanının yerini alır. `/save-learnings` tarafından yazılır; ajan açılışında Claude tarafından [knowledge-system kuralı](https://github.com/agentteamland/core/blob/main/rules/knowledge-system.md) gereği okunur.
 
 **knowledge-base-summary** — her `children/{topic}.md` (ve `learnings/{topic}.md`) dosyasında zorunlu olan YAML frontmatter alanı. `/save-learnings`'in üst `agent.md`'nin Knowledge Base (ya da `skill.md`'nin Accumulated Learnings) bölümünü yeniden inşa ederken çıkardığı bir-üç satırlık özet. Kaynak doğruluktur — yeniden inşa edilmiş bölüme yapılan elle düzenlemeler bir sonraki save-learnings çalıştırmasında üzerine yazılır.
 
@@ -48,4 +48,4 @@
 
 **Öğrenme işaretçisi** — bir öğrenme anı geçtiğinde Claude'un konuşma sırasında düşürdüğü satır içi HTML yorumu. Biçim: `<!-- learning topic: ... kind: ... doc-impact: ... body: ... -->`. Bir sonraki oturumun `SessionStart` adımında `atl learning-capture` tarafından taranır ve `/save-learnings --from-markers` tarafından işlenir.
 
-**Wiki** — `.claude/wiki/{topic}.md` altında konuya göre düzenlenmiş güncel doğru bilgisi. Doğru değiştiğinde eklenmez, yerine yazılır; `CLAUDE.md` dosyasındaki `<!-- wiki:index -->` işaretçi bloğu canlı dizini her oturum başında Claude'a görünür kılar.
+**Wiki** — `.atl/wiki/{topic}.md` altında konuya göre düzenlenmiş güncel doğru bilgisi. Doğru değiştiğinde eklenmez, yerine yazılır; `CLAUDE.md` dosyasındaki `<!-- wiki:index -->` işaretçi bloğu canlı dizini her oturum başında Claude'a görünür kılar.

@@ -135,4 +135,4 @@ Diskteki dosya biçimi zorunlu `schemaVersion` alanıyla sürümlenir (şu an `1
 
 ## Karar bağlamı {#decision-context}
 
-İki yüzey ayrımı, neyin yapılandırma (vs kural, vs hardcode) sayılacağını belirleyen keystone testi ve migration mekaniği [`atl-config-system`](https://github.com/agentteamland/workspace/blob/main/.claude/docs/atl-config-system.md) brainstorm'unda kararlaştırıldı. Keystone testi tek cümlede: *iki kullanıcı bunu farklı yapılandırsa hâlâ aynı atl'yi mi kullanıyor olurlar?* — yapılandırma için evet, kural için hayır.
+İki yüzey ayrımı, neyin yapılandırma (vs kural, vs hardcode) sayılacağını belirleyen keystone testi ve migration mekaniği [`atl-config-system`](https://github.com/agentteamland/workspace/blob/main/.atl/docs/atl-config-system.md) brainstorm'unda kararlaştırıldı. Keystone testi tek cümlede: *iki kullanıcı bunu farklı yapılandırsa hâlâ aynı atl'yi mi kullanıyor olurlar?* — yapılandırma için evet, kural için hayır.

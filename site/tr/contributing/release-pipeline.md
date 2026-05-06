@@ -85,7 +85,7 @@ brew install agentteamland/tap/atl
 
 tap deposunu klonlar, `Formula/atl.rb` dosyasını okur, kendi platformuna uygun ikiliyi cli deposunun GitHub Release'inden indirir, sağlama toplamını doğrular ve `/opt/homebrew/bin/atl` (Intel macOS / Linuxbrew için `/usr/local/bin/atl`) konumuna kurar.
 
-> **Brew tap bayatlamış formula uyarısı:** `brew upgrade atl`, üçüncü taraf tap klonunu kendiliğinden tazelemez — yalnızca homebrew-core'un merkezi dizini kendiliğinden tazelenir. `brew update && brew upgrade atl` kullan (ya da 24 saatlik kısıtlamayı kapatmak için `HOMEBREW_AUTO_UPDATE_SECS=1` ayarla). Bu tuzakla ilgili ayrıntılı tarihçe için [brew-tap-stale-formula](https://github.com/agentteamland/workspace/blob/main/.claude/wiki/brew-tap-stale-formula.md) wiki kaydına bak.
+> **Brew tap bayatlamış formula uyarısı:** `brew upgrade atl`, üçüncü taraf tap klonunu kendiliğinden tazelemez — yalnızca homebrew-core'un merkezi dizini kendiliğinden tazelenir. `brew update && brew upgrade atl` kullan (ya da 24 saatlik kısıtlamayı kapatmak için `HOMEBREW_AUTO_UPDATE_SECS=1` ayarla). Bu tuzakla ilgili ayrıntılı tarihçe için [brew-tap-stale-formula](https://github.com/agentteamland/workspace/blob/main/.atl/wiki/brew-tap-stale-formula.md) wiki kaydına bak.
 
 ## Kanal: Scoop (Windows)
 
