@@ -9,7 +9,7 @@ Ships as a global skill in [core](https://github.com/agentteamland/core).
 ## Where the wiki lives
 
 ```
-.claude/wiki/
+.atl/wiki/
 ├── index.md                ← Auto-maintained table of contents
 ├── {topic-1}.md            ← Knowledge pages (kebab-case, one concept per page)
 ├── {topic-2}.md
@@ -26,9 +26,9 @@ Pages are also indexed inside the project's root `CLAUDE.md` via a `<!-- wiki:in
 /wiki init
 ```
 
-Creates `.claude/wiki/` and an `index.md` template. Idempotent — re-running on an already-initialized wiki is a no-op (`wiki: already initialized (N pages)`).
+Creates `.atl/wiki/` and an `index.md` template. Idempotent — re-running on an already-initialized wiki is a no-op (`wiki: already initialized (N pages)`).
 
-`init` is also fired automatically on a project's first session when `atl setup-hooks` is configured but the project has no `.claude/wiki/` yet.
+`init` is also fired automatically on a project's first session when `atl setup-hooks` is configured but the project has no `.atl/wiki/` yet.
 
 ### `ingest` — pull knowledge from project sources into wiki pages
 
@@ -41,9 +41,9 @@ Scans every project knowledge source and updates wiki pages:
 | Source | Why it matters |
 |---|---|
 | `<!-- learning -->` markers in the current session transcript | Primary source — live conversation knowledge |
-| `.claude/journal/*.md` | Per-agent, per-date learning record (the post-Q4 single layer) |
-| `.claude/docs/*.md` | Settled-decision documents from completed brainstorms |
-| `.claude/brain-storms/*.md` (status: completed only) | Decision context |
+| `.atl/journal/*.md` | Per-agent, per-date learning record (the post-Q4 single layer) |
+| `.atl/docs/*.md` | Settled-decision documents from completed brainstorms |
+| `.atl/brain-storms/*.md` (status: completed only) | Decision context |
 | Recent conversation context | What was just discussed or built |
 
 For each piece of knowledge: determine the topic, find or create the wiki page, **merge new info while resolving contradictions**, update cross-references and `index.md`.

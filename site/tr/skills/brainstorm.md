@@ -12,8 +12,8 @@ Bir beyin fırtınası üç düzeyden birinde yaşar — *kimin* karara önem ve
 
 | Bayrak | Hedef dizin | Ne zaman |
 |---|---|---|
-| *(yok)* | `.claude/brain-storms/` | Projeye özgü konular (varsayılan). |
-| `--global` | `~/.claude/brain-storms/` | Projeler arası, kişisel konular. |
+| *(yok)* | `.atl/brain-storms/` | Projeye özgü konular (varsayılan). |
+| `--global` | `~/.atl/brain-storms/` | Projeler arası, kişisel konular. |
 | `--team` | `~/.claude/repos/agentteamland/{team}/brain-storms/` | Takım deposuyla ilgili konular (ajan kuralları, takım stratejisi, katkıcı yönetişimi). |
 
 `--team` için etkin takım, kurulu `.claude/agents/` sembolik bağlarından algılanır. Tek takım → kendiliğinden kullanılır; birden çok takım → beceri `AskUserQuestion` ile sorar; kurulu takım yok → `/team install` ipucuyla bir hata verir.
@@ -43,7 +43,7 @@ Her etkin beyin fırtınası kendisini, kapsamın `CLAUDE.md` (ya da takım `REA
 
 These topics have an in-progress brainstorm — read the file before making any decision on them.
 
-- **[docs-sync-automation](.claude/brain-storms/docs-sync-automation.md)** (project, 2026-05-03) — closing the README + docs-site drift gap
+- **[docs-sync-automation](.atl/brain-storms/docs-sync-automation.md)** (project, 2026-05-03) — closing the README + docs-site drift gap
 <!-- brainstorm:active:end -->
 ```
 
@@ -66,11 +66,11 @@ Dosya, **yeterince ayrıntılı** olmalıdır; yeni bir bağlamda dosyayı okuya
 
 Akış:
 
-1. **Etkin beyin fırtınasını bul.** Üç kapsamı da tarar (`.claude/brain-storms/`, `~/.claude/brain-storms/`, `~/.claude/repos/agentteamland/*/brain-storms/`). Birden çoksa bunları kapsamlarıyla birlikte listeler ve hangisinin tamamlanacağını sorar.
+1. **Etkin beyin fırtınasını bul.** Üç kapsamı da tarar (`.atl/brain-storms/`, `~/.atl/brain-storms/`, `~/.claude/repos/agentteamland/*/brain-storms/`). Birden çoksa bunları kapsamlarıyla birlikte listeler ve hangisinin tamamlanacağını sorar.
 2. **Beyin fırtınası dosyasını tamamla.** `status: active` → `status: completed`. Son notları sona ekle. Open Items bölümünü güncelle (çözülmemişler kalır). Final Decisions bölümünü ekle.
 3. **Belge dosyasını oluştur ya da güncelle.** Yerleşmiş kararlar şu yerlere gider:
-   - **Proje beyin fırtınası** → `.claude/docs/`.
-   - **Global beyin fırtınası** → `~/.claude/docs/`.
+   - **Proje beyin fırtınası** → `.atl/docs/`.
+   - **Global beyin fırtınası** → `~/.atl/docs/`.
    - **Takım beyin fırtınası** → `~/.claude/repos/agentteamland/{team}/docs/`.
 4. **`CLAUDE.md` / `README` güncellenir.** İki şey olur:
    - Tamamlanmış beyin fırtınası özeti uygun bölüme eklenir.
@@ -93,7 +93,7 @@ brain-storms/ (süreç) → docs/ (sonuç) → CLAUDE.md (özet)
 
 ## Backlog disiplini
 
-Bir beyin fırtınası sırasında "şimdi yapmıyoruz, sonraya" diye işaretlenen her öğe `.claude/backlog.md` dosyasına yansır:
+Bir beyin fırtınası sırasında "şimdi yapmıyoruz, sonraya" diye işaretlenen her öğe `.atl/backlog.md` dosyasına yansır:
 
 - **Başa eklenir** (en yenisi en üstte).
 - Her öğe için: tarih + kategori başlığı + bağlam bağı + ayrıntılı konu açıklaması + "ne zaman gündeme gelir" notu + ilgili kaynaklar.

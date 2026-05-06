@@ -9,7 +9,7 @@ Global beceri olarak [core](https://github.com/agentteamland/core) içinde yayı
 ## Kullanım
 
 ```
-/create-code-diagram                       # .claude/docs/code-diagram.md dosyasına yazar
+/create-code-diagram                       # .atl/docs/code-diagram.md dosyasına yazar
 /create-code-diagram path/to/output.md     # belirttiğin yola yazar
 ```
 
@@ -52,7 +52,7 @@ Her katman için beceri, tür başına anahtar üyeleri listeler — varlıklar 
 
 ## Çıktı biçimi
 
-Varsayılan konum: `.claude/docs/code-diagram.md`.
+Varsayılan konum: `.atl/docs/code-diagram.md`.
 
 ```markdown
 # Code Diagram

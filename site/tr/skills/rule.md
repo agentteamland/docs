@@ -33,7 +33,7 @@ Kullanıcının doğal dildeki ifadesinden çıkar:
 | Uygulanabilirlik | Dosya |
 |---|---|
 | Tüm uygulamalar için ortak | `.claude/rules/coding-common.md`. |
-| Belirli bir uygulama | `.claude/docs/coding-standards/{app}.md` (var olan dosyalardan seçilir). |
+| Belirli bir uygulama | `.atl/docs/coding-standards/{app}.md` (var olan dosyalardan seçilir). |
 
 **Global kapsam (`--global`):**
 

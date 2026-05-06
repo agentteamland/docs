@@ -80,8 +80,8 @@ When Claude Code starts here, it automatically sees:
 - **Every peer repo under `./repos/`** for direct editing — no separate `cd` needed
 - **All active brainstorms** (auto-pinned into `CLAUDE.md` per the [brainstorm rule](https://github.com/agentteamland/brainstorm/blob/main/rules/brainstorm.md))
 - **Workspace `CLAUDE.md`** — the platform-level orientation document
-- **Final decisions** in `.claude/docs/` (settled architecture decisions derived from completed brainstorms)
-- **Wiki + journal** in `.claude/wiki/` and `.claude/journal/` (per the [knowledge system](../guide/knowledge-system))
+- **Final decisions** in `.atl/docs/` (settled architecture decisions derived from completed brainstorms)
+- **Wiki + journal** in `.atl/wiki/` and `.atl/journal/` (per the [knowledge system](../guide/knowledge-system))
 
 This is the natural setup for cross-repo work: Claude has the full org as its working set.
 
@@ -89,7 +89,7 @@ This is the natural setup for cross-repo work: Claude has the full org as its wo
 
 The workspace's `CLAUDE.md` carries a `<!-- wiki:index -->` marker block that auto-loads every wiki page's title + summary into Claude's context. See [Claude Code conventions](../guide/claude-code-conventions) for how the marker block works and why it exists.
 
-The wiki itself (`.claude/wiki/*.md`) is the canonical record of platform-wide patterns, conventions, discoveries, and anti-patterns the maintainer needs handy when working on cross-repo concerns. Pages are kept current — the [knowledge system](../guide/knowledge-system) is replace-style for current truth, append-only journal for history.
+The wiki itself (`.atl/wiki/*.md`) is the canonical record of platform-wide patterns, conventions, discoveries, and anti-patterns the maintainer needs handy when working on cross-repo concerns. Pages are kept current — the [knowledge system](../guide/knowledge-system) is replace-style for current truth, append-only journal for history.
 
 ## End of session
 

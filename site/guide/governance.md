@@ -97,12 +97,12 @@ Applied 2026-04-24:
 1. **GitHub API branch protection** to 13 repos (12 production + workspace) — immediate effect
 2. **`core@1.3.1` PR**: [feat(core): team-repo-maintenance rule](https://github.com/agentteamland/core/pull/1) — first change submitted through the new flow
 3. **`design-system-team@0.4.2` PR**: [fix(dst-new-ds): Q3 single-select](https://github.com/agentteamland/design-system-team/pull/1) — concurrent first-customer of the new flow
-4. **Workspace `CLAUDE.md` state snapshot** + the [settled-decision doc](https://github.com/agentteamland/workspace/blob/main/.claude/docs/branch-protection-and-team-repo-governance.md) — updated to reflect the new normal
+4. **Workspace `CLAUDE.md` state snapshot** + the [settled-decision doc](https://github.com/agentteamland/workspace/blob/main/.atl/docs/branch-protection-and-team-repo-governance.md) — updated to reflect the new normal
 
 ## Related
 
 - [Team-repo maintenance](/authoring/team-repo-maintenance) — the procedural detail (how to actually open the PR, what the commit message looks like)
 - [`/create-pr`](/skills/create-pr) — the skill that automates this discipline
 - [Karpathy guidelines](/guide/karpathy-guidelines) — the coding-guideline counterpart of this governance
-- Settled-decision doc: [branch-protection-and-team-repo-governance.md](https://github.com/agentteamland/workspace/blob/main/.claude/docs/branch-protection-and-team-repo-governance.md)
+- Settled-decision doc: [branch-protection-and-team-repo-governance.md](https://github.com/agentteamland/workspace/blob/main/.atl/docs/branch-protection-and-team-repo-governance.md)
 - Branch-protection API reference: [docs.github.com/en/rest/branches/branch-protection](https://docs.github.com/en/rest/branches/branch-protection)

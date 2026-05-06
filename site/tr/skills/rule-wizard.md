@@ -33,7 +33,7 @@ Global beceri olarak [rule](https://github.com/agentteamland/rule) içinde yayı
 Soru sormadan **önce** şunları oku:
 
 - `.claude/rules/coding-common.md`.
-- `.claude/docs/coding-standards/` altındaki tüm `.md` dosyalar (devingen biçimde listelenir).
+- `.atl/docs/coding-standards/` altındaki tüm `.md` dosyalar (devingen biçimde listelenir).
 
 Amaç:
 
@@ -81,7 +81,7 @@ Her kural için (soru-yanıt yoluyla) netleştir:
 
 (`--global` ya da `--team` ayarlıysa atlanır.)
 
-Proje kapsamı seçilirse alt soru: hangi uygulama? (Mevcut `.claude/docs/coding-standards/{app}.md` dosyalarını devingen biçimde listeler artı bir "common" seçeneği.)
+Proje kapsamı seçilirse alt soru: hangi uygulama? (Mevcut `.atl/docs/coding-standards/{app}.md` dosyalarını devingen biçimde listeler artı bir "common" seçeneği.)
 
 Takım kapsamı seçilirse alt soru: hangi ajanın bilgi tabanı? (Kurulu takımın ajanlarını listeler artı "team-wide rule" seçeneği.)
 

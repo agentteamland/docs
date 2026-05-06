@@ -97,12 +97,12 @@ Mevcut tek bakımcılı kurulumda Claude, bakımcının kendi GitHub hesabı üz
 1. **GitHub API üzerinden dal koruması** 13 depoya (12 üretim + workspace) — anında etkili.
 2. **`core@1.3.1` PR**: [feat(core): team-repo-maintenance rule](https://github.com/agentteamland/core/pull/1) — yeni akıştan geçen ilk değişiklik.
 3. **`design-system-team@0.4.2` PR**: [fix(dst-new-ds): Q3 single-select](https://github.com/agentteamland/design-system-team/pull/1) — yeni akışın eş zamanlı ilk müşterisi.
-4. **Workspace `CLAUDE.md` durum anlık görüntüsü** + [yerleşmiş karar belgesi](https://github.com/agentteamland/workspace/blob/main/.claude/docs/branch-protection-and-team-repo-governance.md) — yeni normali yansıtacak biçimde güncellendi.
+4. **Workspace `CLAUDE.md` durum anlık görüntüsü** + [yerleşmiş karar belgesi](https://github.com/agentteamland/workspace/blob/main/.atl/docs/branch-protection-and-team-repo-governance.md) — yeni normali yansıtacak biçimde güncellendi.
 
 ## İlgili
 
 - [Team-repo maintenance](/tr/authoring/team-repo-maintenance) — yordamsal ayrıntı (PR'ın gerçekte nasıl açılacağı, commit mesajının nasıl görüneceği).
 - [`/create-pr`](/tr/skills/create-pr) — bu disiplini otomatikleştiren beceri.
 - [Karpathy ilkeleri](/tr/guide/karpathy-guidelines) — bu yönetişimin kodlama-rehberi karşılığı.
-- Yerleşmiş karar belgesi: [branch-protection-and-team-repo-governance.md](https://github.com/agentteamland/workspace/blob/main/.claude/docs/branch-protection-and-team-repo-governance.md).
+- Yerleşmiş karar belgesi: [branch-protection-and-team-repo-governance.md](https://github.com/agentteamland/workspace/blob/main/.atl/docs/branch-protection-and-team-repo-governance.md).
 - Dal koruması API başvurusu: [docs.github.com/en/rest/branches/branch-protection](https://docs.github.com/en/rest/branches/branch-protection).

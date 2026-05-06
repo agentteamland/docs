@@ -38,7 +38,7 @@
 
 **Workspace** — `agentteamland/workspace`, the maintainer hub repo where all peer repos are aggregated for development. Not needed to use AgentTeamLand; only relevant if you're contributing to the platform itself.
 
-**Journal** — chronological per-agent learning record under `.claude/journal/{date}_{agent}.md`. Replaces the retired `agent-memory/` layer. Written by `/save-learnings`; read by Claude during agent startup per the [knowledge-system rule](https://github.com/agentteamland/core/blob/main/rules/knowledge-system.md).
+**Journal** — chronological per-agent learning record under `.atl/journal/{date}_{agent}.md`. Replaces the retired `agent-memory/` layer. Written by `/save-learnings`; read by Claude during agent startup per the [knowledge-system rule](https://github.com/agentteamland/core/blob/main/rules/knowledge-system.md).
 
 **knowledge-base-summary** — required YAML frontmatter field on every `children/{topic}.md` (and `learnings/{topic}.md`) file. One- to three-line summary that `/save-learnings` extracts to rebuild the parent agent.md's Knowledge Base (or skill.md's Accumulated Learnings) section. Source-of-truth — hand edits to the rebuilt section are overwritten on the next save-learnings run.
 
@@ -48,4 +48,4 @@
 
 **Learning marker** — inline HTML comment dropped by Claude during a conversation when a learning moment occurs. Format: `<!-- learning topic: ... kind: ... doc-impact: ... body: ... -->`. Scanned by `atl learning-capture` on the next session's `SessionStart` and processed by `/save-learnings --from-markers`.
 
-**Wiki** — topic-organized current-truth knowledge under `.claude/wiki/{topic}.md`. Replaced (not appended) when truth changes; the `<!-- wiki:index -->` marker block in CLAUDE.md keeps the live index visible to Claude on every session start.
+**Wiki** — topic-organized current-truth knowledge under `.atl/wiki/{topic}.md`. Replaced (not appended) when truth changes; the `<!-- wiki:index -->` marker block in CLAUDE.md keeps the live index visible to Claude on every session start.

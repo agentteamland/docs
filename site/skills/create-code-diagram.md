@@ -9,7 +9,7 @@ Ships as a global skill in [core](https://github.com/agentteamland/core).
 ## Usage
 
 ```
-/create-code-diagram                       # writes .claude/docs/code-diagram.md
+/create-code-diagram                       # writes .atl/docs/code-diagram.md
 /create-code-diagram path/to/output.md     # writes to the path you specify
 ```
 
@@ -52,7 +52,7 @@ For each layer, the skill lists every type with its key members — properties f
 
 ## Output format
 
-Default location: `.claude/docs/code-diagram.md`
+Default location: `.atl/docs/code-diagram.md`
 
 ```markdown
 # Code Diagram

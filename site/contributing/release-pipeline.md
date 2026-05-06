@@ -84,7 +84,7 @@ brew install agentteamland/tap/atl
 
 clones the tap repo, reads `Formula/atl.rb`, downloads the binary for their platform from the cli repo's GitHub Release, verifies the checksum, installs to `/opt/homebrew/bin/atl` (or `/usr/local/bin/atl` on Intel macs / Linuxbrew).
 
-> **Brew tap stale formula caveat:** `brew upgrade atl` does NOT auto-refresh the third-party tap clone — only homebrew-core's central index is auto-refreshed. Use `brew update && brew upgrade atl` (or set `HOMEBREW_AUTO_UPDATE_SECS=1` to disable the 24h throttle). See the [brew-tap-stale-formula](https://github.com/agentteamland/workspace/blob/main/.claude/wiki/brew-tap-stale-formula.md) wiki entry for the detailed history of this gotcha.
+> **Brew tap stale formula caveat:** `brew upgrade atl` does NOT auto-refresh the third-party tap clone — only homebrew-core's central index is auto-refreshed. Use `brew update && brew upgrade atl` (or set `HOMEBREW_AUTO_UPDATE_SECS=1` to disable the 24h throttle). See the [brew-tap-stale-formula](https://github.com/agentteamland/workspace/blob/main/.atl/wiki/brew-tap-stale-formula.md) wiki entry for the detailed history of this gotcha.
 
 ## Channel: Scoop (Windows)
 
