@@ -6,11 +6,11 @@ When you install multiple ATL teams in the same project, the assistant has multi
 
 Each ATL team ships skills (slash commands the assistant can invoke). When you run `atl install software-project-team` and `atl install personal-advisory-team` (for example), both teams' skills become available in every Claude Code session in this project. The assistant sees the union of all skills and picks one — or none — per turn.
 
-ATL's [`skill-selection-discipline` rule](../reference/rules/skill-selection-discipline.md) requires the assistant to consider the full skill list, match prompt intent to each skill's purpose, and disambiguate when multiple skills could apply. The rule auto-loads in every session.
+ATL's [`skill-selection-discipline` rule](https://github.com/agentteamland/core/blob/main/rules/skill-selection-discipline.md) requires the assistant to consider the full skill list, match prompt intent to each skill's purpose, and disambiguate when multiple skills could apply. The rule auto-loads in every session.
 
 ## Why ATL doesn't auto-trigger team skills
 
-We considered four auto-activation mechanisms:
+We considered three auto-activation mechanisms:
 - **Per-team watch hooks** — every installed team probes every prompt; cost scales with team count.
 - **Central dispatcher** — one ATL-side watcher hints which team is relevant; still requires inferential routing on every prompt.
 - **Lazy team-load arbitration** — a small LLM call routes to the right team per prompt; deterministic but adds latency × cost on every turn.
@@ -56,6 +56,6 @@ If you find yourself frequently fighting the assistant over which team a prompt 
 
 ## Related
 
-- **Rule reference:** [`skill-selection-discipline.md`](../reference/rules/skill-selection-discipline.md) — the assistant-side rule that this page is the user-side counterpart of.
-- **Auto-activation rationale:** the ATL workspace brainstorm `auto-team-activation.md` documents why per-team or central-dispatcher auto-triggering was rejected.
-- **Karpathy guidelines:** [`karpathy-guidelines.md`](karpathy-guidelines.md) — the broader behavioral principles that informed the rejection (Simplicity First).
+- **Rule source:** [`core/rules/skill-selection-discipline.md`](https://github.com/agentteamland/core/blob/main/rules/skill-selection-discipline.md) — the assistant-side rule that this page is the user-side counterpart of.
+- **Auto-activation rationale:** [`auto-team-activation.md`](https://github.com/agentteamland/workspace/blob/main/.atl/brain-storms/auto-team-activation.md) — the workspace brainstorm that documents why per-team, central-dispatcher, and lazy-load arbitration were rejected.
+- **Karpathy guidelines:** [`/guide/karpathy-guidelines`](/guide/karpathy-guidelines) — the broader behavioral principles that informed the rejection (Simplicity First).
