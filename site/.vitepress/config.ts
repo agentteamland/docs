@@ -190,16 +190,16 @@ export default defineConfig({
                 { text: 'Kurulum', link: '/tr/guide/install' },
                 { text: 'Hızlı başlangıç', link: '/tr/guide/quickstart' },
                 { text: 'Kavramlar', link: '/tr/guide/concepts' },
-                { text: 'Karpathy guidelines', link: '/tr/guide/karpathy-guidelines' }
+                { text: 'Karpathy ilkeleri', link: '/tr/guide/karpathy-guidelines' }
               ]
             },
             {
               text: 'Bilgi modeli',
               items: [
-                { text: 'Knowledge system', link: '/tr/guide/knowledge-system' },
+                { text: 'Bilgi sistemi', link: '/tr/guide/knowledge-system' },
                 { text: 'Children + learnings', link: '/tr/guide/children-and-learnings' },
-                { text: 'Learning marker lifecycle', link: '/tr/guide/learning-marker-lifecycle' },
-                { text: 'Claude Code conventions', link: '/tr/guide/claude-code-conventions' }
+                { text: 'Öğrenme işaretçisi yaşam döngüsü', link: '/tr/guide/learning-marker-lifecycle' },
+                { text: 'Claude Code sözleşmeleri', link: '/tr/guide/claude-code-conventions' }
               ]
             },
             {
@@ -209,9 +209,9 @@ export default defineConfig({
               ]
             },
             {
-              text: 'Operations',
+              text: 'İşletim',
               items: [
-                { text: 'Governance', link: '/tr/guide/governance' }
+                { text: 'Yönetişim', link: '/tr/guide/governance' }
               ]
             }
           ],
@@ -261,10 +261,10 @@ export default defineConfig({
                 { text: 'team.json', link: '/tr/authoring/team-json' },
                 { text: 'Takım oluşturma', link: '/tr/authoring/creating-a-team' },
                 { text: 'Miras (inheritance)', link: '/tr/authoring/inheritance' },
-                { text: 'Worked example: starter-extended', link: '/tr/authoring/starter-extended-example' },
-                { text: 'Scaffolder spec', link: '/tr/authoring/scaffolder-spec' },
+                { text: 'Uygulamalı örnek: starter-extended', link: '/tr/authoring/starter-extended-example' },
+                { text: 'İskele belirtimi', link: '/tr/authoring/scaffolder-spec' },
                 { text: 'Registry başvurusu', link: '/tr/authoring/registry-submission' },
-                { text: 'Team-repo maintenance', link: '/tr/authoring/team-repo-maintenance' }
+                { text: 'Takım deposu bakımı', link: '/tr/authoring/team-repo-maintenance' }
               ]
             }
           ],

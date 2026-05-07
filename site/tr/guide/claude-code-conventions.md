@@ -14,6 +14,8 @@ Aynı deseni kendi `CLAUDE.md` dosyalarında sen de kullanabilirsin. Bloklar yal
 
 Üçü de aynı `<!-- block:start --> ... <!-- block:end -->` sınırlayıcı desenini kullanır. Hiçbirinin katı anlamda bir ayrıştırıcısı yoktur — sözdizim değil, sözleşmedir. Ama sözleşme, gerektiğinde basit `sed` ya da düzenli ifadeyle bulmak, güncellemek ve kaldırmak için yeterince tutarlıdır.
 
+> **Not — bu sayfadaki örnek blok içerikleri neden İngilizce?** Aşağıdaki üç şablon (`wiki:index`, `brainstorm:active`, `pending-implementation`) `/save-learnings` ve `/brainstorm` becerileri tarafından otomatik üretilir. Bu beceriler `feedback_speak_turkish` kuralı gereği her zaman İngilizce çıktı verir (taahhüt edilen tüm dosyalar İngilizce olmalıdır). Bu nedenle TR projelerde bile `CLAUDE.md` içindeki bu bloklar İngilizce görünür — örneklerin İngilizce gösterilmesi fiili çıktıyı yansıtır.
+
 ## `<!-- wiki:index -->` — bilgi haritası
 
 `.atl/wiki/` dizinindeki her değişiklikten sonra `/save-learnings` tarafından yeniden inşa edilir. `CLAUDE.md` dosyasının üst kısmına yakın, H1 ve giriş paragrafından sonra yaşar:
