@@ -57,7 +57,8 @@ export default defineConfig({
                 { text: 'Install', link: '/guide/install' },
                 { text: 'Quickstart', link: '/guide/quickstart' },
                 { text: 'Concepts', link: '/guide/concepts' },
-                { text: 'Karpathy guidelines', link: '/guide/karpathy-guidelines' }
+                { text: 'Karpathy guidelines', link: '/guide/karpathy-guidelines' },
+                { text: 'Skill selection discipline', link: '/guide/skill-selection-discipline' }
               ]
             },
             {
@@ -190,7 +191,8 @@ export default defineConfig({
                 { text: 'Kurulum', link: '/tr/guide/install' },
                 { text: 'Hızlı başlangıç', link: '/tr/guide/quickstart' },
                 { text: 'Kavramlar', link: '/tr/guide/concepts' },
-                { text: 'Karpathy ilkeleri', link: '/tr/guide/karpathy-guidelines' }
+                { text: 'Karpathy ilkeleri', link: '/tr/guide/karpathy-guidelines' },
+                { text: 'Skill seçim disiplini', link: '/tr/guide/skill-selection-discipline' }
               ]
             },
             {
